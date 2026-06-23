@@ -22,7 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.2.1105" />
+    <Compile Remove="FNA/**/*.cs" />
+    <EmbeddedResource Remove="FNA/**" />
+    <None Remove="FNA/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="FNA/FNA.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
