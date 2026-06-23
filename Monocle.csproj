@@ -22,13 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="FNA/**/*.cs" />
-    <EmbeddedResource Remove="FNA/**" />
-    <None Remove="FNA/**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="FNA/FNA.Core.csproj" />
+    <Reference Include="FNA">
+      <HintPath>fnalibs/FNA.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
