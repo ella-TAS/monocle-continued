@@ -219,8 +219,6 @@ namespace Monocle {
             IsMouseVisible = false;
             IsFixedTimeStep = false;
             ExitOnEscapeKeypress = true;
-
-            GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
             Graphics.ApplyChanges();
         }
 

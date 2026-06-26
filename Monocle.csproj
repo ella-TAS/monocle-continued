@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="FNA/FNA.Core.csproj"></ProjectReference>
+    <ProjectReference Include="../FNA/FNA.Core.csproj"></ProjectReference>
     <Compile Remove="FNA/**/*.cs" />
     <EmbeddedResource Remove="FNA/**" />
     <None Remove="FNA/**" />
