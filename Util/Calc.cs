@@ -890,7 +890,7 @@ namespace Monocle {
         }
 
         public static float SineMap(float counter, float newMin, float newMax) {
-            return Calc.Map((float) Math.Sin(counter), 01, 1, newMin, newMax);
+            return Map((float) Math.Sin(counter), 01, 1, newMin, newMax);
         }
 
         public static float ClampedMap(float val, float min, float max, float newMin = 0, float newMax = 1) {
@@ -1016,14 +1016,14 @@ namespace Monocle {
         }
 
         public static float ShorterAngleDifference(float currentAngle, float angleA, float angleB) {
-            if (Math.Abs(Calc.AngleDiff(currentAngle, angleA)) < Math.Abs(Calc.AngleDiff(currentAngle, angleB)))
+            if (Math.Abs(AngleDiff(currentAngle, angleA)) < Math.Abs(AngleDiff(currentAngle, angleB)))
                 return angleA;
             else
                 return angleB;
         }
 
         public static float ShorterAngleDifference(float currentAngle, float angleA, float angleB, float angleC) {
-            if (Math.Abs(Calc.AngleDiff(currentAngle, angleA)) < Math.Abs(Calc.AngleDiff(currentAngle, angleB)))
+            if (Math.Abs(AngleDiff(currentAngle, angleA)) < Math.Abs(AngleDiff(currentAngle, angleB)))
                 return ShorterAngleDifference(currentAngle, angleA, angleC);
             else
                 return ShorterAngleDifference(currentAngle, angleB, angleC);
@@ -1108,7 +1108,7 @@ namespace Monocle {
             return new Vector2(Math.Abs(val.X), Math.Abs(val.Y));
         }
 
-        public static Vector2 Approach(Vector2 val, Vector2 target, float maxMove) {
+        public static Vector2 Approach(this Vector2 val, Vector2 target, float maxMove) {
             if (maxMove <= 0 || val == target)
                 return val;
 
@@ -1121,6 +1121,10 @@ namespace Monocle {
                 diff.Normalize();
                 return val + diff * maxMove;
             }
+        }
+
+        public static float DistanceTo(this Vector2 val, Vector2 other) {
+            return Vector2.Distance(val, other);
         }
 
         public static Vector2 FourWayNormal(this Vector2 vec) {
@@ -1475,7 +1479,7 @@ namespace Monocle {
 
             try {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
-                T obj = (T) serializer.Deserialize(stream);
+                T obj = (T) serializer.Deserialize(stream)!;
                 stream.Close();
                 data = obj;
                 return true;
@@ -1491,7 +1495,7 @@ namespace Monocle {
 
         public static XmlDocument LoadContentXML(string filename) {
             XmlDocument xml = new XmlDocument();
-            xml.Load(TitleContainer.OpenStream(Path.Combine(Engine.Instance.Content.RootDirectory, filename)));
+            xml.Load(TitleContainer.OpenStream(Path.Combine(Engine.Instance!.Content.RootDirectory, filename)));
             return xml;
         }
 
@@ -1521,14 +1525,14 @@ namespace Monocle {
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return xml.Attributes[attributeName].InnerText;
+            return xml.Attributes[attributeName]?.InnerText ?? "";
         }
 
         public static string Attr(this XmlElement xml, string attributeName, string defaultValue) {
             if (!xml.HasAttr(attributeName))
                 return defaultValue;
             else
-                return xml.Attributes[attributeName].InnerText;
+                return xml.Attributes[attributeName]!.InnerText;
         }
 
         public static int AttrInt(this XmlElement xml, string attributeName) {
@@ -1536,14 +1540,14 @@ namespace Monocle {
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return Convert.ToInt32(xml.Attributes[attributeName].InnerText);
+            return Convert.ToInt32(xml.Attributes[attributeName]?.InnerText);
         }
 
         public static int AttrInt(this XmlElement xml, string attributeName, int defaultValue) {
             if (!xml.HasAttr(attributeName))
                 return defaultValue;
             else
-                return Convert.ToInt32(xml.Attributes[attributeName].InnerText);
+                return Convert.ToInt32(xml.Attributes[attributeName]!.InnerText);
         }
 
         public static float AttrFloat(this XmlElement xml, string attributeName) {
@@ -1551,14 +1555,14 @@ namespace Monocle {
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return Convert.ToSingle(xml.Attributes[attributeName].InnerText, CultureInfo.InvariantCulture);
+            return Convert.ToSingle(xml.Attributes[attributeName]?.InnerText, CultureInfo.InvariantCulture);
         }
 
         public static float AttrFloat(this XmlElement xml, string attributeName, float defaultValue) {
             if (!xml.HasAttr(attributeName))
                 return defaultValue;
             else
-                return Convert.ToSingle(xml.Attributes[attributeName].InnerText, CultureInfo.InvariantCulture);
+                return Convert.ToSingle(xml.Attributes[attributeName]!.InnerText, CultureInfo.InvariantCulture);
         }
 
         public static Vector3 AttrVector3(this XmlElement xml, string attributeName) {
@@ -1583,7 +1587,7 @@ namespace Monocle {
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return Convert.ToBoolean(xml.Attributes[attributeName].InnerText);
+            return Convert.ToBoolean(xml.Attributes[attributeName]?.InnerText);
         }
 
         public static bool AttrBool(this XmlElement xml, string attributeName, bool defaultValue) {
@@ -1598,7 +1602,7 @@ namespace Monocle {
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return Convert.ToChar(xml.Attributes[attributeName].InnerText);
+            return Convert.ToChar(xml.Attributes[attributeName]?.InnerText ?? "\0");
         }
 
         public static char AttrChar(this XmlElement xml, string attributeName, char defaultValue) {
@@ -1609,12 +1613,11 @@ namespace Monocle {
         }
 
         public static T AttrEnum<T>(this XmlElement xml, string attributeName) where T : struct {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
-            if (Enum.IsDefined(typeof(T), xml.Attributes[attributeName].InnerText))
-                return (T) Enum.Parse(typeof(T), xml.Attributes[attributeName].InnerText);
+
+            if (Enum.IsDefined(typeof(T), xml.Attributes[attributeName]!.InnerText))
+                return Enum.Parse<T>(xml.Attributes[attributeName]!.InnerText);
             else
                 throw new Exception("The attribute value cannot be converted to the enum type.");
         }
@@ -1631,7 +1634,7 @@ namespace Monocle {
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return Calc.HexToColor(xml.Attr(attributeName));
+            return HexToColor(xml.Attr(attributeName));
         }
 
         public static Color AttrHexColor(this XmlElement xml, string attributeName, Color defaultValue) {
@@ -1643,7 +1646,7 @@ namespace Monocle {
 
         public static Color AttrHexColor(this XmlElement xml, string attributeName, string defaultValue) {
             if (!xml.HasAttr(attributeName))
-                return Calc.HexToColor(defaultValue);
+                return HexToColor(defaultValue);
             else
                 return AttrHexColor(xml, attributeName);
         }
@@ -1720,7 +1723,7 @@ namespace Monocle {
         }
 
         public static Color InnerHexColor(this XmlElement xml) {
-            return Calc.HexToColor(xml.InnerText);
+            return HexToColor(xml.InnerText);
         }
 
         #endregion
@@ -1736,12 +1739,12 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return xml[childName].InnerText;
+            return xml[childName]?.InnerText ?? "";
         }
 
         public static string ChildText(this XmlElement xml, string childName, string defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerText;
+                return xml[childName]!.InnerText;
             else
                 return defaultValue;
         }
@@ -1751,12 +1754,12 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return xml[childName].InnerInt();
+            return xml[childName]?.InnerInt() ?? 0;
         }
 
         public static int ChildInt(this XmlElement xml, string childName, int defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerInt();
+                return xml[childName]!.InnerInt();
             else
                 return defaultValue;
         }
@@ -1766,12 +1769,12 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return xml[childName].InnerFloat();
+            return xml[childName]?.InnerFloat() ?? 0f;
         }
 
         public static float ChildFloat(this XmlElement xml, string childName, float defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerFloat();
+                return xml[childName]!.InnerFloat();
             else
                 return defaultValue;
         }
@@ -1781,31 +1784,30 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return xml[childName].InnerBool();
+            return xml[childName]?.InnerBool() ?? false;
         }
 
         public static bool ChildBool(this XmlElement xml, string childName, bool defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerBool();
+                return xml[childName]!.InnerBool();
             else
                 return defaultValue;
         }
 
         public static T ChildEnum<T>(this XmlElement xml, string childName) where T : struct {
-#if DEBUG
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
-            if (Enum.IsDefined(typeof(T), xml[childName].InnerText))
-                return (T) Enum.Parse(typeof(T), xml[childName].InnerText);
+
+            if (Enum.IsDefined(typeof(T), xml[childName]!.InnerText))
+                return Enum.Parse<T>(xml[childName]!.InnerText);
             else
                 throw new Exception("The attribute value cannot be converted to the enum type.");
         }
 
         public static T ChildEnum<T>(this XmlElement xml, string childName, T defaultValue) where T : struct {
             if (xml.HasChild(childName)) {
-                if (Enum.IsDefined(typeof(T), xml[childName].InnerText))
-                    return (T) Enum.Parse(typeof(T), xml[childName].InnerText);
+                if (Enum.IsDefined(typeof(T), xml[childName]!.InnerText))
+                    return Enum.Parse<T>(xml[childName]!.InnerText);
                 else
                     throw new Exception("The attribute value cannot be converted to the enum type.");
             } else
@@ -1817,21 +1819,21 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return Calc.HexToColor(xml[childName].InnerText);
+            return HexToColor(xml[childName]?.InnerText ?? "");
         }
 
         public static Color ChildHexColor(this XmlElement xml, string childName, Color defaultValue) {
             if (xml.HasChild(childName))
-                return Calc.HexToColor(xml[childName].InnerText);
+                return HexToColor(xml[childName]!.InnerText);
             else
                 return defaultValue;
         }
 
         public static Color ChildHexColor(this XmlElement xml, string childName, string defaultValue) {
             if (xml.HasChild(childName))
-                return Calc.HexToColor(xml[childName].InnerText);
+                return HexToColor(xml[childName]!.InnerText);
             else
-                return Calc.HexToColor(defaultValue);
+                return HexToColor(defaultValue);
         }
 
         public static Vector2 ChildPosition(this XmlElement xml, string childName) {
@@ -1839,12 +1841,12 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return xml[childName].Position();
+            return xml[childName]?.Position() ?? Vector2.Zero;
         }
 
         public static Vector2 ChildPosition(this XmlElement xml, string childName, Vector2 defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].Position(defaultValue);
+                return xml[childName]!.Position(defaultValue);
             else
                 return defaultValue;
         }
@@ -1857,45 +1859,45 @@ namespace Monocle {
             if (xml["node"] == null)
                 return Vector2.Zero;
             else
-                return new Vector2((int) xml["node"].AttrFloat("x"), (int) xml["node"].AttrFloat("y"));
+                return new Vector2((int) xml["node"]!.AttrFloat("x"), (int) xml["node"]!.AttrFloat("y"));
         }
 
         public static Vector2? FirstNodeNullable(this XmlElement xml) {
             if (xml["node"] == null)
                 return null;
             else
-                return new Vector2((int) xml["node"].AttrFloat("x"), (int) xml["node"].AttrFloat("y"));
+                return new Vector2((int) xml["node"]!.AttrFloat("x"), (int) xml["node"]!.AttrFloat("y"));
         }
 
         public static Vector2? FirstNodeNullable(this XmlElement xml, Vector2 offset) {
             if (xml["node"] == null)
                 return null;
             else
-                return new Vector2((int) xml["node"].AttrFloat("x"), (int) xml["node"].AttrFloat("y")) + offset;
+                return new Vector2((int) xml["node"]!.AttrFloat("x"), (int) xml["node"]!.AttrFloat("y")) + offset;
         }
 
         public static Vector2[] Nodes(this XmlElement xml, bool includePosition = false) {
             XmlNodeList nodes = xml.GetElementsByTagName("node");
             if (nodes == null)
-                return includePosition ? new Vector2[] { xml.Position() } : new Vector2[0];
+                return includePosition ? [xml.Position()] : [];
 
             Vector2[] ret;
             if (includePosition) {
                 ret = new Vector2[nodes.Count + 1];
                 ret[0] = xml.Position();
                 for (int i = 0; i < nodes.Count; i++)
-                    ret[i + 1] = new Vector2(Convert.ToInt32(nodes[i].Attributes["x"].InnerText), Convert.ToInt32(nodes[i].Attributes["y"].InnerText));
+                    ret[i + 1] = new Vector2(Convert.ToInt32(nodes[i]!.Attributes!["x"]!.InnerText), Convert.ToInt32(nodes[i]!.Attributes!["y"]!.InnerText));
             } else {
                 ret = new Vector2[nodes.Count];
                 for (int i = 0; i < nodes.Count; i++)
-                    ret[i] = new Vector2(Convert.ToInt32(nodes[i].Attributes["x"].InnerText), Convert.ToInt32(nodes[i].Attributes["y"].InnerText));
+                    ret[i] = new Vector2(Convert.ToInt32(nodes[i]!.Attributes!["x"]!.InnerText), Convert.ToInt32(nodes[i]!.Attributes!["y"]!.InnerText));
             }
 
             return ret;
         }
 
         public static Vector2[] Nodes(this XmlElement xml, Vector2 offset, bool includePosition = false) {
-            var nodes = Calc.Nodes(xml, includePosition);
+            var nodes = Nodes(xml, includePosition);
 
             for (int i = 0; i < nodes.Length; i++)
                 nodes[i] += offset;
@@ -1918,11 +1920,11 @@ namespace Monocle {
 
         #region Add Stuff
 
-        public static void SetAttr(this XmlElement xml, string attributeName, Object setTo) {
+        public static void SetAttr(this XmlElement xml, string attributeName, object setTo) {
             XmlAttribute attr;
 
             if (xml.HasAttr(attributeName))
-                attr = xml.Attributes[attributeName];
+                attr = xml.Attributes[attributeName]!;
             else {
                 attr = xml.OwnerDocument.CreateAttribute(attributeName);
                 xml.Attributes.Append(attr);
@@ -1931,17 +1933,17 @@ namespace Monocle {
             attr.Value = setTo.ToString();
         }
 
-        public static void SetChild(this XmlElement xml, string childName, Object setTo) {
+        public static void SetChild(this XmlElement xml, string childName, object setTo) {
             XmlElement ele;
 
             if (xml.HasChild(childName))
-                ele = xml[childName];
+                ele = xml[childName]!;
             else {
                 ele = xml.OwnerDocument.CreateElement(null, childName, xml.NamespaceURI);
                 xml.AppendChild(ele);
             }
 
-            ele.InnerText = setTo.ToString();
+            ele.InnerText = setTo.ToString() ?? "";
         }
 
         public static XmlElement CreateChild(this XmlDocument doc, string childName) {
@@ -1995,7 +1997,7 @@ namespace Monocle {
         }
 
         public static void TimeLog() {
-            Debug.WriteLine(Engine.Scene.RawTimeActive);
+            Debug.WriteLine(Engine.Scene?.RawTimeActive);
         }
 
         public static void Log(params object[] obj) {
@@ -2008,22 +2010,22 @@ namespace Monocle {
         }
 
         public static void TimeLog(object obj) {
-            Debug.WriteLine(Engine.Scene.RawTimeActive + " : " + obj);
+            Debug.WriteLine(Engine.Scene?.RawTimeActive + " : " + obj);
         }
 
         public static void LogEach<T>(IEnumerable<T> collection) {
-            foreach (var o in collection)
-                Debug.WriteLine(o.ToString());
+            foreach (T? o in collection)
+                Debug.WriteLine(o?.ToString() ?? "null");
         }
 
-        public static void Dissect(Object obj) {
+        public static void Dissect(object obj) {
             Debug.Write(obj.GetType().Name + " { ");
             foreach (var v in obj.GetType().GetFields())
                 Debug.Write(v.Name + ": " + v.GetValue(obj) + ", ");
             Debug.WriteLine(" }");
         }
 
-        private static Stopwatch stopwatch;
+        private static Stopwatch? stopwatch;
 
         public static void StartTimer() {
             stopwatch = new Stopwatch();
@@ -2047,7 +2049,7 @@ namespace Monocle {
 
         #region Reflection
 
-        public static Delegate GetMethod<T>(Object obj, string method) where T : class {
+        public static Delegate? GetMethod<T>(object obj, string method) where T : class {
             var info = obj.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
             if (info == null)
                 return null;
