@@ -2043,9 +2043,7 @@ namespace Monocle {
 
                 string message = "Timer: " + stopwatch.ElapsedTicks + " ticks, or " + TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds.ToString("00.0000000") + " seconds";
                 Debug.WriteLine(message);
-#if DESKTOP && DEBUG
-                //Commands.Trace(message);
-#endif
+
                 stopwatch = null;
             }
         }

@@ -220,9 +220,8 @@ namespace Monocle {
             IsFixedTimeStep = false;
             ExitOnEscapeKeypress = true;
 
-#if !BROWSER
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
-#endif
+
             Graphics.ApplyChanges();
         }
 
