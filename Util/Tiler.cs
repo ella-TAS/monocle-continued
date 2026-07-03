@@ -1,61 +1,54 @@
 ﻿using System;
 using System.Xml;
 
-namespace Monocle
-{
-    public static class Tiler
-    {
+namespace Monocle {
+    public static class Tiler {
         public enum EdgeBehavior { True, False, Wrap };
 
-        public static int[,] Tile(bool[,] bits, Func<int> tileDecider, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges)
-        {
+        public static int[,] Tile(bool[,] bits, Func<int> tileDecider, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges) {
             int boundsX = bits.GetLength(0);
             int boundsY = bits.GetLength(1);
             int[,] tiles = new int[boundsX, boundsY];
 
-            for (TileX = 0; TileX < boundsX; TileX++)
-            {
-                for (TileY = 0; TileY < boundsY; TileY++)
-                {
-                    if (bits[TileX, TileY])
-                    {
-                        switch (edges)
-                        {
-                            case EdgeBehavior.True:
-                                Left = TileX == 0 ? true : bits[TileX - 1, TileY];
-                                Right = TileX == boundsX - 1 ? true : bits[TileX + 1, TileY];
-                                Up = TileY == 0 ? true : bits[TileX, TileY - 1];
-                                Down = TileY == boundsY - 1 ? true : bits[TileX, TileY + 1];
+            for (TileX = 0; TileX < boundsX; TileX++) {
+                for (TileY = 0; TileY < boundsY; TileY++) {
+                    if (bits[TileX, TileY]) {
+                        switch (edges) {
+                        case EdgeBehavior.True:
+                            Left = TileX == 0 ? true : bits[TileX - 1, TileY];
+                            Right = TileX == boundsX - 1 ? true : bits[TileX + 1, TileY];
+                            Up = TileY == 0 ? true : bits[TileX, TileY - 1];
+                            Down = TileY == boundsY - 1 ? true : bits[TileX, TileY + 1];
 
-                                UpLeft = (TileX == 0 || TileY == 0) ? true : bits[TileX - 1, TileY - 1];
-                                UpRight = (TileX == boundsX - 1 || TileY == 0) ? true : bits[TileX + 1, TileY - 1];
-                                DownLeft = (TileX == 0 || TileY == boundsY - 1) ? true : bits[TileX - 1, TileY + 1];
-                                DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? true : bits[TileX + 1, TileY + 1];
-                                break;
+                            UpLeft = (TileX == 0 || TileY == 0) ? true : bits[TileX - 1, TileY - 1];
+                            UpRight = (TileX == boundsX - 1 || TileY == 0) ? true : bits[TileX + 1, TileY - 1];
+                            DownLeft = (TileX == 0 || TileY == boundsY - 1) ? true : bits[TileX - 1, TileY + 1];
+                            DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? true : bits[TileX + 1, TileY + 1];
+                            break;
 
-                            case EdgeBehavior.False:
-                                Left = TileX == 0 ? false : bits[TileX - 1, TileY];
-                                Right = TileX == boundsX - 1 ? false : bits[TileX + 1, TileY];
-                                Up = TileY == 0 ? false : bits[TileX, TileY - 1];
-                                Down = TileY == boundsY - 1 ? false : bits[TileX, TileY + 1];
+                        case EdgeBehavior.False:
+                            Left = TileX == 0 ? false : bits[TileX - 1, TileY];
+                            Right = TileX == boundsX - 1 ? false : bits[TileX + 1, TileY];
+                            Up = TileY == 0 ? false : bits[TileX, TileY - 1];
+                            Down = TileY == boundsY - 1 ? false : bits[TileX, TileY + 1];
 
-                                UpLeft = (TileX == 0 || TileY == 0) ? false : bits[TileX - 1, TileY - 1];
-                                UpRight = (TileX == boundsX - 1 || TileY == 0) ? false : bits[TileX + 1, TileY - 1];
-                                DownLeft = (TileX == 0 || TileY == boundsY - 1) ? false : bits[TileX - 1, TileY + 1];
-                                DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? false : bits[TileX + 1, TileY + 1];
-                                break;
+                            UpLeft = (TileX == 0 || TileY == 0) ? false : bits[TileX - 1, TileY - 1];
+                            UpRight = (TileX == boundsX - 1 || TileY == 0) ? false : bits[TileX + 1, TileY - 1];
+                            DownLeft = (TileX == 0 || TileY == boundsY - 1) ? false : bits[TileX - 1, TileY + 1];
+                            DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? false : bits[TileX + 1, TileY + 1];
+                            break;
 
-                            case EdgeBehavior.Wrap:
-                                Left = bits[(TileX + boundsX - 1) % boundsX, TileY];
-                                Right = bits[(TileX + 1) % boundsX, TileY];
-                                Up = bits[TileX, (TileY + boundsY - 1) % boundsY];
-                                Down = bits[TileX, (TileY + 1) % boundsY];
+                        case EdgeBehavior.Wrap:
+                            Left = bits[(TileX + boundsX - 1) % boundsX, TileY];
+                            Right = bits[(TileX + 1) % boundsX, TileY];
+                            Up = bits[TileX, (TileY + boundsY - 1) % boundsY];
+                            Down = bits[TileX, (TileY + 1) % boundsY];
 
-                                UpLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + boundsY - 1) % boundsY];
-                                UpRight = bits[(TileX + 1) % boundsX, (TileY + boundsY - 1) % boundsY];
-                                DownLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + 1) % boundsY];
-                                DownRight = bits[(TileX + 1) % boundsX, (TileY + 1) % boundsY];
-                                break;
+                            UpLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + boundsY - 1) % boundsY];
+                            UpRight = bits[(TileX + 1) % boundsX, (TileY + boundsY - 1) % boundsY];
+                            DownLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + 1) % boundsY];
+                            DownRight = bits[(TileX + 1) % boundsX, (TileY + 1) % boundsY];
+                            break;
                         }
 
                         int tile = tileDecider();
@@ -69,58 +62,53 @@ namespace Monocle
         }
 
         /*
-            The "mask" will also be used for tile checks! 
+            The "mask" will also be used for tile checks!
             A tile is solid if bits[x, y] OR mask[x, y] is solid
         */
-        public static int[,] Tile(bool[,] bits, bool[,] mask, Func<int> tileDecider, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges)
-        {
+        public static int[,] Tile(bool[,] bits, bool[,] mask, Func<int> tileDecider, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges) {
             int boundsX = bits.GetLength(0);
             int boundsY = bits.GetLength(1);
             int[,] tiles = new int[boundsX, boundsY];
 
-            for (TileX = 0; TileX < boundsX; TileX++)
-            {
-                for (TileY = 0; TileY < boundsY; TileY++)
-                {
-                    if (bits[TileX, TileY])
-                    {
-                        switch (edges)
-                        {
-                            case EdgeBehavior.True:
-                                Left = TileX == 0 ? true : bits[TileX - 1, TileY] || mask[TileX - 1, TileY];
-                                Right = TileX == boundsX - 1 ? true : bits[TileX + 1, TileY] || mask[TileX + 1, TileY];
-                                Up = TileY == 0 ? true : bits[TileX, TileY - 1] || mask[TileX, TileY - 1];
-                                Down = TileY == boundsY - 1 ? true : bits[TileX, TileY + 1] || mask[TileX, TileY + 1];
+            for (TileX = 0; TileX < boundsX; TileX++) {
+                for (TileY = 0; TileY < boundsY; TileY++) {
+                    if (bits[TileX, TileY]) {
+                        switch (edges) {
+                        case EdgeBehavior.True:
+                            Left = TileX == 0 ? true : bits[TileX - 1, TileY] || mask[TileX - 1, TileY];
+                            Right = TileX == boundsX - 1 ? true : bits[TileX + 1, TileY] || mask[TileX + 1, TileY];
+                            Up = TileY == 0 ? true : bits[TileX, TileY - 1] || mask[TileX, TileY - 1];
+                            Down = TileY == boundsY - 1 ? true : bits[TileX, TileY + 1] || mask[TileX, TileY + 1];
 
-                                UpLeft = (TileX == 0 || TileY == 0) ? true : bits[TileX - 1, TileY - 1] || mask[TileX - 1, TileY - 1];
-                                UpRight = (TileX == boundsX - 1 || TileY == 0) ? true : bits[TileX + 1, TileY - 1] || mask[TileX + 1, TileY - 1];
-                                DownLeft = (TileX == 0 || TileY == boundsY - 1) ? true : bits[TileX - 1, TileY + 1] || mask[TileX - 1, TileY + 1];
-                                DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? true : bits[TileX + 1, TileY + 1] || mask[TileX + 1, TileY + 1];
-                                break;
+                            UpLeft = (TileX == 0 || TileY == 0) ? true : bits[TileX - 1, TileY - 1] || mask[TileX - 1, TileY - 1];
+                            UpRight = (TileX == boundsX - 1 || TileY == 0) ? true : bits[TileX + 1, TileY - 1] || mask[TileX + 1, TileY - 1];
+                            DownLeft = (TileX == 0 || TileY == boundsY - 1) ? true : bits[TileX - 1, TileY + 1] || mask[TileX - 1, TileY + 1];
+                            DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? true : bits[TileX + 1, TileY + 1] || mask[TileX + 1, TileY + 1];
+                            break;
 
-                            case EdgeBehavior.False:
-                                Left = TileX == 0 ? false : bits[TileX - 1, TileY] || mask[TileX - 1, TileY];
-                                Right = TileX == boundsX - 1 ? false : bits[TileX + 1, TileY] || mask[TileX + 1, TileY];
-                                Up = TileY == 0 ? false : bits[TileX, TileY - 1] || mask[TileX, TileY - 1];
-                                Down = TileY == boundsY - 1 ? false : bits[TileX, TileY + 1] || mask[TileX, TileY + 1];
+                        case EdgeBehavior.False:
+                            Left = TileX == 0 ? false : bits[TileX - 1, TileY] || mask[TileX - 1, TileY];
+                            Right = TileX == boundsX - 1 ? false : bits[TileX + 1, TileY] || mask[TileX + 1, TileY];
+                            Up = TileY == 0 ? false : bits[TileX, TileY - 1] || mask[TileX, TileY - 1];
+                            Down = TileY == boundsY - 1 ? false : bits[TileX, TileY + 1] || mask[TileX, TileY + 1];
 
-                                UpLeft = (TileX == 0 || TileY == 0) ? false : bits[TileX - 1, TileY - 1] || mask[TileX - 1, TileY - 1];
-                                UpRight = (TileX == boundsX - 1 || TileY == 0) ? false : bits[TileX + 1, TileY - 1] || mask[TileX + 1, TileY - 1];
-                                DownLeft = (TileX == 0 || TileY == boundsY - 1) ? false : bits[TileX - 1, TileY + 1] || mask[TileX - 1, TileY + 1];
-                                DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? false : bits[TileX + 1, TileY + 1] || mask[TileX + 1, TileY + 1];
-                                break;
+                            UpLeft = (TileX == 0 || TileY == 0) ? false : bits[TileX - 1, TileY - 1] || mask[TileX - 1, TileY - 1];
+                            UpRight = (TileX == boundsX - 1 || TileY == 0) ? false : bits[TileX + 1, TileY - 1] || mask[TileX + 1, TileY - 1];
+                            DownLeft = (TileX == 0 || TileY == boundsY - 1) ? false : bits[TileX - 1, TileY + 1] || mask[TileX - 1, TileY + 1];
+                            DownRight = (TileX == boundsX - 1 || TileY == boundsY - 1) ? false : bits[TileX + 1, TileY + 1] || mask[TileX + 1, TileY + 1];
+                            break;
 
-                            case EdgeBehavior.Wrap:
-                                Left = bits[(TileX + boundsX - 1) % boundsX, TileY] || mask[(TileX + boundsX - 1) % boundsX, TileY];
-                                Right = bits[(TileX + 1) % boundsX, TileY] || mask[(TileX + 1) % boundsX, TileY];
-                                Up = bits[TileX, (TileY + boundsY - 1) % boundsY] || mask[TileX, (TileY + boundsY - 1) % boundsY];
-                                Down = bits[TileX, (TileY + 1) % boundsY] || mask[TileX, (TileY + 1) % boundsY];
+                        case EdgeBehavior.Wrap:
+                            Left = bits[(TileX + boundsX - 1) % boundsX, TileY] || mask[(TileX + boundsX - 1) % boundsX, TileY];
+                            Right = bits[(TileX + 1) % boundsX, TileY] || mask[(TileX + 1) % boundsX, TileY];
+                            Up = bits[TileX, (TileY + boundsY - 1) % boundsY] || mask[TileX, (TileY + boundsY - 1) % boundsY];
+                            Down = bits[TileX, (TileY + 1) % boundsY] || mask[TileX, (TileY + 1) % boundsY];
 
-                                UpLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + boundsY - 1) % boundsY] || mask[(TileX + boundsX - 1) % boundsX, (TileY + boundsY - 1) % boundsY];
-                                UpRight = bits[(TileX + 1) % boundsX, (TileY + boundsY - 1) % boundsY] || mask[(TileX + 1) % boundsX, (TileY + boundsY - 1) % boundsY];
-                                DownLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + 1) % boundsY] || mask[(TileX + boundsX - 1) % boundsX, (TileY + 1) % boundsY];
-                                DownRight = bits[(TileX + 1) % boundsX, (TileY + 1) % boundsY] || mask[(TileX + 1) % boundsX, (TileY + 1) % boundsY];
-                                break;
+                            UpLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + boundsY - 1) % boundsY] || mask[(TileX + boundsX - 1) % boundsX, (TileY + boundsY - 1) % boundsY];
+                            UpRight = bits[(TileX + 1) % boundsX, (TileY + boundsY - 1) % boundsY] || mask[(TileX + 1) % boundsX, (TileY + boundsY - 1) % boundsY];
+                            DownLeft = bits[(TileX + boundsX - 1) % boundsX, (TileY + 1) % boundsY] || mask[(TileX + boundsX - 1) % boundsX, (TileY + 1) % boundsY];
+                            DownRight = bits[(TileX + 1) % boundsX, (TileY + 1) % boundsY] || mask[(TileX + 1) % boundsX, (TileY + 1) % boundsY];
+                            break;
                         }
 
                         int tile = tileDecider();
@@ -133,13 +121,11 @@ namespace Monocle
             return tiles;
         }
 
-        public static int[,] Tile(bool[,] bits, AutotileData autotileData, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges)
-        {
+        public static int[,] Tile(bool[,] bits, AutotileData autotileData, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges) {
             return Tile(bits, autotileData.TileHandler, tileOutput, tileWidth, tileHeight, edges);
         }
 
-        public static int[,] Tile(bool[,] bits, bool[,] mask, AutotileData autotileData, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges)
-        {
+        public static int[,] Tile(bool[,] bits, bool[,] mask, AutotileData autotileData, Action<int> tileOutput, int tileWidth, int tileHeight, EdgeBehavior edges) {
             return Tile(bits, mask, autotileData.TileHandler, tileOutput, tileWidth, tileHeight, edges);
         }
 
@@ -155,8 +141,7 @@ namespace Monocle
         public static bool DownRight { get; private set; }
     }
 
-    public class AutotileData
-    {
+    public class AutotileData {
         public int[] Center;
         public int[] Single;
         public int[] SingleHorizontalLeft;
@@ -178,8 +163,7 @@ namespace Monocle
         public int[] InsideBottomLeft;
         public int[] InsideBottomRight;
 
-        public AutotileData(XmlElement xml)
-        {
+        public AutotileData(XmlElement xml) {
             Center = Calc.ReadCSVInt(xml.ChildText("Center", ""));
             Single = Calc.ReadCSVInt(xml.ChildText("Single", ""));
 
@@ -207,13 +191,11 @@ namespace Monocle
             InsideBottomRight = Calc.ReadCSVInt(xml.ChildText("InsideBottomRight", ""));
         }
 
-        public int TileHandler()
-        {
+        public int TileHandler() {
             if (Tiler.Left && Tiler.Right && Tiler.Up && Tiler.Down && Tiler.UpLeft && Tiler.UpRight && Tiler.DownLeft && Tiler.DownRight)
                 return GetTileID(Center);
 
-            else if (!Tiler.Up && !Tiler.Down)
-            {
+            else if (!Tiler.Up && !Tiler.Down) {
                 if (Tiler.Left && Tiler.Right)
                     return GetTileID(SingleHorizontalCenter);
                 else if (!Tiler.Left && !Tiler.Right)
@@ -222,18 +204,14 @@ namespace Monocle
                     return GetTileID(SingleHorizontalRight);
                 else
                     return GetTileID(SingleHorizontalLeft);
-            }
-            else if (!Tiler.Left && !Tiler.Right)
-            {
+            } else if (!Tiler.Left && !Tiler.Right) {
                 if (Tiler.Up && Tiler.Down)
                     return GetTileID(SingleVerticalCenter);
                 else if (Tiler.Down)
                     return GetTileID(SingleVerticalTop);
                 else
                     return GetTileID(SingleVerticalBottom);
-            }
-
-            else if (Tiler.Up && Tiler.Down && Tiler.Left && !Tiler.Right)
+            } else if (Tiler.Up && Tiler.Down && Tiler.Left && !Tiler.Right)
                 return GetTileID(Right);
             else if (Tiler.Up && Tiler.Down && !Tiler.Left && Tiler.Right)
                 return GetTileID(Left);
@@ -262,8 +240,7 @@ namespace Monocle
                 return GetTileID(Top);
         }
 
-        private int GetTileID(int[] choices)
-        {
+        private int GetTileID(int[] choices) {
             if (choices.Length == 0)
                 return -1;
             else if (choices.Length == 1)

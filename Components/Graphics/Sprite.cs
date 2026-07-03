@@ -335,7 +335,7 @@ namespace Monocle {
             CurrentAnimationID = "";
         }
 
-        #endregion     
+        #endregion
 
         #region Properties
 

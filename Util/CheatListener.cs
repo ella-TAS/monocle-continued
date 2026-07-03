@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Monocle
-{
+namespace Monocle {
     /// <summary>
     /// An invisible entity that listens for input sequences and triggers registered cheat codes.
     /// Monitors input patterns and executes associated actions when cheat sequences are detected.
     /// </summary>
-    public class CheatListener : Entity
-    {
+    public class CheatListener : Entity {
         /// <summary>
         /// The current accumulated input string being tracked for cheat detection.
         /// </summary>
         public string CurrentInput;
-        
+
         /// <summary>
         /// Whether to log input and cheat activation to the console for debugging.
         /// </summary>
@@ -27,8 +25,7 @@ namespace Monocle
         /// Initializes a new CheatListener with no registered inputs or cheats.
         /// The entity is set to invisible since it only processes input without rendering.
         /// </summary>
-        public CheatListener()
-        {
+        public CheatListener() {
             Visible = false;
             CurrentInput = "";
 
@@ -40,32 +37,26 @@ namespace Monocle
         /// Updates the cheat listener by checking for input and processing cheat codes.
         /// Monitors registered input functions and maintains the input buffer for cheat detection.
         /// </summary>
-        public override void Update()
-        {
+        public override void Update() {
             //Detect input
             bool changed = false;
-            foreach (var input in inputs)
-            {
-                if (input.Item2())
-                {
+            foreach (var input in inputs) {
+                if (input.Item2()) {
                     CurrentInput += input.Item1;
                     changed = true;
                 }
             }
 
             //Handle changes
-            if (changed)
-            {
+            if (changed) {
                 if (CurrentInput.Length > maxInput)
                     CurrentInput = CurrentInput.Substring(CurrentInput.Length - maxInput);
 
                 if (Logging)
                     Calc.Log(CurrentInput);
 
-                foreach (var cheat in cheats)
-                {
-                    if (CurrentInput.Contains(cheat.Item1))
-                    {
+                foreach (var cheat in cheats) {
+                    if (CurrentInput.Contains(cheat.Item1)) {
                         CurrentInput = "";
                         if (cheat.Item2 != null)
                             cheat.Item2();
@@ -86,8 +77,7 @@ namespace Monocle
         /// </summary>
         /// <param name="code">The input sequence that triggers this cheat.</param>
         /// <param name="onEntered">Optional action to execute when the cheat code is entered.</param>
-        public void AddCheat(string code, Action onEntered = null)
-        {
+        public void AddCheat(string code, Action onEntered = null) {
             cheats.Add(new Tuple<string, Action>(code, onEntered));
             maxInput = Math.Max(code.Length, maxInput);
         }
@@ -98,8 +88,7 @@ namespace Monocle
         /// </summary>
         /// <param name="id">The character to add to the input string when the checker returns true.</param>
         /// <param name="checker">Function that returns true when this input is detected.</param>
-        public void AddInput(char id, Func<bool> checker)
-        {
+        public void AddInput(char id, Func<bool> checker) {
             inputs.Add(new Tuple<char, Func<bool>>(id, checker));
         }
     }

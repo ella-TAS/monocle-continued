@@ -3,15 +3,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace Monocle
-{
+namespace Monocle {
     /// <summary>
     /// Static utility class for 2D drawing operations using MonoGame's SpriteBatch.
     /// Provides methods for drawing basic shapes, lines, and textures with modern C# patterns.
     /// Modernized for .NET 9 with nullable reference types and enhanced documentation.
     /// </summary>
-    public static class Draw
-    {
+    public static class Draw {
         /// <summary>
         /// The currently-rendering Renderer instance. Set by the active renderer during rendering.
         /// </summary>
@@ -37,7 +35,7 @@ namespace Monocle
         public static MTexture Particle { get; set; } = null!;
 
         /// <summary>
-        /// A subtexture used to draw rectangles and lines. 
+        /// A subtexture used to draw rectangles and lines.
         /// Will be generated at startup, but you can replace this with a subtexture from your Atlas to reduce texture swaps.
         /// Use the top left pixel of your Particle Subtexture if you replace it!
         /// Should be a 1x1 white pixel for shape drawing.
@@ -53,12 +51,11 @@ namespace Monocle
         /// <param name="graphicsDevice">The graphics device to create the SpriteBatch with.</param>
         /// <exception cref="ArgumentNullException">Thrown when graphicsDevice is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown when Engine.Instance is null.</exception>
-        internal static void Initialize(GraphicsDevice graphicsDevice)
-        {
+        internal static void Initialize(GraphicsDevice graphicsDevice) {
             ArgumentNullException.ThrowIfNull(graphicsDevice);
             if (Engine.Instance?.Content == null)
                 throw new InvalidOperationException("Engine.Instance or Content is not initialized.");
-            
+
             SpriteBatch = new SpriteBatch(graphicsDevice);
             DefaultFont = Engine.Instance.Content.Load<SpriteFont>(@"Monocle\MonocleDefault");
             UseDebugPixelTexture();
@@ -68,8 +65,7 @@ namespace Monocle
         /// Creates and sets up the default debug pixel textures for drawing operations.
         /// Creates a 2x2 white texture and extracts 1x1 and 2x2 sub-textures for shapes and particles.
         /// </summary>
-        public static void UseDebugPixelTexture()
-        {
+        public static void UseDebugPixelTexture() {
             var texture = new MTexture(2, 2, Color.White);
             Pixel = new MTexture(texture, 0, 0, 1, 1);
             Particle = new MTexture(texture, 0, 0, 2, 2);
@@ -80,10 +76,8 @@ namespace Monocle
         /// </summary>
         /// <param name="at">The position to draw the point at.</param>
         /// <param name="color">The color of the point.</param>
-        public static void Point(Vector2 at, Color color)
-        {
-            if (Pixel.Texture != null)
-            {
+        public static void Point(Vector2 at, Color color) {
+            if (Pixel.Texture != null) {
                 SpriteBatch.Draw(Pixel.Texture, at, Pixel.ClipRect, color, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             }
         }
@@ -96,8 +90,7 @@ namespace Monocle
         /// <param name="start">The starting point of the line.</param>
         /// <param name="end">The ending point of the line.</param>
         /// <param name="color">The color of the line.</param>
-        public static void Line(Vector2 start, Vector2 end, Color color)
-        {
+        public static void Line(Vector2 start, Vector2 end, Color color) {
             LineAngle(start, Calc.Angle(start, end), Vector2.Distance(start, end), color);
         }
 
@@ -109,8 +102,7 @@ namespace Monocle
         /// <param name="color">The color of the line.</param>
         /// <param name="thickness">The thickness of the line in pixels.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when thickness is negative.</exception>
-        public static void Line(Vector2 start, Vector2 end, Color color, float thickness)
-        {
+        public static void Line(Vector2 start, Vector2 end, Color color, float thickness) {
             ArgumentOutOfRangeException.ThrowIfNegative(thickness);
             LineAngle(start, Calc.Angle(start, end), Vector2.Distance(start, end), color, thickness);
         }
@@ -123,8 +115,7 @@ namespace Monocle
         /// <param name="x2">The x coordinate of the ending point.</param>
         /// <param name="y2">The y coordinate of the ending point.</param>
         /// <param name="color">The color of the line.</param>
-        public static void Line(float x1, float y1, float x2, float y2, Color color)
-        {
+        public static void Line(float x1, float y1, float x2, float y2, Color color) {
             Line(new Vector2(x1, y1), new Vector2(x2, y2), color);
         }
 
@@ -140,11 +131,9 @@ namespace Monocle
         /// <param name="length">The length of the line in pixels.</param>
         /// <param name="color">The color of the line.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when length is negative.</exception>
-        public static void LineAngle(Vector2 start, float angle, float length, Color color)
-        {
+        public static void LineAngle(Vector2 start, float angle, float length, Color color) {
             ArgumentOutOfRangeException.ThrowIfNegative(length);
-            if (Pixel.Texture != null)
-            {
+            if (Pixel.Texture != null) {
                 SpriteBatch.Draw(Pixel.Texture, start, Pixel.ClipRect, color, angle, Vector2.Zero, new Vector2(length, 1), SpriteEffects.None, 0);
             }
         }
@@ -158,12 +147,10 @@ namespace Monocle
         /// <param name="color">The color of the line.</param>
         /// <param name="thickness">The thickness of the line in pixels.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when length or thickness are negative.</exception>
-        public static void LineAngle(Vector2 start, float angle, float length, Color color, float thickness)
-        {
+        public static void LineAngle(Vector2 start, float angle, float length, Color color, float thickness) {
             ArgumentOutOfRangeException.ThrowIfNegative(length);
             ArgumentOutOfRangeException.ThrowIfNegative(thickness);
-            if (Pixel.Texture != null)
-            {
+            if (Pixel.Texture != null) {
                 SpriteBatch.Draw(Pixel.Texture, start, Pixel.ClipRect, color, angle, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
             }
         }
@@ -177,8 +164,7 @@ namespace Monocle
         /// <param name="length">The length of the line in pixels.</param>
         /// <param name="color">The color of the line.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when length is negative.</exception>
-        public static void LineAngle(float startX, float startY, float angle, float length, Color color)
-        {
+        public static void LineAngle(float startX, float startY, float angle, float length, Color color) {
             LineAngle(new Vector2(startX, startY), angle, length, color);
         }
 
@@ -194,15 +180,13 @@ namespace Monocle
         /// <param name="color">The color of the circle outline.</param>
         /// <param name="resolution">The number of line segments to use for drawing the circle. Higher values create smoother circles.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when radius is negative or resolution is not positive.</exception>
-        public static void Circle(Vector2 position, float radius, Color color, int resolution)
-        {
+        public static void Circle(Vector2 position, float radius, Color color, int resolution) {
             ArgumentOutOfRangeException.ThrowIfNegative(radius);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(resolution);
-            
+
             Vector2 last = Vector2.UnitX * radius;
             Vector2 lastP = last.Perpendicular();
-            for (int i = 1; i <= resolution; i++)
-            {
+            for (int i = 1; i <= resolution; i++) {
                 Vector2 at = Calc.AngleToVector(i * MathHelper.PiOver2 / resolution, radius);
                 Vector2 atP = at.Perpendicular();
 
@@ -225,8 +209,7 @@ namespace Monocle
         /// <param name="color">The color of the circle outline.</param>
         /// <param name="resolution">The number of line segments to use for drawing the circle.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when radius is negative or resolution is not positive.</exception>
-        public static void Circle(float x, float y, float radius, Color color, int resolution)
-        {
+        public static void Circle(float x, float y, float radius, Color color, int resolution) {
             Circle(new Vector2(x, y), radius, color, resolution);
         }
 
@@ -239,16 +222,14 @@ namespace Monocle
         /// <param name="thickness">The thickness of the circle outline.</param>
         /// <param name="resolution">The number of line segments to use for drawing the circle.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when radius or thickness are negative, or resolution is not positive.</exception>
-        public static void Circle(Vector2 position, float radius, Color color, float thickness, int resolution)
-        {
+        public static void Circle(Vector2 position, float radius, Color color, float thickness, int resolution) {
             ArgumentOutOfRangeException.ThrowIfNegative(radius);
             ArgumentOutOfRangeException.ThrowIfNegative(thickness);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(resolution);
-            
+
             Vector2 last = Vector2.UnitX * radius;
             Vector2 lastP = last.Perpendicular();
-            for (int i = 1; i <= resolution; i++)
-            {
+            for (int i = 1; i <= resolution; i++) {
                 Vector2 at = Calc.AngleToVector(i * MathHelper.PiOver2 / resolution, radius);
                 Vector2 atP = at.Perpendicular();
 
@@ -272,8 +253,7 @@ namespace Monocle
         /// <param name="thickness">The thickness of the circle outline.</param>
         /// <param name="resolution">The number of line segments to use for drawing the circle.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when radius or thickness are negative, or resolution is not positive.</exception>
-        public static void Circle(float x, float y, float radius, Color color, float thickness, int resolution)
-        {
+        public static void Circle(float x, float y, float radius, Color color, float thickness, int resolution) {
             Circle(new Vector2(x, y), radius, color, thickness, resolution);
         }
 
@@ -290,34 +270,29 @@ namespace Monocle
         /// <param name="height">The height of the rectangle.</param>
         /// <param name="color">The color to fill the rectangle with.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when width or height are negative.</exception>
-        public static void Rect(float x, float y, float width, float height, Color color)
-        {
+        public static void Rect(float x, float y, float width, float height, Color color) {
             ArgumentOutOfRangeException.ThrowIfNegative(width);
             ArgumentOutOfRangeException.ThrowIfNegative(height);
-            
-            if (Pixel.Texture != null)
-            {
-                rect.X = (int)x;
-                rect.Y = (int)y;
-                rect.Width = (int)width;
-                rect.Height = (int)height;
+
+            if (Pixel.Texture != null) {
+                rect.X = (int) x;
+                rect.Y = (int) y;
+                rect.Width = (int) width;
+                rect.Height = (int) height;
                 SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
             }
         }
 
-        public static void Rect(Vector2 position, float width, float height, Color color)
-        {
+        public static void Rect(Vector2 position, float width, float height, Color color) {
             Rect(position.X, position.Y, width, height, color);
         }
 
-        public static void Rect(Rectangle rect, Color color)
-        {
+        public static void Rect(Rectangle rect, Color color) {
             Draw.rect = rect;
             SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
         }
 
-        public static void Rect(Collider collider, Color color)
-        {
+        public static void Rect(Collider collider, Color color) {
             Rect(collider.AbsoluteLeft, collider.AbsoluteTop, collider.Width, collider.Height, color);
         }
 
@@ -325,42 +300,38 @@ namespace Monocle
 
         #region Hollow Rect
 
-        public static void HollowRect(float x, float y, float width, float height, Color color)
-        {
-            rect.X = (int)x;
-            rect.Y = (int)y;
-            rect.Width = (int)width;
+        public static void HollowRect(float x, float y, float width, float height, Color color) {
+            rect.X = (int) x;
+            rect.Y = (int) y;
+            rect.Width = (int) width;
             rect.Height = 1;
 
             SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
 
-            rect.Y += (int)height - 1;
+            rect.Y += (int) height - 1;
 
             SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
 
-            rect.Y -= (int)height - 1;
+            rect.Y -= (int) height - 1;
             rect.Width = 1;
-            rect.Height = (int)height;
+            rect.Height = (int) height;
 
             SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
 
-            rect.X += (int)width - 1;
+            rect.X += (int) width - 1;
 
             SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
         }
 
-        public static void HollowRect(Vector2 position, float width, float height, Color color)
-        {
+        public static void HollowRect(Vector2 position, float width, float height, Color color) {
             HollowRect(position.X, position.Y, width, height, color);
         }
 
-        public static void HollowRect(Rectangle rect, Color color)
-        {
+        public static void HollowRect(Rectangle rect, Color color) {
             HollowRect(rect.X, rect.Y, rect.Width, rect.Height, color);
         }
 
-        public static void HollowRect(Collider collider, Color color)
-        {
+        public static void HollowRect(Collider collider, Color color) {
             HollowRect(collider.AbsoluteLeft, collider.AbsoluteTop, collider.Width, collider.Height, color);
         }
 
@@ -368,18 +339,15 @@ namespace Monocle
 
         #region Text
 
-        public static void Text(SpriteFont font, string text, Vector2 position, Color color)
-        {
+        public static void Text(SpriteFont font, string text, Vector2 position, Color color) {
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color);
         }
 
-        public static void Text(SpriteFont font, string text, Vector2 position, Color color, Vector2 origin, Vector2 scale, float rotation)
-        {
+        public static void Text(SpriteFont font, string text, Vector2 position, Color color, Vector2 origin, Vector2 scale, float rotation) {
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, rotation, origin, scale, SpriteEffects.None, 0);
         }
 
-        public static void TextJustified(SpriteFont font, string text, Vector2 position, Color color, Vector2 justify)
-        {
+        public static void TextJustified(SpriteFont font, string text, Vector2 position, Color color, Vector2 justify) {
             Vector2 origin = font.MeasureString(text);
             origin.X *= justify.X;
             origin.Y *= justify.Y;
@@ -387,36 +355,30 @@ namespace Monocle
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
-        public static void TextJustified(SpriteFont font, string text, Vector2 position, Color color, float scale, Vector2 justify)
-        {
+        public static void TextJustified(SpriteFont font, string text, Vector2 position, Color color, float scale, Vector2 justify) {
             Vector2 origin = font.MeasureString(text);
             origin.X *= justify.X;
             origin.Y *= justify.Y;
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
-        public static void TextCentered(SpriteFont font, string text, Vector2 position)
-        {
+        public static void TextCentered(SpriteFont font, string text, Vector2 position) {
             Text(font, text, position - font.MeasureString(text) * .5f, Color.White);
         }
 
-        public static void TextCentered(SpriteFont font, string text, Vector2 position, Color color)
-        {
+        public static void TextCentered(SpriteFont font, string text, Vector2 position, Color color) {
             Text(font, text, position - font.MeasureString(text) * .5f, color);
         }
 
-        public static void TextCentered(SpriteFont font, string text, Vector2 position, Color color, float scale)
-        {
+        public static void TextCentered(SpriteFont font, string text, Vector2 position, Color color, float scale) {
             Text(font, text, position, color, font.MeasureString(text) * .5f, Vector2.One * scale, 0);
         }
 
-        public static void TextCentered(SpriteFont font, string text, Vector2 position, Color color, float scale, float rotation)
-        {
+        public static void TextCentered(SpriteFont font, string text, Vector2 position, Color color, float scale, float rotation) {
             Text(font, text, position, color, font.MeasureString(text) * .5f, Vector2.One * scale, rotation);
         }
 
-        public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, float scale)
-        {
+        public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, float scale) {
             Vector2 origin = font.MeasureString(text) / 2;
 
             for (int i = -1; i < 2; i++)
@@ -426,8 +388,7 @@ namespace Monocle
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
-        public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor)
-        {
+        public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor) {
             Vector2 origin = font.MeasureString(text) / 2;
 
             for (int i = -1; i < 2; i++)
@@ -437,8 +398,7 @@ namespace Monocle
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
-        public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, float scale)
-        {
+        public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, float scale) {
             Vector2 origin = font.MeasureString(text) / 2;
 
             for (int i = -1; i < 2; i++)
@@ -448,8 +408,7 @@ namespace Monocle
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
-        public static void OutlineTextJustify(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, Vector2 justify)
-        {
+        public static void OutlineTextJustify(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, Vector2 justify) {
             Vector2 origin = font.MeasureString(text) * justify;
 
             for (int i = -1; i < 2; i++)
@@ -459,8 +418,7 @@ namespace Monocle
             Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
-        public static void OutlineTextJustify(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, Vector2 justify, float scale)
-        {
+        public static void OutlineTextJustify(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, Vector2 justify, float scale) {
             Vector2 origin = font.MeasureString(text) * justify;
 
             for (int i = -1; i < 2; i++)
@@ -474,16 +432,14 @@ namespace Monocle
 
         #region Weird Textures
 
-        public static void SineTextureH(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8)
-        {
+        public static void SineTextureH(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8) {
             position = Calc.Floor(position);
             Rectangle clip = tex.ClipRect;
             clip.Width = sliceSize;
 
             int num = 0;
-            while (clip.X < tex.ClipRect.X + tex.ClipRect.Width)
-            {
-                Vector2 add = new Vector2(sliceSize * num, (float)Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude));
+            while (clip.X < tex.ClipRect.X + tex.ClipRect.Width) {
+                Vector2 add = new Vector2(sliceSize * num, (float) Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude));
                 Draw.SpriteBatch.Draw(tex.Texture, position, clip, color, rotation, origin - add, scale, effects, 0);
 
                 num++;
@@ -492,16 +448,14 @@ namespace Monocle
             }
         }
 
-        public static void SineTextureV(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8)
-        {
+        public static void SineTextureV(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8) {
             position = Calc.Floor(position);
             Rectangle clip = tex.ClipRect;
             clip.Height = sliceSize;
 
             int num = 0;
-            while (clip.Y < tex.ClipRect.Y + tex.ClipRect.Height)
-            {
-                Vector2 add = new Vector2((float)Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude), sliceSize * num);
+            while (clip.Y < tex.ClipRect.Y + tex.ClipRect.Height) {
+                Vector2 add = new Vector2((float) Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude), sliceSize * num);
                 Draw.SpriteBatch.Draw(tex.Texture, position, clip, color, rotation, origin - add, scale, effects, 0);
 
                 num++;
@@ -510,20 +464,18 @@ namespace Monocle
             }
         }
 
-        public static void TextureBannerV(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8)
-        {
+        public static void TextureBannerV(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8) {
             position = Calc.Floor(position);
             Rectangle clip = tex.ClipRect;
             clip.Height = sliceSize;
 
             int num = 0;
-            while (clip.Y < tex.ClipRect.Y + tex.ClipRect.Height)
-            {
-                float fade = (clip.Y - tex.ClipRect.Y) / (float)tex.ClipRect.Height;
-                clip.Height = (int)MathHelper.Lerp(sliceSize, 1, fade);
+            while (clip.Y < tex.ClipRect.Y + tex.ClipRect.Height) {
+                float fade = (clip.Y - tex.ClipRect.Y) / (float) tex.ClipRect.Height;
+                clip.Height = (int) MathHelper.Lerp(sliceSize, 1, fade);
                 clip.Height = Math.Min(sliceSize, tex.ClipRect.Y + tex.ClipRect.Height - clip.Y);
 
-                Vector2 add = new Vector2((float)Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude * fade), clip.Y - tex.ClipRect.Y);
+                Vector2 add = new Vector2((float) Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude * fade), clip.Y - tex.ClipRect.Y);
                 Draw.SpriteBatch.Draw(tex.Texture, position, clip, color, rotation, origin - add, scale, effects, 0);
 
                 num++;

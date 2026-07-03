@@ -7,9 +7,9 @@ namespace Monocle {
 
         private Collider collider;
 
-        public CollidableComponent(bool active, bool visible, bool colllidable)
+        public CollidableComponent(bool active, bool visible, bool collidable)
             : base(active, visible) {
-            Collidable = colllidable;
+            Collidable = collidable;
         }
 
         public override void Added(Entity entity) {

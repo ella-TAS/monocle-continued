@@ -3,10 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Monocle
-{
-    public class Tween : Component
-    {
+namespace Monocle {
+    public class Tween : Component {
         public enum TweenMode { Persist, Oneshot, Looping, YoyoOneshot, YoyoLooping };
 
         public Ease.Easer Easer;
@@ -28,8 +26,7 @@ namespace Monocle
 
         private static Stack<Tween> cached = new Stack<Tween>();
 
-        public static Tween Create(TweenMode mode, Ease.Easer easer = null, float duration = 1f, bool start = false)
-        {
+        public static Tween Create(TweenMode mode, Ease.Easer easer = null, float duration = 1f, bool start = false) {
             Tween tween;
             if (cached.Count == 0)
                 tween = new Tween();
@@ -41,8 +38,7 @@ namespace Monocle
             return tween;
         }
 
-        public static Tween Set(Entity entity, TweenMode tweenMode, float duration, Ease.Easer easer, Action<Tween> onUpdate, Action<Tween> onComplete = null)
-        {
+        public static Tween Set(Entity entity, TweenMode tweenMode, float duration, Ease.Easer easer, Action<Tween> onUpdate, Action<Tween> onComplete = null) {
             Tween tween = Tween.Create(tweenMode, easer, duration, true);
             tween.OnUpdate += onUpdate;
             tween.OnComplete += onComplete;
@@ -50,8 +46,7 @@ namespace Monocle
             return tween;
         }
 
-        public static Tween Position(Entity entity, Vector2 targetPosition, float duration, Ease.Easer easer, TweenMode tweenMode = TweenMode.Oneshot)
-        {
+        public static Tween Position(Entity entity, Vector2 targetPosition, float duration, Ease.Easer easer, TweenMode tweenMode = TweenMode.Oneshot) {
             Vector2 startPosition = entity.Position;
             Tween tween = Tween.Create(tweenMode, easer, duration, true);
             tween.OnUpdate = (t) => { entity.Position = Vector2.Lerp(startPosition, targetPosition, t.Eased); };
@@ -62,13 +57,11 @@ namespace Monocle
         #endregion
 
         private Tween()
-            : base(false, false)
-        {
+            : base(false, false) {
 
         }
 
-        private void Init(TweenMode mode, Ease.Easer easer, float duration, bool start)
-        {
+        private void Init(TweenMode mode, Ease.Easer easer, float duration, bool start) {
 #if DEBUG
             if (duration <= 0)
                 throw new Exception("Tween duration cannot be less than zero");
@@ -90,18 +83,16 @@ namespace Monocle
                 Start();
         }
 
-        public override void Removed(Entity entity)
-        {
+        public override void Removed(Entity entity) {
             base.Removed(entity);
             cached.Push(this);
         }
 
-        public override void Update()
-        {
+        public override void Update() {
             TimeLeft -= (UseRawDeltaTime ? Engine.RawDeltaTime : Engine.DeltaTime);
-            
+
             //Update the percentage and eased percentage
-            Percent = Math.Max(0, TimeLeft) / (float)Duration;
+            Percent = Math.Max(0, TimeLeft) / (float) Duration;
             if (!Reverse)
                 Percent = 1 - Percent;
             if (Easer != null)
@@ -114,55 +105,48 @@ namespace Monocle
                 OnUpdate(this);
 
             //When finished...
-            if (TimeLeft <= 0)
-            {
+            if (TimeLeft <= 0) {
                 TimeLeft = 0;
 
                 if (OnComplete != null)
                     OnComplete(this);
 
-                switch (Mode)
-                {
-                    case TweenMode.Persist:
-                        Active = false;
-                        break;
+                switch (Mode) {
+                case TweenMode.Persist:
+                    Active = false;
+                    break;
 
-                    case TweenMode.Oneshot:
+                case TweenMode.Oneshot:
+                    Active = false;
+                    RemoveSelf();
+                    break;
+
+                case TweenMode.Looping:
+                    Start(Reverse);
+                    break;
+
+                case TweenMode.YoyoOneshot:
+                    if (Reverse == startedReversed) {
+                        Start(!Reverse);
+                        startedReversed = !Reverse;
+                    } else {
                         Active = false;
                         RemoveSelf();
-                        break;
+                    }
+                    break;
 
-                    case TweenMode.Looping:
-                        Start(Reverse);
-                        break;
-
-                    case TweenMode.YoyoOneshot:
-                        if (Reverse == startedReversed)
-                        {
-                            Start(!Reverse);
-                            startedReversed = !Reverse;
-                        }
-                        else
-                        {
-                            Active = false;
-                            RemoveSelf();
-                        }
-                        break;
-
-                    case TweenMode.YoyoLooping:
-                        Start(!Reverse);
-                        break;
+                case TweenMode.YoyoLooping:
+                    Start(!Reverse);
+                    break;
                 }
             }
         }
 
-        public void Start()
-        {
+        public void Start() {
             Start(false);
         }
 
-        public void Start(bool reverse)
-        {
+        public void Start(bool reverse) {
             startedReversed = Reverse = reverse;
 
             TimeLeft = Duration;
@@ -174,8 +158,7 @@ namespace Monocle
                 OnStart(this);
         }
 
-        public void Start(float duration, bool reverse = false)
-        {
+        public void Start(float duration, bool reverse = false) {
 #if DEBUG
             if (duration <= 0)
                 throw new Exception("Tween duration cannot be <= 0");
@@ -185,27 +168,22 @@ namespace Monocle
             Start(reverse);
         }
 
-        public void Stop()
-        {
+        public void Stop() {
             Active = false;
         }
 
-        public void Reset()
-        {
+        public void Reset() {
             TimeLeft = Duration;
             Eased = Percent = Reverse ? 1 : 0;
         }
 
-        public IEnumerator Wait()
-        {
+        public IEnumerator Wait() {
             while (Active)
                 yield return 0;
         }
 
-        public float Inverted
-        {
-            get
-            {
+        public float Inverted {
+            get {
                 return 1f - Eased;
             }
         }
