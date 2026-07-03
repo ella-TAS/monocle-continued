@@ -220,7 +220,9 @@ namespace Monocle {
             IsFixedTimeStep = false;
             ExitOnEscapeKeypress = true;
 
+#if !BROWSER
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+#endif
             Graphics.ApplyChanges();
         }
 
@@ -295,11 +297,13 @@ namespace Monocle {
         }
 
         protected override void Initialize() {
+            Calc.ReleaseLog("Monocle", "Starting Game Engine");
+
             base.Initialize();
 
             MInput.Initialize();
             Tracker.Initialize();
-            Pooler = new Monocle.Pooler();
+            Pooler = new Pooler();
             Commands = new Commands();
         }
 
@@ -307,6 +311,8 @@ namespace Monocle {
             base.LoadContent();
 
             Monocle.Draw.Initialize(GraphicsDevice);
+
+            Calc.ReleaseLog("Monocle", "Content loaded");
         }
 
         protected override void Update(GameTime gameTime) {

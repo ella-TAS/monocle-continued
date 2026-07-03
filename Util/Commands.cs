@@ -91,7 +91,7 @@ namespace Monocle {
         internal void UpdateClosed() {
             if (!canOpen)
                 canOpen = true;
-            else if (MInput.Keyboard.Pressed(Keys.OemTilde, Keys.Oem8)) {
+            else if (MInput.Keyboard.Pressed(Keys.OemTilde, Keys.Oem8, Keys.F12)) {
                 Open = true;
                 currentState = Keyboard.GetState();
             }
@@ -135,7 +135,7 @@ namespace Monocle {
             if (key != Keys.Tab && key != Keys.LeftShift && key != Keys.RightShift && key != Keys.RightAlt && key != Keys.LeftAlt && key != Keys.RightControl && key != Keys.LeftControl)
                 tabIndex = -1;
 
-            if (key != Keys.OemTilde && key != Keys.Oem8 && key != Keys.Enter && repeatKey != key) {
+            if (key != Keys.OemTilde && key != Keys.Oem8 && key != Keys.F12 && key != Keys.Enter && repeatKey != key) {
                 repeatKey = key;
                 repeatCounter = 0;
             }
@@ -333,7 +333,6 @@ namespace Monocle {
             case Keys.F9:
             case Keys.F10:
             case Keys.F11:
-            case Keys.F12:
                 ExecuteFunctionKeyAction((int) (key - Keys.F1));
                 break;
 
@@ -342,6 +341,7 @@ namespace Monocle {
                     EnterCommand();
                 break;
 
+            case Keys.F12:
             case Keys.Oem8:
             case Keys.OemTilde:
                 Open = canOpen = false;
@@ -747,4 +747,3 @@ namespace Monocle {
         }
     }
 }
-

@@ -1,111 +1,163 @@
-﻿using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
+using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Xml;
 
 namespace Monocle {
+    /// <summary>
+    /// Save and Load objects to files.
+    /// Currently supported modes: Json, JsonObfuscated, XML.
+    /// Binary format is no longer supported due to a deprecation.
+    /// </summary>
     public static class SaveLoad {
-        public enum SerializeModes { Binary, XML };
-
-        #region Save
-
-        /// <summary>
-        /// Save an object to a file so you can load it later
-        /// </summary>
-        public static void SerializeToFile<T>(T obj, string filepath, SerializeModes mode) {
-            using (var fileStream = new FileStream(filepath, FileMode.Create)) {
-                //Serialize
-                if (mode == SerializeModes.Binary) {
-                    var bf = new BinaryFormatter();
-                    bf.Serialize(fileStream, obj);
-                } else if (mode == SerializeModes.XML) {
-                    var xs = new XmlSerializer(typeof(T));
-                    xs.Serialize(fileStream, obj);
-                }
-            }
+        public enum SerializeMode {
+            Json,
+            JsonObfuscated,
+            XML
         }
 
-        /// <summary>
-        /// Save an object to a file so you can load it later.
-        /// Will not crash if the save fails
-        /// </summary>
-        /// <returns>Whether the save succeeded</returns>
-        public static bool SafeSerializeToFile<T>(T obj, string filepath, SerializeModes mode) {
+        private static readonly JsonSerializerOptions JsonOptions = new() {
+            WriteIndented = true,
+            IncludeFields = true
+        };
+
+        // maybe different on a platform basis, works on linux/win
+        public static string GetSaveFolder(string folderName = "Saves")
+            => Path.Combine(AppContext.BaseDirectory, folderName);
+
+        public static string GetSavePath(string fileName, string folderName = "Saves")
+            => Path.Combine(GetSaveFolder(folderName), fileName);
+
+        private static void EnsureFolder(string folder) {
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+        }
+
+        public static void Save<T>(T data, string fileName, SerializeMode mode, string folderName = "Saves")
+            where T : class {
+            ArgumentNullException.ThrowIfNull(data);
+
+            string folder = GetSaveFolder(folderName);
+            string path = GetSavePath(fileName, folderName);
+            EnsureFolder(folder);
+
+            using FileStream stream = new FileStream(
+                path,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.None
+            );
+
+            switch (mode) {
+            case SerializeMode.Json:
+                JsonSerializer.Serialize(stream, data, JsonOptions);
+                break;
+
+            case SerializeMode.JsonObfuscated:
+                byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(data, JsonOptions);
+                foreach (byte b in bytes) {
+                    stream.WriteByte(ObfuscateByte(b));
+                }
+                break;
+
+            case SerializeMode.XML: {
+                    using var writer = XmlWriter.Create(stream, new XmlWriterSettings() {
+                        Indent = true
+                    });
+                    var serializer = new DataContractSerializer(typeof(T));
+                    serializer.WriteObject(writer, data);
+                    break;
+                }
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
+
+            Calc.Log($"[SaveLoad] File {folderName}/{fileName} saved");
+        }
+
+        public static bool SafeSave<T>(T data, string fileName, SerializeMode mode, string folderName = "Saves")
+            where T : class {
+#if DEBUG
+            Save(data, fileName, mode, folderName);
+            return true;
+#else
             try {
-                SerializeToFile<T>(obj, filepath, mode);
+                Save(data, fileName, mode, folderName);
                 return true;
-            } catch {
+            } catch (Exception e) {
+                ErrorLog.Write($"Exception while saving {folderName}/{fileName} in {mode} mode:\n" + e);
                 return false;
             }
+#endif
         }
 
-        #endregion
+        public static T Load<T>(string fileName, SerializeMode mode, string folderName = "Saves")
+                where T : class {
+            string path = GetSavePath(fileName, folderName);
 
-        #region Load
-
-        /// <summary>
-        /// Load an object that was previously serialized to a file
-        /// </summary>
-        public static T DeserializeFromFile<T>(string filepath, SerializeModes mode) {
-            T data;
-            using (var fileStream = File.OpenRead(filepath)) {
-
-                //Deserialize
-                if (mode == SerializeModes.Binary) {
-                    var bf = new BinaryFormatter();
-                    data = (T) bf.Deserialize(fileStream);
-                } else {
-                    var xs = new XmlSerializer(typeof(T));
-                    data = (T) xs.Deserialize(fileStream);
-                }
+            if (!File.Exists(path)) {
+                Calc.Log($"[SaveLoad] File {folderName}/{fileName} not found");
+                return null;
             }
 
-            return data;
-        }
+            using FileStream stream = new FileStream(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read
+            );
 
-        /// <summary>
-        /// Load an object that was previously serialized to a file
-        /// If the load fails or the file does not exist, default(T) will be returned
-        /// </summary>
-        public static T SafeDeserializeFromFile<T>(string filepath, SerializeModes mode, bool debugUnsafe = false) {
-            if (File.Exists(filepath)) {
-                if (debugUnsafe)
-                    return SaveLoad.DeserializeFromFile<T>(filepath, mode);
-                else {
-                    try {
-                        return SaveLoad.DeserializeFromFile<T>(filepath, mode);
-                    } catch {
-                        return default(T);
-                    }
-                }
-            } else
-                return default(T);
-        }
+            T result;
 
-        /// <summary>
-        /// Load an object that was previously serialized to a file
-        /// If the load fails or the file does not exist, default(T) will be returned
-        /// </summary>
-        /// <param name="loadError">True if the load fails despite the requested file existing (for example due to corrupted data)</param>
-        public static T SafeDeserializeFromFile<T>(string filepath, SerializeModes mode, out bool loadError, bool debugUnsafe = false) {
-            if (File.Exists(filepath)) {
-                if (debugUnsafe) {
-                    loadError = false;
-                    return SaveLoad.DeserializeFromFile<T>(filepath, mode);
-                } else {
-                    try {
-                        loadError = false;
-                        return SaveLoad.DeserializeFromFile<T>(filepath, mode);
-                    } catch {
-                        loadError = true;
-                        return default(T);
+            switch (mode) {
+            case SerializeMode.Json:
+                result = JsonSerializer.Deserialize<T>(stream, JsonOptions);
+                break;
+
+            case SerializeMode.JsonObfuscated: {
+                    using var output = new MemoryStream();
+                    int b;
+                    while ((b = stream.ReadByte()) != -1) {
+                        output.WriteByte(ObfuscateByte((byte) b));
                     }
+
+                    output.Position = 0;
+                    result = JsonSerializer.Deserialize<T>(output, JsonOptions);
+                    break;
                 }
-            } else {
-                loadError = false;
-                return default(T);
+
+            case SerializeMode.XML:
+                var serializer = new DataContractSerializer(typeof(T));
+                result = (T) serializer.ReadObject(stream);
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
+
+            Calc.Log($"[SaveLoad] File {folderName}/{fileName} loaded");
+
+            return result;
         }
 
-        #endregion
+        public static T SafeLoad<T>(string fileName, SerializeMode mode, string folderName = "Saves")
+            where T : class {
+#if DEBUG
+            return Load<T>(fileName, mode, folderName);
+#else
+            try {
+                return Load<T>(fileName, mode, folderName);
+            } catch (Exception e) {
+                ErrorLog.Write($"Exception while loading {folderName}/{fileName} in {mode} mode:\n" + e);
+                return null;
+            }
+#endif
+        }
+
+        public static byte ObfuscateByte(byte input) {
+            return (byte) (input ^ 0xAA);
+        }
     }
 }

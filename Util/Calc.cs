@@ -1997,30 +1997,35 @@ namespace Monocle {
         }
 
         public static void TimeLog() {
-            Debug.WriteLine(Engine.Scene?.RawTimeActive);
+            Debug.WriteLine($"[{DateTime.Now:yyyy-dd-MM HH:mm:ss}]");
         }
 
         public static void Log(params object[] obj) {
-            foreach (var o in obj) {
-                if (o == null)
-                    Debug.WriteLine("null");
-                else
-                    Debug.WriteLine(o.ToString());
+            foreach (object o in obj) {
+                Debug.WriteLine(o?.ToString() ?? "<null>");
             }
         }
 
-        public static void TimeLog(object obj) {
-            Debug.WriteLine(Engine.Scene?.RawTimeActive + " : " + obj);
+        public static void ReleaseLog(string origin, object obj) {
+            Console.WriteLine(
+                $"[{DateTime.Now:yyyy-dd-MM HH:mm:ss}] [{origin}] "
+                    + (obj ?? "<null>")
+            );
         }
 
         public static void LogEach<T>(IEnumerable<T> collection) {
             foreach (T? o in collection)
-                Debug.WriteLine(o?.ToString() ?? "null");
+                Debug.WriteLine(o?.ToString() ?? "<null>");
         }
 
-        public static void Dissect(object obj) {
+        public static void Dissect(object? obj) {
+            if (obj == null) {
+                Debug.WriteLine("<null>");
+                return;
+            }
+
             Debug.Write(obj.GetType().Name + " { ");
-            foreach (var v in obj.GetType().GetFields())
+            foreach (FieldInfo v in obj.GetType().GetFields())
                 Debug.Write(v.Name + ": " + v.GetValue(obj) + ", ");
             Debug.WriteLine(" }");
         }

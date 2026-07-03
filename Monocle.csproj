@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
@@ -11,28 +10,13 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE;MONOGAME</DefineConstants>
-    <NoWarn>SYSLIB0011</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;MONOGAME</DefineConstants>
-    <NoWarn>SYSLIB0011</NoWarn>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="../FNA/FNA.Core.csproj" />
-    <Compile Remove="FNA/**/*.cs" />
-    <EmbeddedResource Remove="FNA/**" />
-    <None Remove="FNA/**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Content\Monocle\MonocleDefault.xnb">
+    <Content Include="Content\Monocle\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Content\Monocle\MonocleDefault.spritefont" />
   </ItemGroup>
-
 </Project>
