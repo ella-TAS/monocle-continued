@@ -31,9 +31,12 @@ namespace Monocle {
         }
 
         public static void Log(params object[] obj) {
+            string log = "";
             foreach (object o in obj) {
-                Debug(o?.ToString() ?? "<null>");
+                log += o?.ToString() ?? "<null>";
+                log += ' ';
             }
+            Debug(log);
         }
 
         public static void Log() {
