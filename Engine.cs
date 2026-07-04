@@ -72,6 +72,16 @@ namespace Monocle {
         public static int ViewHeight { get; private set; }
 
         /// <summary>
+        /// The width of the game window.
+        /// </summary>
+        public static int WindowWidth => Graphics?.GraphicsDevice.PresentationParameters.BackBufferWidth ?? 1920;
+
+        /// <summary>
+        /// The height of the game window.
+        /// </summary>
+        public static int WindowHeight => Graphics?.GraphicsDevice.PresentationParameters.BackBufferHeight ?? 1080;
+
+        /// <summary>
         /// The padding around the viewport for maintaining aspect ratio.
         /// Setting this value will update the view immediately.
         /// </summary>
