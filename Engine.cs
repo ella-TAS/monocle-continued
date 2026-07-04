@@ -296,8 +296,6 @@ namespace Monocle {
         }
 
         protected override void Initialize() {
-            Calc.ReleaseLog("Monocle", "Starting Game Engine");
-
             base.Initialize();
 
             MInput.Initialize();
