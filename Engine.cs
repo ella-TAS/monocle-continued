@@ -310,8 +310,6 @@ namespace Monocle {
             base.LoadContent();
 
             Monocle.Draw.Initialize(GraphicsDevice);
-
-            Calc.ReleaseLog("Monocle", "Content loaded");
         }
 
         protected override void Update(GameTime gameTime) {
