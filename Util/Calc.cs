@@ -88,30 +88,6 @@ namespace Monocle {
         #region Strings
 
         /// <summary>
-        /// Determines whether the beginning of this string instance matches the specified string.
-        /// </summary>
-        /// <param name="str">The string to check.</param>
-        /// <param name="match">The string to compare.</param>
-        /// <returns>True if the string starts with the match; otherwise, false.</returns>
-        /// <remarks>Use the built-in string.StartsWith() method instead for better performance and null safety.</remarks>
-        [Obsolete("Use string.StartsWith() method instead for better performance and null safety.")]
-        public static bool StartsWith(this string str, string match) {
-            return str.IndexOf(match) == 0;
-        }
-
-        /// <summary>
-        /// Determines whether the end of this string instance matches the specified string.
-        /// </summary>
-        /// <param name="str">The string to check.</param>
-        /// <param name="match">The string to compare.</param>
-        /// <returns>True if the string ends with the match; otherwise, false.</returns>
-        /// <remarks>Use the built-in string.EndsWith() method instead for better performance and null safety.</remarks>
-        [Obsolete("Use string.EndsWith() method instead for better performance and null safety.")]
-        public static bool EndsWith(this string str, string match) {
-            return str.LastIndexOf(match) == str.Length - match.Length;
-        }
-
-        /// <summary>
         /// Determines whether this string matches any of the specified strings using case-insensitive comparison.
         /// </summary>
         /// <param name="str">The string to check.</param>
