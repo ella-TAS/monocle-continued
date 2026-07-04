@@ -1966,66 +1966,6 @@ namespace Monocle {
 
         #endregion
 
-        #region Debug
-
-        public static void Log() {
-            Debug.WriteLine("Log");
-        }
-
-        public static void TimeLog() {
-            Debug.WriteLine($"[{DateTime.Now:yyyy-dd-MM HH:mm:ss}]");
-        }
-
-        public static void Log(params object[] obj) {
-            foreach (object o in obj) {
-                Debug.WriteLine(o?.ToString() ?? "<null>");
-            }
-        }
-
-        public static void ReleaseLog(string origin, object obj) {
-            Console.WriteLine(
-                $"[{DateTime.Now:yyyy-dd-MM HH:mm:ss}] [{origin}] "
-                    + (obj ?? "<null>")
-            );
-        }
-
-        public static void LogEach<T>(IEnumerable<T> collection) {
-            foreach (T? o in collection)
-                Debug.WriteLine(o?.ToString() ?? "<null>");
-        }
-
-        public static void Dissect(object? obj) {
-            if (obj == null) {
-                Debug.WriteLine("<null>");
-                return;
-            }
-
-            Debug.Write(obj.GetType().Name + " { ");
-            foreach (FieldInfo v in obj.GetType().GetFields())
-                Debug.Write(v.Name + ": " + v.GetValue(obj) + ", ");
-            Debug.WriteLine(" }");
-        }
-
-        private static Stopwatch? stopwatch;
-
-        public static void StartTimer() {
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
-        }
-
-        public static void EndTimer() {
-            if (stopwatch != null) {
-                stopwatch.Stop();
-
-                string message = "Timer: " + stopwatch.ElapsedTicks + " ticks, or " + TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds.ToString("00.0000000") + " seconds";
-                Debug.WriteLine(message);
-
-                stopwatch = null;
-            }
-        }
-
-        #endregion
-
         #region Reflection
 
         public static Delegate? GetMethod<T>(object obj, string method) where T : class {

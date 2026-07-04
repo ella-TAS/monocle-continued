@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Monocle {
     public static class ErrorLog {
-        public const string Filename = "error_log.txt";
         public const string Marker = "==========================================";
+        public static string LogPath => Path.Combine(AppContext.BaseDirectory, "error_log.txt");
 
         public static void Write(Exception e) {
             Write(e.ToString());
@@ -14,10 +14,12 @@ namespace Monocle {
         public static void Write(string str) {
             StringBuilder s = new StringBuilder();
 
+            Logger.Release("ErrorLog", "=====>>> GAME CRASH <<<=====\n" + str);
+
             //Get the previous contents
             string content = "";
-            if (File.Exists(Filename)) {
-                TextReader tr = new StreamReader(Filename);
+            if (File.Exists(LogPath)) {
+                StreamReader tr = new StreamReader(LogPath);
                 content = tr.ReadToEnd();
                 tr.Close();
 
@@ -53,14 +55,22 @@ namespace Monocle {
                 s.AppendLine(after);
             }
 
-            TextWriter tw = new StreamWriter(Filename, false);
+            TextWriter tw = new StreamWriter(LogPath, false);
             tw.Write(s.ToString());
             tw.Close();
         }
 
-        public static void Open() {
-            if (File.Exists(Filename))
-                System.Diagnostics.Process.Start(Filename);
+        public static bool TryOpen() {
+            if (File.Exists(LogPath)) {
+                try {
+                    System.Diagnostics.Process.Start(LogPath);
+                    return true;
+                } catch {
+                    Logger.Release("ErrorLog", "Unable to open error_log.txt after crash");
+                }
+            }
+
+            return false;
         }
     }
 }

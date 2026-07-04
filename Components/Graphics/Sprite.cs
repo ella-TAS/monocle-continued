@@ -431,7 +431,7 @@ namespace Monocle {
                 str.Append("\n}\n");
             }
 
-            Calc.Log(str.ToString());
+            Logger.Log(str.ToString());
         }
 
         private class Animation {

@@ -52,7 +52,7 @@ namespace Monocle {
 
                 if (!Locked && state != value) {
                     if (Log)
-                        Calc.Log("Enter State " + value + " (leaving " + state + ")");
+                        Logger.Log("Enter State " + value + " (leaving " + state + ")");
 
                     ChangedStates = true;
                     PreviousState = state;
@@ -60,19 +60,19 @@ namespace Monocle {
 
                     if (PreviousState != -1 && ends[PreviousState] != null) {
                         if (Log)
-                            Calc.Log("Calling End " + PreviousState);
+                            Logger.Log("Calling End " + PreviousState);
                         ends[PreviousState]();
                     }
 
                     if (begins[state] != null) {
                         if (Log)
-                            Calc.Log("Calling Begin " + state);
+                            Logger.Log("Calling Begin " + state);
                         begins[state]();
                     }
 
                     if (coroutines[state] != null) {
                         if (Log)
-                            Calc.Log("Starting Coroutine " + state);
+                            Logger.Log("Starting Coroutine " + state);
                         currentCoroutine.Replace(coroutines[state]());
                     } else
                         currentCoroutine.Cancel();
@@ -85,7 +85,7 @@ namespace Monocle {
                 State = toState;
             else {
                 if (Log)
-                    Calc.Log("Enter State " + toState + " (leaving " + state + ")");
+                    Logger.Log("Enter State " + toState + " (leaving " + state + ")");
 
                 ChangedStates = true;
                 PreviousState = state;
@@ -93,19 +93,19 @@ namespace Monocle {
 
                 if (PreviousState != -1 && ends[PreviousState] != null) {
                     if (Log)
-                        Calc.Log("Calling End " + state);
+                        Logger.Log("Calling End " + state);
                     ends[PreviousState]();
                 }
 
                 if (begins[state] != null) {
                     if (Log)
-                        Calc.Log("Calling Begin " + state);
+                        Logger.Log("Calling Begin " + state);
                     begins[state]();
                 }
 
                 if (coroutines[state] != null) {
                     if (Log)
-                        Calc.Log("Starting Coroutine " + state);
+                        Logger.Log("Starting Coroutine " + state);
                     currentCoroutine.Replace(coroutines[state]());
                 } else
                     currentCoroutine.Cancel();
@@ -134,7 +134,7 @@ namespace Monocle {
             if (currentCoroutine.Active) {
                 currentCoroutine.Update();
                 if (!ChangedStates && Log && currentCoroutine.Finished)
-                    Calc.Log("Finished Coroutine " + state);
+                    Logger.Log("Finished Coroutine " + state);
             }
         }
 
@@ -148,7 +148,7 @@ namespace Monocle {
         }
 
         public void LogState(int index) {
-            Calc.Log("State " + index + ": "
+            Logger.Log("State " + index + ": "
                 + (updates[index] != null ? "U" : "")
                 + (begins[index] != null ? "B" : "")
                 + (ends[index] != null ? "E" : "")

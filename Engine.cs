@@ -296,10 +296,13 @@ namespace Monocle {
         }
 
         protected override void Initialize() {
+            Logger.Initialize();
+
             base.Initialize();
 
             MInput.Initialize();
             Tracker.Initialize();
+
             Pooler = new Pooler();
             Commands = new Commands();
         }
@@ -405,14 +408,18 @@ namespace Monocle {
         protected override void OnExiting(object sender, EventArgs args) {
             base.OnExiting(sender, args);
             MInput.Shutdown();
+            Logger.Release("Monocle", "Game Closed");
         }
 
-        public void RunWithLogging() {
+        public void RunWithLogging(bool callExitOnCrash = false) {
             try {
                 Run();
             } catch (Exception e) {
                 ErrorLog.Write(e);
-                ErrorLog.Open();
+                ErrorLog.TryOpen();
+
+                if (callExitOnCrash)
+                    OnExiting(this, EventArgs.Empty);
             }
         }
 
@@ -462,7 +469,7 @@ namespace Monocle {
                 Graphics.PreferredBackBufferHeight = height;
                 Graphics.IsFullScreen = false;
                 Graphics.ApplyChanges();
-                Console.WriteLine($"WINDOW-{width}x{height}");
+                Logger.Log($"WINDOW-{width}x{height}");
                 resizing = false;
             }
 #endif
@@ -479,7 +486,7 @@ namespace Monocle {
                 Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
                 Graphics.IsFullScreen = true;
                 Graphics.ApplyChanges();
-                Console.WriteLine("FULLSCREEN");
+                Logger.Log("FULLSCREEN");
                 resizing = false;
             }
 #endif

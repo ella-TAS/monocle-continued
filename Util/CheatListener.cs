@@ -53,7 +53,7 @@ namespace Monocle {
                     CurrentInput = CurrentInput.Substring(CurrentInput.Length - maxInput);
 
                 if (Logging)
-                    Calc.Log(CurrentInput);
+                    Logger.Log(CurrentInput);
 
                 foreach (var cheat in cheats) {
                     if (CurrentInput.Contains(cheat.Item1)) {
@@ -63,7 +63,7 @@ namespace Monocle {
                         cheats.Remove(cheat);
 
                         if (Logging)
-                            Calc.Log("Cheat Activated: " + cheat.Item1);
+                            Logger.Release("Monocle", "Cheat Activated: " + cheat.Item1);
 
                         break;
                     }
