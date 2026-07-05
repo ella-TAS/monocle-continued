@@ -68,6 +68,3 @@ dotnet_style_qualification_for_event = false:warning
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_property = false:warning
-
-# IDE0130: Namespace does not match folder structure
-dotnet_diagnostic.IDE0130.severity = warning

@@ -8,7 +8,6 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <NoWarn>IDE0130</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
