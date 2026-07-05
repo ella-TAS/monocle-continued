@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Monocle")]
 [assembly: AssemblyProduct("Monocle")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("Matt Makes Games Inc.")]
-[assembly: AssemblyCopyright("Copyright © Matt Makes Games Inc. 2016")]
+[assembly: AssemblyCompany("Maddy Makes Games Inc.")]
+[assembly: AssemblyCopyright("Copyright © Maddy Makes Games Inc. 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
