@@ -5,8 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Monocle
-{
+namespace Monocle {
     /// <summary>
     /// Represents a game scene that manages entities, rendering, and collision detection.
     /// </summary>
@@ -16,48 +15,47 @@ namespace Monocle
     /// Each scene maintains its own entity list, tag lists, renderer list, and tracker for efficient
     /// object management and collision detection.
     /// </remarks>
-    public class Scene : IEnumerable<Entity>, IEnumerable
-    {
+    public class Scene : IEnumerable<Entity>, IEnumerable {
         /// <summary>
         /// Gets or sets whether the scene is currently paused, preventing updates from occurring.
         /// </summary>
         public bool Paused { get; set; }
-        
+
         /// <summary>
         /// Gets the total time the scene has been active, excluding paused time.
         /// </summary>
         public float TimeActive { get; private set; }
-        
+
         /// <summary>
         /// Gets the total raw time the scene has been active, including paused time.
         /// </summary>
         public float RawTimeActive { get; private set; }
-        
+
         /// <summary>
         /// Gets whether the scene currently has focus and is actively updating.
         /// </summary>
         public bool Focused { get; private set; }
-        
+
         /// <summary>
         /// Gets the entity list that manages all entities in this scene.
         /// </summary>
         public EntityList Entities { get; private set; } = null!; // Assigned in constructor
-        
+
         /// <summary>
         /// Gets the tag lists that provide efficient access to entities by their bit tags.
         /// </summary>
         public TagLists TagLists { get; private set; } = null!; // Assigned in constructor
-        
+
         /// <summary>
         /// Gets the renderer list that manages all renderers in this scene.
         /// </summary>
         public RendererList RendererList { get; private set; } = null!; // Assigned in constructor
-        
+
         /// <summary>
         /// Gets the helper entity that provides utility functionality for the scene.
         /// </summary>
         public Entity HelperEntity { get; private set; } = null!; // Assigned in constructor
-        
+
         /// <summary>
         /// Gets the tracker that manages tracked entity and component types for collision detection.
         /// </summary>
@@ -81,8 +79,7 @@ namespace Monocle
         /// tag lists, renderer list, and helper entity. The scene is ready for use immediately
         /// after construction.
         /// </remarks>
-        public Scene()
-        {
+        public Scene() {
             Tracker = new Tracker();
             Entities = new EntityList(this);
             TagLists = new TagLists();
@@ -99,8 +96,7 @@ namespace Monocle
         /// Sets the scene as focused and notifies all entities that the scene has begun.
         /// Override this method to perform custom initialization logic when the scene starts.
         /// </remarks>
-        public virtual void Begin()
-        {
+        public virtual void Begin() {
             Focused = true;
             foreach (var entity in Entities)
                 entity.SceneBegin(this);
@@ -113,8 +109,7 @@ namespace Monocle
         /// Sets the scene as unfocused and notifies all entities that the scene is ending.
         /// Override this method to perform custom cleanup logic when the scene ends.
         /// </remarks>
-        public virtual void End()
-        {
+        public virtual void End() {
             Focused = false;
             foreach (var entity in Entities)
                 entity.SceneEnd(this);
@@ -127,8 +122,7 @@ namespace Monocle
         /// Updates timing values and refreshes all entity, tag, and renderer lists.
         /// This method is called every frame regardless of pause state.
         /// </remarks>
-        public virtual void BeforeUpdate()
-        {
+        public virtual void BeforeUpdate() {
             if (!Paused)
                 TimeActive += Engine.DeltaTime;
             RawTimeActive += Engine.RawDeltaTime;
@@ -145,10 +139,8 @@ namespace Monocle
         /// Updates all entities and renderers if the scene is not paused.
         /// Override this method to add custom update logic for the scene.
         /// </remarks>
-        public virtual void Update()
-        {
-            if (!Paused)
-            {
+        public virtual void Update() {
+            if (!Paused) {
                 Entities.Update();
                 RendererList.Update();
             }
@@ -161,8 +153,7 @@ namespace Monocle
         /// Raises the OnEndOfFrame event if any subscribers are registered.
         /// This method is called every frame regardless of pause state.
         /// </remarks>
-        public virtual void AfterUpdate()
-        {
+        public virtual void AfterUpdate() {
             OnEndOfFrame?.Invoke();
             OnEndOfFrame = null;
         }
@@ -174,8 +165,7 @@ namespace Monocle
         /// Notifies all renderers that rendering is about to begin.
         /// Override this method to add custom pre-rendering logic.
         /// </remarks>
-        public virtual void BeforeRender()
-        {
+        public virtual void BeforeRender() {
             RendererList.BeforeRender();
         }
 
@@ -186,8 +176,7 @@ namespace Monocle
         /// Renders all entities and components through the renderer list.
         /// Override this method to add custom rendering logic for the scene.
         /// </remarks>
-        public virtual void Render()
-        {
+        public virtual void Render() {
             RendererList.Render();
         }
 
@@ -198,8 +187,7 @@ namespace Monocle
         /// Notifies all renderers that rendering has completed.
         /// Override this method to add custom post-rendering logic.
         /// </remarks>
-        public virtual void AfterRender()
-        {
+        public virtual void AfterRender() {
             RendererList.AfterRender();
         }
 
@@ -210,8 +198,7 @@ namespace Monocle
         /// Notifies all entities that the graphics device has been reset.
         /// Override this method to add custom graphics reset handling logic.
         /// </remarks>
-        public virtual void HandleGraphicsReset()
-        {
+        public virtual void HandleGraphicsReset() {
             Entities.HandleGraphicsReset();
         }
 
@@ -222,8 +209,7 @@ namespace Monocle
         /// Notifies all entities that the graphics device has been created.
         /// Override this method to add custom graphics creation handling logic.
         /// </remarks>
-        public virtual void HandleGraphicsCreate()
-        {
+        public virtual void HandleGraphicsCreate() {
             Entities.HandleGraphicsCreate();
         }
 
@@ -234,8 +220,7 @@ namespace Monocle
         /// Override this method to add custom logic when the scene gains focus.
         /// This is useful for resuming audio, animations, or other focus-dependent features.
         /// </remarks>
-        public virtual void GainFocus()
-        {
+        public virtual void GainFocus() {
 
         }
 
@@ -246,8 +231,7 @@ namespace Monocle
         /// Override this method to add custom logic when the scene loses focus.
         /// This is useful for pausing audio, animations, or other focus-dependent features.
         /// </remarks>
-        public virtual void LoseFocus()
-        {
+        public virtual void LoseFocus() {
 
         }
 
@@ -259,13 +243,12 @@ namespace Monocle
         /// <param name="interval">The time interval to check for in seconds.</param>
         /// <returns>True if the interval has just been crossed, false otherwise.</returns>
         /// <remarks>
-        /// This method is useful for triggering events at regular intervals. For example, 
+        /// This method is useful for triggering events at regular intervals. For example,
         /// given 2.0f, this will return true once every 2 seconds.
         /// </remarks>
-        public bool OnInterval(float interval)
-        {
+        public bool OnInterval(float interval) {
             if (interval <= 0f) return false;
-            return (int)((TimeActive - Engine.DeltaTime) / interval) < (int)(TimeActive / interval);
+            return (int) ((TimeActive - Engine.DeltaTime) / interval) < (int) (TimeActive / interval);
         }
 
         /// <summary>
@@ -278,8 +261,7 @@ namespace Monocle
         /// This method is useful for triggering events at regular intervals with a specific offset.
         /// For example, given 2.0f and 1.0f, this will return true every 2 seconds starting at 1 second.
         /// </remarks>
-        public bool OnInterval(float interval, float offset)
-        {
+        public bool OnInterval(float interval, float offset) {
             if (interval <= 0f) return false;
             return Math.Floor((TimeActive - offset - Engine.DeltaTime) / interval) < Math.Floor((TimeActive - offset) / interval);
         }
@@ -289,8 +271,7 @@ namespace Monocle
         /// </summary>
         /// <param name="interval">The time interval to check for in seconds.</param>
         /// <returns>True if the current time is within the interval, false otherwise.</returns>
-        public bool BetweenInterval(float interval)
-        {
+        public bool BetweenInterval(float interval) {
             return Calc.BetweenInterval(TimeActive, interval);
         }
 
@@ -302,10 +283,9 @@ namespace Monocle
         /// <remarks>
         /// This method uses RawTimeActive which includes paused time, unlike OnInterval which uses TimeActive.
         /// </remarks>
-        public bool OnRawInterval(float interval)
-        {
+        public bool OnRawInterval(float interval) {
             if (interval <= 0f) return false;
-            return (int)((RawTimeActive - Engine.RawDeltaTime) / interval) < (int)(RawTimeActive / interval);
+            return (int) ((RawTimeActive - Engine.RawDeltaTime) / interval) < (int) (RawTimeActive / interval);
         }
 
         /// <summary>
@@ -317,8 +297,7 @@ namespace Monocle
         /// <remarks>
         /// This method uses RawTimeActive which includes paused time, unlike OnInterval which uses TimeActive.
         /// </remarks>
-        public bool OnRawInterval(float interval, float offset)
-        {
+        public bool OnRawInterval(float interval, float offset) {
             if (interval <= 0f) return false;
             return Math.Floor((RawTimeActive - offset - Engine.RawDeltaTime) / interval) < Math.Floor((RawTimeActive - offset) / interval);
         }
@@ -331,8 +310,7 @@ namespace Monocle
         /// <remarks>
         /// This method uses RawTimeActive which includes paused time, unlike BetweenInterval which uses TimeActive.
         /// </remarks>
-        public bool BetweenRawInterval(float interval)
-        {
+        public bool BetweenRawInterval(float interval) {
             return Calc.BetweenInterval(RawTimeActive, interval);
         }
 
@@ -346,9 +324,8 @@ namespace Monocle
         /// <param name="point">The point to check for collision.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>True if a collision is detected, false otherwise.</returns>
-        public bool CollideCheck(Vector2 point, int tag)
-        {
-            var list = TagLists[(int)tag];
+        public bool CollideCheck(Vector2 point, int tag) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollidePoint(point))
@@ -363,9 +340,8 @@ namespace Monocle
         /// <param name="to">The ending point of the line segment.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>True if a collision is detected, false otherwise.</returns>
-        public bool CollideCheck(Vector2 from, Vector2 to, int tag)
-        {
-            var list = TagLists[(int)tag];
+        public bool CollideCheck(Vector2 from, Vector2 to, int tag) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideLine(from, to))
@@ -379,9 +355,8 @@ namespace Monocle
         /// <param name="rect">The rectangle to check for collision.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>True if a collision is detected, false otherwise.</returns>
-        public bool CollideCheck(Rectangle rect, int tag)
-        {
-            var list = TagLists[(int)tag];
+        public bool CollideCheck(Rectangle rect, int tag) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideRect(rect))
@@ -389,8 +364,7 @@ namespace Monocle
             return false;
         }
 
-        public bool CollideCheck(Rectangle rect, Entity entity)
-        {
+        public bool CollideCheck(Rectangle rect, Entity entity) {
             return (entity.Collidable && entity.CollideRect(rect));
         }
 
@@ -400,8 +374,7 @@ namespace Monocle
         /// <param name="point">The point to check for collision.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>The first colliding entity, or null if no collision is found.</returns>
-        public Entity? CollideFirst(Vector2 point, int tag)
-        {
+        public Entity? CollideFirst(Vector2 point, int tag) {
             var list = TagLists[tag];
 
             for (int i = 0; i < list.Count; i++)
@@ -417,8 +390,7 @@ namespace Monocle
         /// <param name="to">The ending point of the line segment.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>The first colliding entity, or null if no collision is found.</returns>
-        public Entity? CollideFirst(Vector2 from, Vector2 to, int tag)
-        {
+        public Entity? CollideFirst(Vector2 from, Vector2 to, int tag) {
             var list = TagLists[tag];
 
             for (int i = 0; i < list.Count; i++)
@@ -433,8 +405,7 @@ namespace Monocle
         /// <param name="rect">The rectangle to check for collision.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>The first colliding entity, or null if no collision is found.</returns>
-        public Entity? CollideFirst(Rectangle rect, int tag)
-        {
+        public Entity? CollideFirst(Rectangle rect, int tag) {
             var list = TagLists[tag];
 
             for (int i = 0; i < list.Count; i++)
@@ -443,27 +414,24 @@ namespace Monocle
             return null;
         }
 
-        public void CollideInto(Vector2 point, int tag, List<Entity> hits)
-        {
-            var list = TagLists[(int)tag];
+        public void CollideInto(Vector2 point, int tag, List<Entity> hits) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollidePoint(point))
                     hits.Add(list[i]);
         }
 
-        public void CollideInto(Vector2 from, Vector2 to, int tag, List<Entity> hits)
-        {
-            var list = TagLists[(int)tag];
+        public void CollideInto(Vector2 from, Vector2 to, int tag, List<Entity> hits) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideLine(from, to))
                     hits.Add(list[i]);
         }
 
-        public void CollideInto(Rectangle rect, int tag, List<Entity> hits)
-        {
-            var list = TagLists[(int)tag];
+        public void CollideInto(Rectangle rect, int tag, List<Entity> hits) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideRect(rect))
@@ -476,8 +444,7 @@ namespace Monocle
         /// <param name="point">The point to check for collision.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>A list of all colliding entities. The list is never null but may be empty.</returns>
-        public List<Entity> CollideAll(Vector2 point, int tag)
-        {
+        public List<Entity> CollideAll(Vector2 point, int tag) {
             List<Entity> results = new();
             CollideInto(point, tag, results);
             return results;
@@ -490,8 +457,7 @@ namespace Monocle
         /// <param name="to">The ending point of the line segment.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>A list of all colliding entities. The list is never null but may be empty.</returns>
-        public List<Entity> CollideAll(Vector2 from, Vector2 to, int tag)
-        {
+        public List<Entity> CollideAll(Vector2 from, Vector2 to, int tag) {
             List<Entity> results = new();
             CollideInto(from, to, tag, results);
             return results;
@@ -503,52 +469,46 @@ namespace Monocle
         /// <param name="rect">The rectangle to check for collision.</param>
         /// <param name="tag">The tag to check against.</param>
         /// <returns>A list of all colliding entities. The list is never null but may be empty.</returns>
-        public List<Entity> CollideAll(Rectangle rect, int tag)
-        {
+        public List<Entity> CollideAll(Rectangle rect, int tag) {
             List<Entity> results = new();
             CollideInto(rect, tag, results);
             return results;
         }
 
-        public void CollideDo(Vector2 point, int tag, Action<Entity> action)
-        {
-            var list = TagLists[(int)tag];
+        public void CollideDo(Vector2 point, int tag, Action<Entity> action) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollidePoint(point))
                     action(list[i]);
         }
 
-        public void CollideDo(Vector2 from, Vector2 to, int tag, Action<Entity> action)
-        {
-            var list = TagLists[(int)tag];
+        public void CollideDo(Vector2 from, Vector2 to, int tag, Action<Entity> action) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideLine(from, to))
                     action(list[i]);
         }
 
-        public void CollideDo(Rectangle rect, int tag, Action<Entity> action)
-        {
-            var list = TagLists[(int)tag];
+        public void CollideDo(Rectangle rect, int tag, Action<Entity> action) {
+            var list = TagLists[(int) tag];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideRect(rect))
                     action(list[i]);
         }
 
-        public Vector2 LineWalkCheck(Vector2 from, Vector2 to, int tag, float precision)
-        {
+        public Vector2 LineWalkCheck(Vector2 from, Vector2 to, int tag, float precision) {
             Vector2 add = to - from;
             add.Normalize();
             add *= precision;
 
-            int amount = (int)Math.Floor((from - to).Length() / precision);
+            int amount = (int) Math.Floor((from - to).Length() / precision);
             Vector2 prev = from;
             Vector2 at = from + add;
 
-            for (int i = 0; i <= amount; i++)
-            {
+            for (int i = 0; i <= amount; i++) {
                 if (CollideCheck(at, tag))
                     return prev;
                 prev = at;
@@ -562,8 +522,7 @@ namespace Monocle
 
         #region Collisions v Tracked List Entities
 
-        public bool CollideCheck<T>(Vector2 point) where T : Entity
-        {
+        public bool CollideCheck<T>(Vector2 point) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -572,8 +531,7 @@ namespace Monocle
             return false;
         }
 
-        public bool CollideCheck<T>(Vector2 from, Vector2 to) where T : Entity
-        {
+        public bool CollideCheck<T>(Vector2 from, Vector2 to) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -582,8 +540,7 @@ namespace Monocle
             return false;
         }
 
-        public bool CollideCheck<T>(Rectangle rect) where T : Entity
-        {
+        public bool CollideCheck<T>(Rectangle rect) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -599,13 +556,12 @@ namespace Monocle
         /// <param name="point">The point to check for collision.</param>
         /// <returns>The first colliding entity of type T, or null if no collision is found.</returns>
         [return: MaybeNull]
-        public T CollideFirst<T>(Vector2 point) where T : Entity
-        {
+        public T CollideFirst<T>(Vector2 point) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollidePoint(point))
-                    return (T)list[i];
+                    return (T) list[i];
             return default(T);
         }
 
@@ -617,13 +573,12 @@ namespace Monocle
         /// <param name="to">The ending point of the line segment.</param>
         /// <returns>The first colliding entity of type T, or null if no collision is found.</returns>
         [return: MaybeNull]
-        public T CollideFirst<T>(Vector2 from, Vector2 to) where T : Entity
-        {
+        public T CollideFirst<T>(Vector2 from, Vector2 to) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideLine(from, to))
-                    return (T)list[i];
+                    return (T) list[i];
             return default(T);
         }
 
@@ -634,18 +589,16 @@ namespace Monocle
         /// <param name="rect">The rectangle to check for collision.</param>
         /// <returns>The first colliding entity of type T, or null if no collision is found.</returns>
         [return: MaybeNull]
-        public T CollideFirst<T>(Rectangle rect) where T : Entity
-        {
+        public T CollideFirst<T>(Rectangle rect) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideRect(rect))
-                    return (T)list[i];
+                    return (T) list[i];
             return default(T);
         }
 
-        public void CollideInto<T>(Vector2 point, List<Entity> hits) where T : Entity
-        {
+        public void CollideInto<T>(Vector2 point, List<Entity> hits) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -653,8 +606,7 @@ namespace Monocle
                     hits.Add(list[i]);
         }
 
-        public void CollideInto<T>(Vector2 from, Vector2 to, List<Entity> hits) where T : Entity
-        {
+        public void CollideInto<T>(Vector2 from, Vector2 to, List<Entity> hits) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -662,8 +614,7 @@ namespace Monocle
                     hits.Add(list[i]);
         }
 
-        public void CollideInto<T>(Rectangle rect, List<Entity> hits) where T : Entity
-        {
+        public void CollideInto<T>(Rectangle rect, List<Entity> hits) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -671,8 +622,7 @@ namespace Monocle
                     list.Add(list[i]);
         }
 
-        public void CollideInto<T>(Vector2 point, List<T> hits) where T : Entity
-        {
+        public void CollideInto<T>(Vector2 point, List<T> hits) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -681,8 +631,7 @@ namespace Monocle
                         hits.Add(typed);
         }
 
-        public void CollideInto<T>(Vector2 from, Vector2 to, List<T> hits) where T : Entity
-        {
+        public void CollideInto<T>(Vector2 from, Vector2 to, List<T> hits) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -691,8 +640,7 @@ namespace Monocle
                         hits.Add(typed);
         }
 
-        public void CollideInto<T>(Rectangle rect, List<T> hits) where T : Entity
-        {
+        public void CollideInto<T>(Rectangle rect, List<T> hits) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -701,29 +649,25 @@ namespace Monocle
                         hits.Add(typed);
         }
 
-        public List<T> CollideAll<T>(Vector2 point) where T : Entity
-        {
+        public List<T> CollideAll<T>(Vector2 point) where T : Entity {
             List<T> list = new List<T>();
             CollideInto<T>(point, list);
             return list;
         }
 
-        public List<T> CollideAll<T>(Vector2 from, Vector2 to) where T : Entity
-        {
+        public List<T> CollideAll<T>(Vector2 from, Vector2 to) where T : Entity {
             List<T> list = new List<T>();
             CollideInto<T>(from, to, list);
             return list;
         }
 
-        public List<T> CollideAll<T>(Rectangle rect) where T : Entity
-        {
+        public List<T> CollideAll<T>(Rectangle rect) where T : Entity {
             List<T> list = new List<T>();
             CollideInto<T>(rect, list);
             return list;
         }
 
-        public void CollideDo<T>(Vector2 point, Action<T> action) where T : Entity
-        {
+        public void CollideDo<T>(Vector2 point, Action<T> action) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -732,8 +676,7 @@ namespace Monocle
                         action(typed);
         }
 
-        public void CollideDo<T>(Vector2 from, Vector2 to, Action<T> action) where T : Entity
-        {
+        public void CollideDo<T>(Vector2 from, Vector2 to, Action<T> action) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -742,8 +685,7 @@ namespace Monocle
                         action(typed);
         }
 
-        public void CollideDo<T>(Rectangle rect, Action<T> action) where T : Entity
-        {
+        public void CollideDo<T>(Rectangle rect, Action<T> action) where T : Entity {
             var list = Tracker.Entities[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -752,18 +694,16 @@ namespace Monocle
                         action(typed);
         }
 
-        public Vector2 LineWalkCheck<T>(Vector2 from, Vector2 to, float precision) where T : Entity
-        {
+        public Vector2 LineWalkCheck<T>(Vector2 from, Vector2 to, float precision) where T : Entity {
             Vector2 add = to - from;
             add.Normalize();
             add *= precision;
 
-            int amount = (int)Math.Floor((from - to).Length() / precision);
+            int amount = (int) Math.Floor((from - to).Length() / precision);
             Vector2 prev = from;
             Vector2 at = from + add;
 
-            for (int i = 0; i <= amount; i++)
-            {
+            for (int i = 0; i <= amount; i++) {
                 if (CollideCheck<T>(at))
                     return prev;
                 prev = at;
@@ -777,8 +717,7 @@ namespace Monocle
 
         #region Collisions v Tracked List Components
 
-        public bool CollideCheckByComponent<T>(Vector2 point) where T : Component
-        {
+        public bool CollideCheckByComponent<T>(Vector2 point) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -787,8 +726,7 @@ namespace Monocle
             return false;
         }
 
-        public bool CollideCheckByComponent<T>(Vector2 from, Vector2 to) where T : Component
-        {
+        public bool CollideCheckByComponent<T>(Vector2 from, Vector2 to) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -797,8 +735,7 @@ namespace Monocle
             return false;
         }
 
-        public bool CollideCheckByComponent<T>(Rectangle rect) where T : Component
-        {
+        public bool CollideCheckByComponent<T>(Rectangle rect) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -807,8 +744,7 @@ namespace Monocle
             return false;
         }
 
-        public T? CollideFirstByComponent<T>(Vector2 point) where T : Component
-        {
+        public T? CollideFirstByComponent<T>(Vector2 point) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -817,8 +753,7 @@ namespace Monocle
             return null;
         }
 
-        public T? CollideFirstByComponent<T>(Vector2 from, Vector2 to) where T : Component
-        {
+        public T? CollideFirstByComponent<T>(Vector2 from, Vector2 to) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -827,8 +762,7 @@ namespace Monocle
             return null;
         }
 
-        public T? CollideFirstByComponent<T>(Rectangle rect) where T : Component
-        {
+        public T? CollideFirstByComponent<T>(Rectangle rect) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -837,8 +771,7 @@ namespace Monocle
             return null;
         }
 
-        public void CollideIntoByComponent<T>(Vector2 point, List<Component> hits) where T : Component
-        {
+        public void CollideIntoByComponent<T>(Vector2 point, List<Component> hits) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -846,8 +779,7 @@ namespace Monocle
                     hits.Add(list[i]);
         }
 
-        public void CollideIntoByComponent<T>(Vector2 from, Vector2 to, List<Component> hits) where T : Component
-        {
+        public void CollideIntoByComponent<T>(Vector2 from, Vector2 to, List<Component> hits) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -855,8 +787,7 @@ namespace Monocle
                     hits.Add(list[i]);
         }
 
-        public void CollideIntoByComponent<T>(Rectangle rect, List<Component> hits) where T : Component
-        {
+        public void CollideIntoByComponent<T>(Rectangle rect, List<Component> hits) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -864,8 +795,7 @@ namespace Monocle
                     list.Add(list[i]);
         }
 
-        public void CollideIntoByComponent<T>(Vector2 point, List<T> hits) where T : Component
-        {
+        public void CollideIntoByComponent<T>(Vector2 point, List<T> hits) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -874,8 +804,7 @@ namespace Monocle
                         hits.Add(typed);
         }
 
-        public void CollideIntoByComponent<T>(Vector2 from, Vector2 to, List<T> hits) where T : Component
-        {
+        public void CollideIntoByComponent<T>(Vector2 from, Vector2 to, List<T> hits) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -884,8 +813,7 @@ namespace Monocle
                         hits.Add(typed);
         }
 
-        public void CollideIntoByComponent<T>(Rectangle rect, List<T> hits) where T : Component
-        {
+        public void CollideIntoByComponent<T>(Rectangle rect, List<T> hits) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -893,29 +821,25 @@ namespace Monocle
                     list.Add(list[i] as T);
         }
 
-        public List<T> CollideAllByComponent<T>(Vector2 point) where T : Component
-        {
+        public List<T> CollideAllByComponent<T>(Vector2 point) where T : Component {
             List<T> list = new List<T>();
             CollideIntoByComponent<T>(point, list);
             return list;
         }
 
-        public List<T> CollideAllByComponent<T>(Vector2 from, Vector2 to) where T : Component
-        {
+        public List<T> CollideAllByComponent<T>(Vector2 from, Vector2 to) where T : Component {
             List<T> list = new List<T>();
             CollideIntoByComponent<T>(from, to, list);
             return list;
         }
 
-        public List<T> CollideAllByComponent<T>(Rectangle rect) where T : Component
-        {
+        public List<T> CollideAllByComponent<T>(Rectangle rect) where T : Component {
             List<T> list = new List<T>();
             CollideIntoByComponent<T>(rect, list);
             return list;
         }
 
-        public void CollideDoByComponent<T>(Vector2 point, Action<T> action) where T : Component
-        {
+        public void CollideDoByComponent<T>(Vector2 point, Action<T> action) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -924,8 +848,7 @@ namespace Monocle
                         action(typed);
         }
 
-        public void CollideDoByComponent<T>(Vector2 from, Vector2 to, Action<T> action) where T : Component
-        {
+        public void CollideDoByComponent<T>(Vector2 from, Vector2 to, Action<T> action) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -934,8 +857,7 @@ namespace Monocle
                         action(typed);
         }
 
-        public void CollideDoByComponent<T>(Rectangle rect, Action<T> action) where T : Component
-        {
+        public void CollideDoByComponent<T>(Rectangle rect, Action<T> action) where T : Component {
             var list = Tracker.Components[typeof(T)];
 
             for (int i = 0; i < list.Count; i++)
@@ -944,18 +866,16 @@ namespace Monocle
                         action(typed);
         }
 
-        public Vector2 LineWalkCheckByComponent<T>(Vector2 from, Vector2 to, float precision) where T : Component
-        {
+        public Vector2 LineWalkCheckByComponent<T>(Vector2 from, Vector2 to, float precision) where T : Component {
             Vector2 add = to - from;
             add.Normalize();
             add *= precision;
 
-            int amount = (int)Math.Floor((from - to).Length() / precision);
+            int amount = (int) Math.Floor((from - to).Length() / precision);
             Vector2 prev = from;
             Vector2 at = from + add;
 
-            for (int i = 0; i <= amount; i++)
-            {
+            for (int i = 0; i <= amount; i++) {
                 if (CollideCheckByComponent<T>(at))
                     return prev;
                 prev = at;
@@ -978,8 +898,7 @@ namespace Monocle
         /// by assigning each a slightly different actual depth value. It also marks the relevant lists
         /// as unsorted to trigger re-sorting during the next update cycle.
         /// </remarks>
-        internal void SetActualDepth(Entity entity)
-        {
+        internal void SetActualDepth(Entity entity) {
             const double theta = .000001f;
 
             double add = 0;
@@ -1009,8 +928,7 @@ namespace Monocle
         /// This is a convenience method that combines entity creation and scene addition.
         /// The entity type must be marked with the Pooled attribute to work with the pooler.
         /// </remarks>
-        public T CreateAndAdd<T>() where T : Entity, new()
-        {
+        public T CreateAndAdd<T>() where T : Entity, new() {
             var entity = Engine.Pooler!.Create<T>();
             Add(entity);
             return entity;
@@ -1021,10 +939,8 @@ namespace Monocle
         /// </summary>
         /// <param name="tag">The bit tag to fetch entities for.</param>
         /// <returns>A list of entities with the specified tag. The result is never null.</returns>
-        public List<Entity> this[BitTag tag]
-        {
-            get
-            {
+        public List<Entity> this[BitTag tag] {
+            get {
                 return TagLists[tag.ID];
             }
         }
@@ -1038,8 +954,7 @@ namespace Monocle
         /// The entity will be automatically managed by the scene and will receive
         /// lifecycle callbacks (Begin, Update, Render, End).
         /// </remarks>
-        public void Add(Entity entity)
-        {
+        public void Add(Entity entity) {
             Entities.Add(entity);
         }
 
@@ -1051,8 +966,7 @@ namespace Monocle
         /// This is a shortcut method that delegates to the Entities list.
         /// The entity will no longer receive lifecycle callbacks from the scene.
         /// </remarks>
-        public void Remove(Entity entity)
-        {
+        public void Remove(Entity entity) {
             Entities.Remove(entity);
         }
 
@@ -1060,8 +974,7 @@ namespace Monocle
         /// Shortcut function for adding a set of Entities from the Scene's Entities list
         /// </summary>
         /// <param name="entities">The Entities to add</param>
-        public void Add(IEnumerable<Entity> entities)
-        {
+        public void Add(IEnumerable<Entity> entities) {
             Entities.Add(entities);
         }
 
@@ -1069,8 +982,7 @@ namespace Monocle
         /// Shortcut function for removing a set of Entities from the Scene's Entities list
         /// </summary>
         /// <param name="entities">The Entities to remove</param>
-        public void Remove(IEnumerable<Entity> entities)
-        {
+        public void Remove(IEnumerable<Entity> entities) {
             Entities.Remove(entities);
         }
 
@@ -1078,8 +990,7 @@ namespace Monocle
         /// Shortcut function for adding a set of Entities from the Scene's Entities list
         /// </summary>
         /// <param name="entities">The Entities to add</param>
-        public void Add(params Entity[] entities)
-        {
+        public void Add(params Entity[] entities) {
             Entities.Add(entities);
         }
 
@@ -1087,8 +998,7 @@ namespace Monocle
         /// Shortcut function for removing a set of Entities from the Scene's Entities list
         /// </summary>
         /// <param name="entities">The Entities to remove</param>
-        public void Remove(params Entity[] entities)
-        {
+        public void Remove(params Entity[] entities) {
             Entities.Remove(entities);
         }
 
@@ -1100,8 +1010,7 @@ namespace Monocle
         /// This allows you to use foreach loops to iterate through all entities in the scene.
         /// The entities are enumerated in their current depth order.
         /// </remarks>
-        public IEnumerator<Entity> GetEnumerator()
-        {
+        public IEnumerator<Entity> GetEnumerator() {
             return Entities.GetEnumerator();
         }
 
@@ -1112,8 +1021,7 @@ namespace Monocle
         /// <remarks>
         /// This is the non-generic implementation required by IEnumerable.
         /// </remarks>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
+        IEnumerator System.Collections.IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
 
@@ -1122,8 +1030,7 @@ namespace Monocle
         /// </summary>
         /// <param name="mask">The bitmask of tags to search for.</param>
         /// <returns>A list of entities that match the tag mask. The list is never null but may be empty.</returns>
-        public List<Entity> GetEntitiesByTagMask(int mask)
-        {
+        public List<Entity> GetEntitiesByTagMask(int mask) {
             List<Entity> results = new();
             foreach (var entity in Entities)
                 if ((entity.Tag & mask) != 0)
@@ -1136,8 +1043,7 @@ namespace Monocle
         /// </summary>
         /// <param name="mask">The bitmask of tags to exclude.</param>
         /// <returns>A list of entities that do not match the tag mask. The list is never null but may be empty.</returns>
-        public List<Entity> GetEntitiesExcludingTagMask(int mask)
-        {
+        public List<Entity> GetEntitiesExcludingTagMask(int mask) {
             List<Entity> results = new();
             foreach (var entity in Entities)
                 if ((entity.Tag & mask) == 0)
@@ -1158,8 +1064,7 @@ namespace Monocle
         /// The renderer will be automatically managed by the scene and will receive
         /// rendering lifecycle callbacks (BeforeRender, Render, AfterRender).
         /// </remarks>
-        public void Add(Renderer renderer)
-        {
+        public void Add(Renderer renderer) {
             RendererList.Add(renderer);
         }
 
@@ -1171,8 +1076,7 @@ namespace Monocle
         /// This is a shortcut method that delegates to the RendererList.
         /// The renderer will no longer receive rendering lifecycle callbacks from the scene.
         /// </remarks>
-        public void Remove(Renderer renderer)
-        {
+        public void Remove(Renderer renderer) {
             RendererList.Remove(renderer);
         }
 

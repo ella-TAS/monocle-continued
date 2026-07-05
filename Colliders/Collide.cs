@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿#nullable enable
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +29,7 @@ namespace Monocle {
             if (a.Collider == null || b.Collider == null)
                 return false;
             else
-                return b.Collidable && b.Entity.Collidable && a.Collider.Collide(b);
+                return b.Collidable && (b.Entity?.Collidable ?? false) && a.Collider.Collide(b);
         }
 
         public static bool Check(Entity a, CollidableComponent b, Vector2 at) {
@@ -65,7 +66,7 @@ namespace Monocle {
 
         #region First
 
-        public static Entity First(Entity a, IEnumerable<Entity> b) {
+        public static Entity? First(Entity a, IEnumerable<Entity> b) {
             foreach (var e in b)
                 if (Check(a, e))
                     return e;
@@ -73,10 +74,10 @@ namespace Monocle {
             return null;
         }
 
-        public static Entity First(Entity a, IEnumerable<Entity> b, Vector2 at) {
+        public static Entity? First(Entity a, IEnumerable<Entity> b, Vector2 at) {
             Vector2 old = a.Position;
             a.Position = at;
-            Entity ret = First(a, b);
+            Entity? ret = First(a, b);
             a.Position = old;
             return ret;
         }
