@@ -1471,7 +1471,7 @@ namespace Monocle {
 
         public static XmlDocument LoadContentXML(string filename) {
             XmlDocument xml = new XmlDocument();
-            xml.Load(TitleContainer.OpenStream(Path.Combine(Engine.Instance!.Content.RootDirectory, filename)));
+            xml.Load(TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, filename)));
             return xml;
         }
 
