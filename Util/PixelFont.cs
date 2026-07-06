@@ -258,7 +258,7 @@ namespace Monocle {
         }
 
         public PixelFontSize AddFontSize(string path, Atlas atlas = null, bool outline = false) {
-            var data = Calc.LoadXML(path)["font"];
+            var data = Calc.LoadContentXML(path)["font"];
             return AddFontSize(path, data, atlas, outline);
         }
 
@@ -280,8 +280,7 @@ namespace Monocle {
                     Textures.Add(atlas[atlasPath]);
                 } else {
                     var dir = Path.GetDirectoryName(path);
-                    dir = dir.Substring(Engine.ContentDirectory.Length + 1);
-                    Textures.Add(MTexture.FromFile(Path.Combine(dir, file)));
+                    Textures.Add(MTexture.FromFile(Path.Combine(Engine.ContentDirectory, dir, file)));
                 }
             }
 

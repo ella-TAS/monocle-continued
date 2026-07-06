@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 namespace Monocle {
-    public class PixelText : Component {
+    public class PixelText : GraphicsComponent {
+        public enum HorizontalAlign { Left, Center, Right };
+        public enum VerticalAlign { Top, Center, Bottom };
 
         private struct Char {
             public Vector2 Offset;
@@ -13,6 +15,8 @@ namespace Monocle {
         private List<Char> characters = new List<Char>();
         private PixelFont font;
         private PixelFontSize size;
+        private HorizontalAlign horizontalOrigin;
+        private VerticalAlign verticalOrigin;
         private string text;
         private bool dirty;
 
@@ -43,19 +47,35 @@ namespace Monocle {
             }
         }
 
-        public Vector2 Position = new Vector2();
-        public Color Color = Color.White;
-        public Vector2 Scale = Vector2.One;
+        public HorizontalAlign HorizontalOrigin {
+            get { return horizontalOrigin; }
+            set {
+                horizontalOrigin = value;
+                UpdateCentering();
+            }
+        }
+
+        public VerticalAlign VerticalOrigin {
+            get { return verticalOrigin; }
+            set {
+                verticalOrigin = value;
+                UpdateCentering();
+            }
+        }
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public PixelText(PixelFont font, string text, Color color)
-            : base(false, true) {
+        public PixelText(PixelFont font, Vector2 position, string text, Color color, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
+            : base(false) {
             Font = font;
             Text = text;
             Color = color;
             Text = text;
             size = Font.Sizes[0];
+            Position = position;
+            horizontalOrigin = horizontalAlign;
+            verticalOrigin = verticalAlign;
             Refresh();
         }
 
@@ -84,14 +104,34 @@ namespace Monocle {
                         Bounds = fontChar.Texture.ClipRect,
                     });
 
+                    offset.X += fontChar.XAdvance;
                     if (offset.X > widest)
                         widest = (int) offset.X;
-                    offset.X += fontChar.XAdvance;
                 }
             }
 
             Width = widest;
             Height = lines * size.LineHeight;
+
+            UpdateCentering();
+        }
+
+        private void UpdateCentering() {
+            if (horizontalOrigin == HorizontalAlign.Left)
+                Origin.X = 0;
+            else if (horizontalOrigin == HorizontalAlign.Center)
+                Origin.X = Width / 2;
+            else
+                Origin.X = Width;
+
+            if (verticalOrigin == VerticalAlign.Top)
+                Origin.Y = 0;
+            else if (verticalOrigin == VerticalAlign.Center)
+                Origin.Y = Height / 2;
+            else
+                Origin.Y = Height;
+
+            Origin = Calc.Floor(Origin);
         }
 
         public override void Render() {
@@ -99,8 +139,7 @@ namespace Monocle {
                 Refresh();
 
             for (var i = 0; i < characters.Count; i++)
-                characters[i].CharData.Texture.Draw(Position + characters[i].Offset, Vector2.Zero, Color);
+                characters[i].CharData.Texture.Draw(Position + characters[i].Offset * Scale.X, Origin, Color, Scale);
         }
-
     }
 }

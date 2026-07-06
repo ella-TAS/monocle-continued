@@ -342,6 +342,7 @@ namespace Monocle {
                 break;
 
             case Keys.F12:
+            case Keys.Escape:
             case Keys.Oem8:
             case Keys.OemTilde:
                 Open = canOpen = false;
