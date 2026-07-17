@@ -263,19 +263,14 @@ namespace Monocle {
 
             public Vector2 Position {
                 get {
-                    // account for offset inside game window with black bars
-                    Vector2 blackBarOffset = 0.5f * new Vector2(Engine.WindowWidth - Engine.ViewWidth, Engine.WindowHeight - Engine.ViewHeight);
-
                     return Vector2.Transform(
-                        new Vector2(CurrentState.X, CurrentState.Y) - blackBarOffset,
+                        new Vector2(CurrentState.X, CurrentState.Y) - Engine.ViewportPosition,
                         Matrix.Invert(Engine.ScreenMatrix)
                     );
                 }
 
                 set {
-                    Vector2 blackBarOffset = 0.5f * new Vector2(Engine.WindowWidth - Engine.ViewWidth, Engine.WindowHeight - Engine.ViewHeight);
-
-                    Vector2 vector = Vector2.Transform(value, Engine.ScreenMatrix) + blackBarOffset;
+                    Vector2 vector = Vector2.Transform(value, Engine.ScreenMatrix) + Engine.ViewportPosition;
                     Microsoft.Xna.Framework.Input.Mouse.SetPosition((int) Math.Round(vector.X), (int) Math.Round(vector.Y));
                 }
             }

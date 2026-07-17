@@ -81,6 +81,8 @@ namespace Monocle {
         /// </summary>
         public static int WindowHeight => Graphics?.GraphicsDevice.PresentationParameters.BackBufferHeight ?? 1080;
 
+        public static Vector2 ViewportPosition => new Vector2(Viewport.X, Viewport.Y);
+
         /// <summary>
         /// The padding around the viewport for maintaining aspect ratio.
         /// Setting this value will update the view immediately.
@@ -231,8 +233,6 @@ namespace Monocle {
             ExitOnEscapeKeypress = true;
 
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
-
-            Graphics.ApplyChanges();
         }
 
 #if !CONSOLE
@@ -453,6 +453,14 @@ namespace Monocle {
         public static Scene? Scene {
             get => Instance?.scene;
             set { if (Instance != null) Instance.nextScene = value; }
+        }
+
+        /// <summary>
+        /// Swap out the scene without calling End() or Begin()
+        /// </summary>
+        internal static void ReplaceSceneSilent(Scene newScene) {
+            Instance?.scene = newScene;
+            Instance?.nextScene = newScene;
         }
 
         #endregion
