@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Monocle {
@@ -8,8 +7,8 @@ namespace Monocle {
         public readonly Scene FromScene;
         public readonly Scene ToScene;
         public readonly float Duration;
-        public RenderTarget2D FromBuffer;
-        public RenderTarget2D ToBuffer;
+        public RenderBuffer FromBuffer;
+        public RenderBuffer ToBuffer;
         public float Timer;
 
         public float Progress => Timer / Duration;
@@ -24,6 +23,9 @@ namespace Monocle {
             if (Transitioning) {
                 return;
             }
+
+            FromBuffer = new RenderBuffer(Engine.ViewWidth, Engine.ViewHeight);
+            ToBuffer = new RenderBuffer(Engine.ViewWidth, Engine.ViewHeight);
 
             Engine.ReplaceSceneSilent(this);
             ToScene.Begin();
@@ -63,7 +65,8 @@ namespace Monocle {
         public override void Render() {
             base.Render();
 
-            ResizeBuffers();
+            FromBuffer.Resize(Engine.ViewWidth, Engine.ViewHeight);
+            ToBuffer.Resize(Engine.ViewWidth, Engine.ViewHeight);
 
             Engine.Graphics.GraphicsDevice.SetRenderTarget(FromBuffer);
             Engine.Graphics.GraphicsDevice.Clear(Engine.ClearColor);
@@ -73,18 +76,6 @@ namespace Monocle {
             ToScene.Render();
             Engine.Graphics.GraphicsDevice.SetRenderTarget(null);
             Engine.Graphics.GraphicsDevice.Clear(Engine.ClearColor);
-        }
-
-        private void ResizeBuffers() {
-            if (FromBuffer?.Width == Engine.ViewWidth && FromBuffer.Height == Engine.ViewHeight) {
-                return;
-            }
-
-            FromBuffer?.Dispose();
-            ToBuffer?.Dispose();
-
-            FromBuffer = new RenderTarget2D(Engine.Graphics.GraphicsDevice, Engine.ViewWidth, Engine.ViewHeight);
-            ToBuffer = new RenderTarget2D(Engine.Graphics.GraphicsDevice, Engine.ViewWidth, Engine.ViewHeight);
         }
 
         public override void BeforeUpdate() {
