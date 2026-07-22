@@ -65,8 +65,8 @@ namespace Monocle {
         public override void Render() {
             base.Render();
 
-            FromBuffer.Resize(Engine.ViewWidth, Engine.ViewHeight);
-            ToBuffer.Resize(Engine.ViewWidth, Engine.ViewHeight);
+            FromBuffer.Resize(Engine.WindowWidth, Engine.WindowHeight);
+            ToBuffer.Resize(Engine.WindowWidth, Engine.WindowHeight);
 
             Engine.Graphics.GraphicsDevice.SetRenderTarget(FromBuffer);
             Engine.Graphics.GraphicsDevice.Clear(Engine.ClearColor);
