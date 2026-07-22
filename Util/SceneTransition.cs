@@ -24,8 +24,8 @@ namespace Monocle {
                 return;
             }
 
-            FromBuffer = new RenderBuffer(Engine.ViewWidth, Engine.ViewHeight);
-            ToBuffer = new RenderBuffer(Engine.ViewWidth, Engine.ViewHeight);
+            FromBuffer = new RenderBuffer();
+            ToBuffer = new RenderBuffer();
 
             Engine.ReplaceSceneSilent(this);
             ToScene.Begin();

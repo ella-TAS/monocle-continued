@@ -18,6 +18,8 @@ namespace Monocle {
 
         public Rectangle Bounds => Target.Bounds;
 
+        public RenderBuffer() { }
+
         public RenderBuffer(int width, int height) {
             Resize(width, height);
         }
