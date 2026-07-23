@@ -426,7 +426,9 @@ namespace Monocle {
                 Run();
             } catch (Exception e) {
                 ErrorLog.Write(e);
+#if !DEBUG
                 ErrorLog.TryOpen();
+#endif
 
                 if (callExitOnCrash)
                     OnExiting(this, EventArgs.Empty);
