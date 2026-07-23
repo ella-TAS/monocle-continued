@@ -41,7 +41,7 @@ namespace Monocle {
             drawString = prefix + value.ToString();
 
             if (centered)
-                Origin = Calc.Floor(font.MeasureString(drawString) / 2);
+                Origin = Vector2Ext.Floor(font.MeasureString(drawString) / 2);
         }
 
         public override void Render() {

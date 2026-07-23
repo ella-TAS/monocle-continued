@@ -17,7 +17,7 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - add #nullable to a few important classes
 - add a Logger class
 - open the console with F12 (because it wasn't working on my keyboard layout) and close it with Escape
-- remove obsolete methods from Calc
+- remove obsolete methods and outsource most extensions from Calc
 - mouse position fix (it wouldn't respect black bars on non-16:9 screens in fullscreen)
 - extend PixelText component to work like the Text one
 - RenderBuffer, a resizable wrapper of RenderTarget2D

@@ -131,7 +131,7 @@ namespace Monocle {
             else
                 Origin.Y = Height;
 
-            Origin = Calc.Floor(Origin);
+            Origin = Origin.Floor();
         }
 
         public override void Render() {

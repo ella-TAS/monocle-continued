@@ -78,15 +78,13 @@ namespace Monocle {
         }
 
         public PixelFontCharacter Get(int id) {
-            PixelFontCharacter val = null;
-            if (Characters.TryGetValue(id, out val))
+            if (Characters.TryGetValue(id, out PixelFontCharacter val))
                 return val;
             return null;
         }
 
         public Vector2 Measure(char text) {
-            PixelFontCharacter c = null;
-            if (Characters.TryGetValue(text, out c))
+            if (Characters.TryGetValue(text, out PixelFontCharacter c))
                 return new Vector2(c.XAdvance, LineHeight);
             return Vector2.Zero;
         }
@@ -105,12 +103,10 @@ namespace Monocle {
                         size.X = currentLineWidth;
                     currentLineWidth = 0f;
                 } else {
-                    PixelFontCharacter c = null;
-                    if (Characters.TryGetValue(text[i], out c)) {
+                    if (Characters.TryGetValue(text[i], out PixelFontCharacter c)) {
                         currentLineWidth += c.XAdvance;
 
-                        int kerning;
-                        if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out kerning))
+                        if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
                             currentLineWidth += kerning;
                     }
                 }
@@ -132,12 +128,10 @@ namespace Monocle {
                 if (text[i] == '\n')
                     break;
 
-                PixelFontCharacter c = null;
-                if (Characters.TryGetValue(text[i], out c)) {
+                if (Characters.TryGetValue(text[i], out PixelFontCharacter c)) {
                     currentLineWidth += c.XAdvance;
 
-                    int kerning;
-                    if (i < j - 1 && c.Kerning.TryGetValue(text[i + 1], out kerning))
+                    if (i < j - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
                         currentLineWidth += kerning;
                 }
             }
@@ -161,12 +155,11 @@ namespace Monocle {
             if (char.IsWhiteSpace(character))
                 return;
 
-            PixelFontCharacter c = null;
-            if (Characters.TryGetValue(character, out c)) {
+            if (Characters.TryGetValue(character, out PixelFontCharacter c)) {
                 var measure = Measure(character);
                 var justified = new Vector2(measure.X * justify.X, measure.Y * justify.Y);
                 var pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
-                c.Texture.Draw(Calc.Floor(pos), Vector2.Zero, color, scale);
+                c.Texture.Draw(pos.Floor(), Vector2.Zero, color, scale);
             }
         }
 
@@ -187,8 +180,7 @@ namespace Monocle {
                     continue;
                 }
 
-                PixelFontCharacter c = null;
-                if (Characters.TryGetValue(text[i], out c)) {
+                if (Characters.TryGetValue(text[i], out PixelFontCharacter c)) {
                     var pos = (position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale);
 
                     // draw stroke
@@ -223,8 +215,7 @@ namespace Monocle {
 
                     offset.X += c.XAdvance;
 
-                    int kerning;
-                    if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out kerning))
+                    if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
                         offset.X += kerning;
                 }
             }
@@ -307,8 +298,7 @@ namespace Monocle {
                     var to = kerning.AttrInt("second");
                     var push = kerning.AttrInt("amount");
 
-                    PixelFontCharacter c = null;
-                    if (fontSize.Characters.TryGetValue(from, out c))
+                    if (fontSize.Characters.TryGetValue(from, out PixelFontCharacter c))
                         c.Kerning.Add(to, push);
                 }
 

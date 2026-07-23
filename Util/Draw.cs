@@ -340,11 +340,11 @@ namespace Monocle {
         #region Text
 
         public static void Text(SpriteFont font, string text, Vector2 position, Color color) {
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color);
         }
 
         public static void Text(SpriteFont font, string text, Vector2 position, Color color, Vector2 origin, Vector2 scale, float rotation) {
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, rotation, origin, scale, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, rotation, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void TextJustified(SpriteFont font, string text, Vector2 position, Color color, Vector2 justify) {
@@ -352,14 +352,14 @@ namespace Monocle {
             origin.X *= justify.X;
             origin.Y *= justify.Y;
 
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
         public static void TextJustified(SpriteFont font, string text, Vector2 position, Color color, float scale, Vector2 justify) {
             Vector2 origin = font.MeasureString(text);
             origin.X *= justify.X;
             origin.Y *= justify.Y;
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void TextCentered(SpriteFont font, string text, Vector2 position) {
@@ -384,8 +384,8 @@ namespace Monocle {
             for (int i = -1; i < 2; i++)
                 for (int j = -1; j < 2; j++)
                     if (i != 0 || j != 0)
-                        Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position) + new Vector2(i, j), Color.Black, 0, origin, scale, SpriteEffects.None, 0);
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
+                        Draw.SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), Color.Black, 0, origin, scale, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor) {
@@ -394,8 +394,8 @@ namespace Monocle {
             for (int i = -1; i < 2; i++)
                 for (int j = -1; j < 2; j++)
                     if (i != 0 || j != 0)
-                        Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position) + new Vector2(i, j), outlineColor, 0, origin, 1, SpriteEffects.None, 0);
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
+                        Draw.SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0, origin, 1, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextCentered(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, float scale) {
@@ -404,8 +404,8 @@ namespace Monocle {
             for (int i = -1; i < 2; i++)
                 for (int j = -1; j < 2; j++)
                     if (i != 0 || j != 0)
-                        Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position) + new Vector2(i, j), outlineColor, 0, origin, scale, SpriteEffects.None, 0);
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
+                        Draw.SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0, origin, scale, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextJustify(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, Vector2 justify) {
@@ -414,8 +414,8 @@ namespace Monocle {
             for (int i = -1; i < 2; i++)
                 for (int j = -1; j < 2; j++)
                     if (i != 0 || j != 0)
-                        Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position) + new Vector2(i, j), outlineColor, 0, origin, 1, SpriteEffects.None, 0);
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
+                        Draw.SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0, origin, 1, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextJustify(SpriteFont font, string text, Vector2 position, Color color, Color outlineColor, Vector2 justify, float scale) {
@@ -424,8 +424,8 @@ namespace Monocle {
             for (int i = -1; i < 2; i++)
                 for (int j = -1; j < 2; j++)
                     if (i != 0 || j != 0)
-                        Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position) + new Vector2(i, j), outlineColor, 0, origin, scale, SpriteEffects.None, 0);
-            Draw.SpriteBatch.DrawString(font, text, Calc.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
+                        Draw.SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0, origin, scale, SpriteEffects.None, 0);
+            Draw.SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         #endregion
@@ -433,7 +433,7 @@ namespace Monocle {
         #region Weird Textures
 
         public static void SineTextureH(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8) {
-            position = Calc.Floor(position);
+            position = position.Floor();
             Rectangle clip = tex.ClipRect;
             clip.Width = sliceSize;
 
@@ -449,7 +449,7 @@ namespace Monocle {
         }
 
         public static void SineTextureV(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8) {
-            position = Calc.Floor(position);
+            position = position.Floor();
             Rectangle clip = tex.ClipRect;
             clip.Height = sliceSize;
 
@@ -465,7 +465,7 @@ namespace Monocle {
         }
 
         public static void TextureBannerV(MTexture tex, Vector2 position, Vector2 origin, Vector2 scale, float rotation, Color color, SpriteEffects effects, float sineCounter, float amplitude = 2, int sliceSize = 2, float sliceAdd = MathHelper.TwoPi / 8) {
-            position = Calc.Floor(position);
+            position = position.Floor();
             Rectangle clip = tex.ClipRect;
             clip.Height = sliceSize;
 
