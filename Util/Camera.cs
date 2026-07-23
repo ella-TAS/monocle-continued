@@ -244,6 +244,26 @@ namespace Monocle {
             }
         }
 
+        /// <summary>
+        /// Gets the bounding rectangle of the camera's view.
+        /// Setting this property is not implemented.
+        /// </summary>
+        /// <exception cref="NotImplementedException">Thrown when attempting to set this property.</exception>
+        public Rectangle Bounds {
+            get {
+                return new Rectangle(
+                    (int) Math.Round(X - Origin.X),
+                    (int) Math.Round(Y - Origin.Y),
+                    (int) Math.Round(Right - X),
+                    (int) Math.Round(Bottom - Y)
+                );
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
         /*
          *  Utils
          */
