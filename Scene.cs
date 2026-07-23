@@ -113,6 +113,7 @@ namespace Monocle {
             Focused = false;
             foreach (var entity in Entities)
                 entity.SceneEnd(this);
+            RendererList.SceneEnd(this);
         }
 
         /// <summary>

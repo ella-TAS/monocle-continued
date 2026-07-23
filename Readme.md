@@ -24,3 +24,4 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - builtin Scene Transitions between two scenes
 - NineSliceBox component
 - add Camera.Bounds
+- Renderer.Dispose for renderers with target buffers

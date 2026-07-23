@@ -21,8 +21,10 @@ namespace Monocle {
                     Renderers.Add(renderer);
             adding.Clear();
             if (removing.Count > 0)
-                foreach (var renderer in removing)
+                foreach (var renderer in removing) {
                     Renderers.Remove(renderer);
+                    renderer.Dispose();
+                }
             removing.Clear();
         }
 
@@ -71,5 +73,8 @@ namespace Monocle {
             removing.Add(renderer);
         }
 
+        public void SceneEnd(Scene scene) {
+            Renderers.ForEach(r => r.Dispose());
+        }
     }
 }
