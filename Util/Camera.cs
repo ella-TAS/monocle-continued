@@ -254,8 +254,8 @@ namespace Monocle {
                 return new Rectangle(
                     (int) Math.Round(X - Origin.X),
                     (int) Math.Round(Y - Origin.Y),
-                    (int) Math.Round(Right - X),
-                    (int) Math.Round(Bottom - Y)
+                    (int) Math.Round(Right - Left),
+                    (int) Math.Round(Bottom - Top)
                 );
             }
 
