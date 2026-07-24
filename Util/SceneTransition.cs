@@ -63,8 +63,6 @@ namespace Monocle {
         }
 
         public override void Render() {
-            base.Render();
-
             FromBuffer.Resize(Engine.WindowWidth, Engine.WindowHeight);
             ToBuffer.Resize(Engine.WindowWidth, Engine.WindowHeight);
 
