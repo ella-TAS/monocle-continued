@@ -139,7 +139,7 @@ namespace Monocle {
                 Refresh();
 
             for (var i = 0; i < characters.Count; i++)
-                characters[i].CharData.Texture.Draw(Position + characters[i].Offset * Scale.X, Origin, Color, Scale);
+                characters[i].CharData.Texture.Draw(RenderPosition + characters[i].Offset * Scale.X, Origin, Color, Scale);
         }
     }
 }
