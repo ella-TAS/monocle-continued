@@ -487,10 +487,6 @@ namespace Monocle {
         public const float UpLeft = -MathHelper.PiOver4 - MathHelper.PiOver2;
         public const float DownRight = MathHelper.PiOver4;
         public const float DownLeft = MathHelper.PiOver4 + MathHelper.PiOver2;
-        public const float DegToRad = MathHelper.Pi / 180f;
-        public const float RadToDeg = 180f / MathHelper.Pi;
-        public const float DtR = DegToRad;
-        public const float RtD = RadToDeg;
         public const float Circle = MathHelper.TwoPi;
         public const float HalfCircle = MathHelper.Pi;
         public const float QuarterCircle = MathHelper.PiOver2;
@@ -539,11 +535,11 @@ namespace Monocle {
         }
 
         public static float ToRad(this float f) {
-            return f * DegToRad;
+            return MathHelper.ToRadians(f);
         }
 
         public static float ToDeg(this float f) {
-            return f * RadToDeg;
+            return MathHelper.ToDegrees(f);
         }
 
         public static int Axis(bool negative, bool positive, int both = 0) {
@@ -628,10 +624,6 @@ namespace Monocle {
 
         public static float Snap(float value, float increment, float offset) {
             return ((float) Math.Round((value - offset) / increment) * increment) + offset;
-        }
-
-        public static float WrapAngleDeg(float angleDegrees) {
-            return (((angleDegrees * Math.Sign(angleDegrees) + 180) % 360) - 180) * Math.Sign(angleDegrees);
         }
 
         public static float WrapAngle(float angleRadians) {
