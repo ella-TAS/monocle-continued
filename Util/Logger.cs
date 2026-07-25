@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Monocle {
     public static class Logger {
-        public const string TIME_FORMAT = "yyyy-dd-MM HH:mm:ss.fffff";
+        public const string TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.fffff";
         public static string LogPath => Path.Combine(AppContext.BaseDirectory, "log.txt");
 
         public static void Initialize() {
@@ -44,7 +44,7 @@ namespace Monocle {
         }
 
         public static void TimeLog(object obj) {
-            Debug($"[{DateTime.Now:yyyy-dd-MM HH:mm:ss}] {obj ?? "<null>"}");
+            Debug($"[{DateTime.Now.ToString(TIME_FORMAT)}] {obj ?? "<null>"}");
         }
 
         public static void LogEach<T>(IEnumerable<T> collection) {
