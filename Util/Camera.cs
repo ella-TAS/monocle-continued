@@ -17,6 +17,8 @@ namespace Monocle {
         private Vector2 origin = Vector2.Zero;
         private float angle = 0;
 
+        public bool LockPixelGrid = true;
+
         /// <summary>
         /// The viewport defining the visible area and dimensions for this camera.
         /// </summary>
@@ -61,11 +63,18 @@ namespace Monocle {
         /// Applies translation, rotation, scaling, and origin transformations in the correct order.
         /// </summary>
         private void UpdateMatrices() {
+            Vector2 renderPosition = Position;
+            Vector2 renderOrigin = Origin;
+            if (LockPixelGrid) {
+                renderPosition = renderPosition.Floor();
+                renderOrigin = renderOrigin.Floor();
+            }
+
             matrix = Matrix.Identity *
-                    Matrix.CreateTranslation(new Vector3(-new Vector2((int) Math.Floor(position.X), (int) Math.Floor(position.Y)), 0)) *
-                    Matrix.CreateRotationZ(angle) *
-                    Matrix.CreateScale(new Vector3(zoom, 1)) *
-                    Matrix.CreateTranslation(new Vector3(new Vector2((int) Math.Floor(origin.X), (int) Math.Floor(origin.Y)), 0));
+                Matrix.CreateTranslation(new Vector3(-renderPosition, 0)) *
+                Matrix.CreateRotationZ(angle) *
+                Matrix.CreateScale(new Vector3(zoom, 1)) *
+                Matrix.CreateTranslation(new Vector3(renderOrigin, 0));
 
             inverse = Matrix.Invert(matrix);
 
