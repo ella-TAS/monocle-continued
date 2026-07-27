@@ -2,24 +2,32 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace Monocle {
     /// <summary>
     /// Save and Load objects to files.
-    /// Currently supported modes: Json, JsonObfuscated, XML.
-    /// Binary format is no longer supported due to a deprecation.
+    /// Currently supported modes:
+    /// Json: normal JSON normalization
+    /// JsonObfuscated: same as Json, but all bytes are modified
+    /// XML: typed XML normalization
+    /// XMLLight: no support for dictionaries/tuples, more readable
+    /// Binary format is no longer supported due to a deprecation
     /// </summary>
     public static class SaveLoad {
         public enum SerializeMode {
             Json,
             JsonObfuscated,
-            XML
+            XML,
+            XMLLight
         }
 
         private static readonly JsonSerializerOptions JsonOptions = new() {
             WriteIndented = true,
-            IncludeFields = true
+            IncludeFields = true,
+            Converters = { new JsonStringEnumConverter() },
         };
 
         // maybe different on a platform basis, works on linux/win
@@ -70,11 +78,16 @@ namespace Monocle {
                     break;
                 }
 
+            case SerializeMode.XMLLight:
+                var xs = new XmlSerializer(typeof(T));
+                xs.Serialize(stream, data);
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
 
-            Logger.Release("SaveLoad", $"File {folderName}/{fileName} saved");
+            Logger.Log("SaveLoad", $"File {folderName}/{fileName} saved");
         }
 
         public static bool SafeSave<T>(T data, string fileName, SerializeMode mode, string folderName = "Saves")
@@ -98,7 +111,7 @@ namespace Monocle {
             string path = GetSavePath(fileName, folderName);
 
             if (!File.Exists(path)) {
-                Logger.Release("SaveLoad", $"File {folderName}/{fileName} not found");
+                Logger.Log("SaveLoad", $"File {folderName}/{fileName} not found");
                 return null;
             }
 
@@ -133,11 +146,16 @@ namespace Monocle {
                 result = (T) serializer.ReadObject(stream);
                 break;
 
+            case SerializeMode.XMLLight:
+                var xs = new XmlSerializer(typeof(T));
+                result = (T) xs.Deserialize(stream);
+                break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
 
-            Logger.Release("SaveLoad", $"File {folderName}/{fileName} loaded");
+            Logger.Log("SaveLoad", $"File {folderName}/{fileName} loaded");
 
             return result;
         }
@@ -158,6 +176,14 @@ namespace Monocle {
 
         public static byte ObfuscateByte(byte input) {
             return (byte) (input ^ 0xAA);
+        }
+
+        public static T LoadContentFile<T>(string fileName, SerializeMode mode) where T : class {
+            return Load<T>(fileName, mode, Engine.ContentDirectory);
+        }
+
+        public static void SaveContentFile<T>(T data, string fileName, SerializeMode mode) where T : class {
+            Save(data, fileName, mode, Engine.ContentDirectory);
         }
     }
 }
