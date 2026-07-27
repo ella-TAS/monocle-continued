@@ -26,9 +26,7 @@ namespace Monocle {
         }
 
         public static void Release(string origin, string message) {
-            Trace.WriteLine(
-                $"[{Timestamp}] [{origin}] {message}"
-            );
+            Trace.WriteLine($"[{Timestamp}] [{origin}] {message}");
         }
 
         public static void Debug(string message, string end = "\n", string origin = null) {

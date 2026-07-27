@@ -703,6 +703,10 @@ namespace Monocle {
             return (int) (prevVal / interval) != (int) (val / interval);
         }
 
+        public static bool OnInterval(Scene scene, float interval) {
+            return OnInterval(scene.TimeActive, scene.TimeActive - Engine.DeltaTime, interval);
+        }
+
 
         #endregion
 

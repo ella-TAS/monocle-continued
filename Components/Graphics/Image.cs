@@ -15,8 +15,16 @@ namespace Monocle {
         }
 
         public override void Render() {
-            if (Texture != null)
-                Texture.Draw(RenderPosition, Origin, Color, Scale, Rotation, Effects);
+            if (Texture != null) {
+                Vector2 drawPos = RenderPosition;
+                if (FlipX) {
+                    drawPos.X += (Width - Texture.ClipRect.Width - 2f * Texture.DrawOffset.X) * Scale.X;
+                }
+                if (FlipY) {
+                    drawPos.Y += (Height - Texture.ClipRect.Height - 2f * Texture.DrawOffset.Y) * Scale.Y;
+                }
+                Texture.Draw(drawPos, Origin, Color, Scale, Rotation, Effects);
+            }
         }
 
         public virtual float Width {
