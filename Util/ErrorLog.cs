@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
 namespace Monocle {
     public static class ErrorLog {
-        public const string Marker = "==========================================";
+        public const string Marker = "<<<<<==========================================>>>>>";
+        public const string TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
         public static string LogPath => Path.Combine(AppContext.BaseDirectory, "error_log.txt");
 
         public static void Write(Exception e) {
-            Write(e.ToString());
+            try {
+                Write(e.ToString());
+            } catch {
+                // something is on fire
+            }
         }
 
         public static void Write(string str) {
@@ -19,15 +25,14 @@ namespace Monocle {
             //Get the previous contents
             string content = "";
             if (File.Exists(LogPath)) {
-                StreamReader tr = new StreamReader(LogPath);
-                content = tr.ReadToEnd();
-                tr.Close();
+                content = File.ReadAllText(LogPath);
 
                 if (!content.Contains(Marker))
                     content = "";
             }
 
             //Header
+            s.Append("     ");
             if (Engine.Instance != null)
                 s.Append(Engine.Instance.Title);
             else
@@ -37,13 +42,12 @@ namespace Monocle {
             s.AppendLine();
 
             //Version Number
-            if (Engine.Instance.Version != null) {
-                s.Append("Ver ");
-                s.AppendLine(Engine.Instance.Version.ToString());
+            if (Engine.Instance?.Version != null) {
+                s.AppendLine($"Ver {Engine.Instance.Version} on {Environment.OSVersion}");
             }
 
             //Datetime
-            s.AppendLine(DateTime.Now.ToString());
+            s.AppendLine(DateTime.Now.ToString(TIME_FORMAT));
 
             //String
             s.AppendLine(str);
@@ -55,15 +59,16 @@ namespace Monocle {
                 s.AppendLine(after);
             }
 
-            TextWriter tw = new StreamWriter(LogPath, false);
-            tw.Write(s.ToString());
-            tw.Close();
+            File.WriteAllText(LogPath, s.ToString());
         }
 
         public static bool TryOpen() {
             if (File.Exists(LogPath)) {
                 try {
-                    System.Diagnostics.Process.Start(LogPath);
+                    Process.Start(new ProcessStartInfo {
+                        FileName = LogPath,
+                        UseShellExecute = true
+                    });
                     return true;
                 } catch {
                     Logger.Release("ErrorLog", "Unable to open error_log.txt after crash");

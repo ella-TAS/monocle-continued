@@ -1,12 +1,15 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Monocle {
     public static class Logger {
         public const string TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.fffff";
+        public static string Timestamp => DateTime.Now.ToString(TIME_FORMAT);
         public static string LogPath => Path.Combine(AppContext.BaseDirectory, "log.txt");
 
         public static void Initialize() {
@@ -15,68 +18,88 @@ namespace Monocle {
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Trace.AutoFlush = true;
 
-            Release("Monocle", "Starting Game Engine");
+            if (Engine.Instance?.Title != null && Engine.Instance.Version != null) {
+                Release("Monocle", Engine.Instance.Title + " v" + Engine.Instance.Version);
+            } else {
+                Release("Monocle", "Starting Game");
+            }
         }
 
-        public static void Release(string origin, object obj) {
+        public static void Release(string origin, string message) {
             Trace.WriteLine(
-                $"[{DateTime.Now.ToString(TIME_FORMAT)}] [{origin}] {obj ?? "<null>"}"
+                $"[{Timestamp}] [{origin}] {message}"
             );
         }
 
-        public static void Debug(string message, string end = "\n") {
+        public static void Debug(string message, string end = "\n", string origin = null) {
 #if DEBUG
-            Trace.Write($"[{DateTime.Now.ToString(TIME_FORMAT)}] {message}{end}");
+            Trace.Write($"[{Timestamp}] [{origin ?? GetCallerInfo()}] {message}{end}");
 #endif
         }
 
         public static void Log(params object[] obj) {
-            string log = "";
-            foreach (object o in obj) {
-                log += o?.ToString() ?? "<null>";
-                log += ' ';
-            }
-            Debug(log);
-        }
-
-        public static void Log() {
-            Debug("Log");
+            Debug(string.Join(" ", obj.Select(o => o?.ToString() ?? "<null>")));
         }
 
         public static void TimeLog(object obj) {
-            Debug($"[{DateTime.Now.ToString(TIME_FORMAT)}] {obj ?? "<null>"}");
+            Debug($"[{Timestamp}] {obj ?? "<null>"}");
         }
 
         public static void LogEach<T>(IEnumerable<T> collection) {
+            string origin = GetCallerInfo();
             foreach (T o in collection)
-                Debug(o?.ToString() ?? "<null>");
+                Debug(o?.ToString() ?? "<null>", origin: origin);
         }
 
-        public static void Dissect(object obj) {
+        public static void Dissect(object obj, int indent = 0) {
+            string origin = GetCallerInfo();
+            string prefix = new string(' ', indent);
+
             if (obj == null) {
-                Debug("<null>");
+                Debug(prefix + "<null>", origin: origin);
                 return;
             }
 
-            Debug(obj.GetType().Name + " { ");
-            foreach (FieldInfo v in obj.GetType().GetFields())
-                Debug(v.Name + ": " + v.GetValue(obj) + ", ");
-            Debug(" }");
-        }
-
-        private static Stopwatch stopwatch;
-
-        public static void StartTimer() {
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
-        }
-
-        public static void EndTimer() {
-            if (stopwatch != null) {
-                stopwatch.Stop();
-                Debug($"Timer: {stopwatch.ElapsedTicks} ticks, {stopwatch.ElapsedMilliseconds} ms");
-                stopwatch = null;
+            Debug(prefix + obj.GetType().Name + " {", origin: origin);
+            foreach (FieldInfo v in obj.GetType().GetFields()) {
+                object val = v.GetValue(obj);
+                if (val is IEnumerable enumerable and not string) {
+                    Debug(prefix + "  " + v.Name + ": " + val + " {", origin: origin);
+                    foreach (object child in enumerable) {
+                        Dissect(child, indent + 4);
+                    }
+                    Debug(prefix + "  }", origin: origin);
+                } else {
+                    Debug(prefix + "  " + v.Name + ": " + val, origin: origin);
+                }
             }
+            Debug(prefix + "}", origin: origin);
+        }
+
+        public static Stopwatch StartTimer() {
+            return Stopwatch.StartNew();
+        }
+
+        public static void EndTimer(Stopwatch stopwatch) {
+            stopwatch.Stop();
+            Debug($"Timer: {stopwatch.ElapsedTicks} ticks, {stopwatch.ElapsedMilliseconds} ms");
+        }
+
+        private static string GetCallerInfo() {
+            StackTrace trace = new StackTrace(true);
+
+            foreach (StackFrame frame in trace.GetFrames()) {
+                string file = frame.GetFileName();
+
+                if (file == null)
+                    continue;
+
+                file = Path.GetFileName(file);
+                if (!file.Equals("Logger.cs", StringComparison.OrdinalIgnoreCase))
+                    return $"{file}:{frame.GetFileLineNumber()}";
+            }
+
+            return "";
         }
     }
 }
