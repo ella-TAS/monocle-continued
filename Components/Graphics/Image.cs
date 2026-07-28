@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿#nullable enable
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Monocle {
     public class Image : GraphicsComponent {
@@ -16,14 +18,17 @@ namespace Monocle {
 
         public override void Render() {
             if (Texture != null) {
-                Vector2 drawPos = RenderPosition;
-                if (FlipX) {
-                    drawPos.X += (Width - Texture.ClipRect.Width - 2f * Texture.DrawOffset.X) * Scale.X;
+                Vector2 flipOffset = Vector2.Zero;
+                if (Effects != SpriteEffects.None) {
+                    if (FlipX) {
+                        flipOffset.X = Width - Texture.ClipRect.Width - 2f * Texture.DrawOffset.X;
+                    }
+                    if (FlipY) {
+                        flipOffset.Y = Height - Texture.ClipRect.Height - 2f * Texture.DrawOffset.Y;
+                    }
+                    flipOffset = (flipOffset * Scale).Rotate(Rotation);
                 }
-                if (FlipY) {
-                    drawPos.Y += (Height - Texture.ClipRect.Height - 2f * Texture.DrawOffset.Y) * Scale.Y;
-                }
-                Texture.Draw(drawPos, Origin, Color, Scale, Rotation, Effects);
+                Texture.Draw(RenderPosition + flipOffset, Origin, Color, Scale, Rotation, Effects);
             }
         }
 
