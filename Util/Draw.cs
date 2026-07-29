@@ -57,7 +57,7 @@ namespace Monocle {
                 throw new InvalidOperationException("Engine.Instance or Content is not initialized.");
 
             SpriteBatch = new SpriteBatch(graphicsDevice);
-            DefaultFont = Engine.Instance.Content.Load<SpriteFont>(@"Monocle\MonocleDefault");
+            DefaultFont = Engine.Instance.Content.Load<SpriteFont>(@"Fonts\MonocleDefault");
             UseDebugPixelTexture();
         }
 
