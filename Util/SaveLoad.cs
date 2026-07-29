@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
@@ -115,12 +116,7 @@ namespace Monocle {
                 return null;
             }
 
-            using FileStream stream = new FileStream(
-                path,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read
-            );
+            using Stream stream = TitleContainer.OpenStream(path);
 
             T result;
 

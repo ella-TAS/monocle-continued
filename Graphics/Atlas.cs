@@ -80,7 +80,7 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.CrunchBinary:
-                using (var stream = File.OpenRead(Path.Combine(Engine.ContentDirectory, path))) {
+                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path))) {
                     var reader = new BinaryReader(stream);
                     var textures = reader.ReadInt16();
 
@@ -113,7 +113,7 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.CrunchBinaryNoAtlas:
-                using (var stream = File.OpenRead(Path.Combine(Engine.ContentDirectory, path + ".bin"))) {
+                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".bin"))) {
                     var reader = new BinaryReader(stream);
                     var folders = reader.ReadInt16();
 
@@ -146,7 +146,7 @@ namespace Monocle {
 
             case AtlasDataFormat.Packer:
 
-                using (var stream = File.OpenRead(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
+                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
                     var reader = new BinaryReader(stream);
                     reader.ReadInt32(); // version
                     reader.ReadString(); // args
@@ -183,7 +183,7 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.PackerNoAtlas:
-                using (var stream = File.OpenRead(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
+                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
                     var reader = new BinaryReader(stream);
                     reader.ReadInt32(); // version
                     reader.ReadString(); // args

@@ -942,64 +942,21 @@ namespace Monocle {
 
         #endregion
 
-        #region Save and Load Data
-
-        public static bool FileExists(string filename) {
-            return File.Exists(filename);
-        }
-
-        public static bool SaveFile<T>(T obj, string filename) where T : new() {
-            Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
-
-            try {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                serializer.Serialize(stream, obj);
-                stream.Close();
-                return true;
-            } catch {
-                stream.Close();
-                return false;
-            }
-        }
-
-        public static bool LoadFile<T>(string filename, ref T data) where T : new() {
-            Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-            try {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                T obj = (T) serializer.Deserialize(stream)!;
-                stream.Close();
-                data = obj;
-                return true;
-            } catch {
-                stream.Close();
-                return false;
-            }
-        }
-
-        #endregion
-
         #region XML
 
         public static XmlDocument LoadContentXML(string filename) {
-            XmlDocument xml = new XmlDocument();
-            xml.Load(TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, filename)));
-            return xml;
+            return LoadXML(Path.Combine(Engine.ContentDirectory, filename));
         }
 
         public static XmlDocument LoadXML(string filename) {
             XmlDocument xml = new XmlDocument();
-            using (var stream = File.OpenRead(filename))
+            using (var stream = TitleContainer.OpenStream(filename))
                 xml.Load(stream);
             return xml;
         }
 
         public static bool ContentXMLExists(string filename) {
             return File.Exists(Path.Combine(Engine.ContentDirectory, filename));
-        }
-
-        public static bool XMLExists(string filename) {
-            return File.Exists(filename);
         }
 
         #endregion XML
