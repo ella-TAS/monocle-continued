@@ -24,7 +24,7 @@ namespace Monocle {
             if (Engine.Instance?.GraphicsDevice == null)
                 throw new InvalidOperationException("Engine.Instance or GraphicsDevice is not initialized.");
 
-            using var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            using var fileStream = TitleContainer.OpenStream(filename);
             var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
             return new MTexture(texture);
         }

@@ -35,7 +35,7 @@ namespace Monocle {
                     XmlElement at = xml["TextureAtlas"];
 
                     var texturePath = at.Attr("imagePath", "");
-                    var fileStream = new FileStream(Path.Combine(Path.GetDirectoryName(path), texturePath), FileMode.Open, FileAccess.Read);
+                    var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), texturePath));
                     var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                     fileStream.Close();
 
@@ -86,8 +86,8 @@ namespace Monocle {
 
                     for (int i = 0; i < textures; i++) {
                         var textureName = reader.ReadNullTerminatedString();
-                        var texturePath = Path.Combine(Path.GetDirectoryName(path), textureName + ".png");
-                        var fileStream = new FileStream(texturePath, FileMode.Open, FileAccess.Read);
+                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), textureName + ".png");
+                        var fileStream = TitleContainer.OpenStream(texturePath);
                         var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                         fileStream.Close();
 
@@ -119,7 +119,7 @@ namespace Monocle {
 
                     for (int i = 0; i < folders; i++) {
                         var folderName = reader.ReadNullTerminatedString();
-                        var folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
+                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), folderName);
 
                         var subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
@@ -133,7 +133,7 @@ namespace Monocle {
                             var fw = reader.ReadInt16();
                             var fh = reader.ReadInt16();
 
-                            var fileStream = new FileStream(Path.Combine(folderPath, name + ".png"), FileMode.Open, FileAccess.Read);
+                            var fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".png"));
                             var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                             fileStream.Close();
 
@@ -145,7 +145,6 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.Packer:
-
                 using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
                     var reader = new BinaryReader(stream);
                     reader.ReadInt32(); // version
@@ -155,8 +154,8 @@ namespace Monocle {
                     var textures = reader.ReadInt16();
                     for (int i = 0; i < textures; i++) {
                         var textureName = reader.ReadString();
-                        var texturePath = Path.Combine(Path.GetDirectoryName(path), textureName + ".data");
-                        var fileStream = new FileStream(texturePath, FileMode.Open, FileAccess.Read);
+                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), textureName + ".data");
+                        var fileStream = TitleContainer.OpenStream(texturePath);
                         var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                         fileStream.Close();
 
@@ -192,7 +191,7 @@ namespace Monocle {
                     var folders = reader.ReadInt16();
                     for (int i = 0; i < folders; i++) {
                         var folderName = reader.ReadString();
-                        var folderPath = Path.Combine(Path.GetDirectoryName(path), folderName);
+                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), folderName);
 
                         var subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
@@ -206,7 +205,7 @@ namespace Monocle {
                             var fw = reader.ReadInt16();
                             var fh = reader.ReadInt16();
 
-                            var fileStream = new FileStream(Path.Combine(folderPath, name + ".data"), FileMode.Open, FileAccess.Read);
+                            var fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".data"));
                             var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                             fileStream.Close();
 
@@ -275,7 +274,7 @@ namespace Monocle {
                     continue;
 
                 // get path and load
-                var fileStream = new FileStream(file.Substring(contentDirectoryLength + 1), FileMode.Open, FileAccess.Read);
+                var fileStream = TitleContainer.OpenStream(file.Substring(contentDirectoryLength + 1));
                 var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                 fileStream.Close();
 
