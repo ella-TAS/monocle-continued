@@ -25,6 +25,7 @@ namespace Monocle {
             }
         }
 
+        /// <summary>Writes a log message even in Release mode. Use sparingly.</summary>
         public static void Release(string origin, string message) {
             Trace.WriteLine($"[{Timestamp}] [{origin}] {message}");
         }
@@ -36,7 +37,7 @@ namespace Monocle {
         }
 
         public static void Log(params object[] obj) {
-            Debug(string.Join(" ", obj.Select(o => o?.ToString() ?? "<null>")));
+            Debug(string.Join("; ", obj.Select(o => o?.ToString() ?? "<null>")));
         }
 
         public static void TimeLog(object obj) {
@@ -47,6 +48,15 @@ namespace Monocle {
             string origin = GetCallerInfo();
             foreach (T o in collection)
                 Debug(o?.ToString() ?? "<null>", origin: origin);
+        }
+
+        /// <summary>Crashes while in DEBUG mode, sends a warning otherwise</summary>
+        public static void DebugCrash(string origin, string message) {
+#if DEBUG
+            throw new Exception($"[{origin}] {message}");
+#else
+            Release(origin, message);
+#endif
         }
 
         public static void Dissect(object obj, int indent = 0) {
