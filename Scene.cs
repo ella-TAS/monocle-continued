@@ -57,6 +57,11 @@ namespace Monocle {
         public Camera Camera { get; private set; } = null!; // Assigned in constructor
 
         /// <summary>
+        /// Gets the mouse position, respecting the Scene camera.
+        /// </summary>
+        public Vector2 MousePosition => Camera.ScreenToCamera(MInput.Mouse.Position);
+
+        /// <summary>
         /// Gets the tracker that manages tracked entity and component types for collision detection.
         /// </summary>
         public Tracker Tracker { get; private set; } = null!; // Assigned in constructor
