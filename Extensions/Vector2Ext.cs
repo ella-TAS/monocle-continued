@@ -3,6 +3,15 @@ using System;
 
 namespace Monocle {
     public static class Vector2Ext {
+        public static readonly Vector2 Right = Vector2.UnitX;
+        public static readonly Vector2 Down = Vector2.UnitY;
+        public static readonly Vector2 Left = -Vector2.UnitX;
+        public static readonly Vector2 Up = -Vector2.UnitY;
+        public static readonly Vector2 DownRight = Vector2.One;
+        public static readonly Vector2 DownLeft = Down + Left;
+        public static readonly Vector2 UpLeft = -Vector2.One;
+        public static readonly Vector2 UpRight = Up + Right;
+
         public static Vector2 Sign(this Vector2 vec) {
             return new Vector2(Math.Sign(vec.X), Math.Sign(vec.Y));
         }
