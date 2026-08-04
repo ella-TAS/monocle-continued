@@ -5,14 +5,12 @@ namespace Monocle {
         public BlendState BlendState;
         public SamplerState SamplerState;
         public Effect Effect;
-        public Camera Camera;
         public int ExcludeTag;
 
         public TagExcludeRenderer(int excludeTag) {
             ExcludeTag = excludeTag;
             BlendState = BlendState.AlphaBlend;
             SamplerState = SamplerState.LinearClamp;
-            Camera = new Camera();
         }
 
         public override void BeforeRender(Scene scene) {
@@ -20,7 +18,7 @@ namespace Monocle {
         }
 
         public override void Render(Scene scene) {
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState, SamplerState, DepthStencilState.None, RasterizerState.CullNone, Effect, Camera.Matrix * Engine.ScreenMatrix);
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState, SamplerState, DepthStencilState.None, RasterizerState.CullNone, Effect, scene.Camera.Matrix * Engine.ScreenMatrix);
 
             foreach (var entity in scene.Entities)
                 if (entity.Visible && (entity.Tag & ExcludeTag) == 0)
@@ -29,7 +27,7 @@ namespace Monocle {
             if (Engine.Commands.Open)
                 foreach (var entity in scene.Entities)
                     if ((entity.Tag & ExcludeTag) == 0)
-                        entity.DebugRender(Camera);
+                        entity.DebugRender(scene.Camera);
 
             Draw.SpriteBatch.End();
         }

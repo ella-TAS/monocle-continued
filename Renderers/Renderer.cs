@@ -1,5 +1,4 @@
-﻿
-namespace Monocle {
+﻿namespace Monocle {
     public abstract class Renderer {
         public bool Visible = true;
         public virtual void Update(Scene scene) { }

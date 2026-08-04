@@ -27,3 +27,4 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - SceneEntity<Scene> to designate an entity for that scene
 - option for Camera to unlock the pixel grid
 - Image.FlipX/Y respects the original dimensions of trimmed MTextures
+- Add a default Camera to Scene

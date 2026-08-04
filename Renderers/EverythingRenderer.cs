@@ -5,12 +5,10 @@ namespace Monocle {
         public BlendState BlendState;
         public SamplerState SamplerState;
         public Effect Effect;
-        public Camera Camera;
 
         public EverythingRenderer() {
             BlendState = BlendState.AlphaBlend;
             SamplerState = SamplerState.LinearClamp;
-            Camera = new Camera();
         }
 
         public override void BeforeRender(Scene scene) {
@@ -18,11 +16,11 @@ namespace Monocle {
         }
 
         public override void Render(Scene scene) {
-            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState, SamplerState, DepthStencilState.None, RasterizerState.CullNone, Effect, Camera.Matrix * Engine.ScreenMatrix);
+            Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState, SamplerState, DepthStencilState.None, RasterizerState.CullNone, Effect, scene.Camera.Matrix * Engine.ScreenMatrix);
 
             scene.Entities.Render();
             if (Engine.Commands.Open)
-                scene.Entities.DebugRender(Camera);
+                scene.Entities.DebugRender(scene.Camera);
 
             Draw.SpriteBatch.End();
         }

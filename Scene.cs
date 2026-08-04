@@ -52,9 +52,9 @@ namespace Monocle {
         public RendererList RendererList { get; private set; } = null!; // Assigned in constructor
 
         /// <summary>
-        /// Gets the helper entity that provides utility functionality for the scene.
+        /// Gets the camera that can be used in this scene.
         /// </summary>
-        public Entity HelperEntity { get; private set; } = null!; // Assigned in constructor
+        public Camera Camera { get; private set; } = null!; // Assigned in constructor
 
         /// <summary>
         /// Gets the tracker that manages tracked entity and component types for collision detection.
@@ -84,9 +84,7 @@ namespace Monocle {
             Entities = new EntityList(this);
             TagLists = new TagLists();
             RendererList = new RendererList(this);
-
-            HelperEntity = new Entity();
-            Entities.Add(HelperEntity);
+            Camera = new Camera();
         }
 
         /// <summary>
