@@ -20,8 +20,9 @@ namespace Monocle {
 
         public override void Render() {
             if (Texture != null) {
+                // flip fix: respect trimmed transparent edges with FlipX/Y
                 Vector2 flipOffset = Vector2.Zero;
-                if (MonocleSettings.ImageFlipFix && Effects != SpriteEffects.None) {
+                if (Effects != SpriteEffects.None) {
                     if (FlipX) {
                         flipOffset.X = Width - Texture.ClipRect.Width - 2f * Texture.DrawOffset.X;
                     }
@@ -30,11 +31,13 @@ namespace Monocle {
                     }
                     flipOffset = (flipOffset * Scale).Rotate(Rotation);
                 }
+
                 // snap the render position to the pixel grid
                 Vector2 renderPos = RenderPosition + flipOffset;
                 if (SnapToPixel) {
                     renderPos = renderPos.Round();
                 }
+
                 Texture.Draw(renderPos, Origin, Color, Scale, Rotation, Effects);
             }
         }
