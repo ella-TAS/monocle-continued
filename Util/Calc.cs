@@ -10,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Monocle {
     /// <summary>
@@ -574,7 +573,7 @@ namespace Monocle {
         }
 
         public static float SineMap(float counter, float newMin, float newMax) {
-            return Map((float) Math.Sin(counter), 01, 1, newMin, newMax);
+            return Map(MathF.Sin(counter), -1, 1, newMin, newMax);
         }
 
         public static float ClampedMap(float val, float min, float max, float newMin = 0, float newMax = 1) {
@@ -619,11 +618,11 @@ namespace Monocle {
         }
 
         public static float Snap(float value, float increment) {
-            return (float) Math.Round(value / increment) * increment;
+            return MathF.Round(value / increment) * increment;
         }
 
         public static float Snap(float value, float increment, float offset) {
-            return ((float) Math.Round((value - offset) / increment) * increment) + offset;
+            return (MathF.Round((value - offset) / increment) * increment) + offset;
         }
 
         public static float WrapAngle(float angleRadians) {
@@ -631,7 +630,7 @@ namespace Monocle {
         }
 
         public static Vector2 AngleToVector(float angleRadians, float length) {
-            return new Vector2((float) Math.Cos(angleRadians) * length, (float) Math.Sin(angleRadians) * length);
+            return new Vector2(MathF.Cos(angleRadians) * length, MathF.Sin(angleRadians) * length);
         }
 
         public static float AngleApproach(float val, float target, float maxMove) {
@@ -667,7 +666,7 @@ namespace Monocle {
         }
 
         public static float Angle(Vector2 from, Vector2 to) {
-            return (float) Math.Atan2(to.Y - from.Y, to.X - from.X);
+            return MathF.Atan2(to.Y - from.Y, to.X - from.X);
         }
 
         public static Color ToggleColors(Color current, Color a, Color b) {

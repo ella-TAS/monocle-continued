@@ -290,8 +290,8 @@ namespace Monocle {
         /// Rounds the camera position to the nearest integer values to prevent sub-pixel rendering artifacts.
         /// </summary>
         public void RoundPosition() {
-            position.X = (float) Math.Round(position.X);
-            position.Y = (float) Math.Round(position.Y);
+            position.X = MathF.Round(position.X);
+            position.Y = MathF.Round(position.Y);
             changed = true;
         }
 

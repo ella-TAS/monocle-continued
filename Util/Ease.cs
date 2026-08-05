@@ -7,9 +7,9 @@ namespace Monocle {
 
         public static readonly Easer Linear = (float t) => { return t; };
 
-        public static readonly Easer SineIn = (float t) => { return -(float) Math.Cos(MathHelper.PiOver2 * t) + 1; };
-        public static readonly Easer SineOut = (float t) => { return (float) Math.Sin(MathHelper.PiOver2 * t); };
-        public static readonly Easer SineInOut = (float t) => { return -(float) Math.Cos(MathHelper.Pi * t) / 2f + .5f; };
+        public static readonly Easer SineIn = (float t) => { return -MathF.Cos(MathHelper.PiOver2 * t) + 1; };
+        public static readonly Easer SineOut = (float t) => { return MathF.Sin(MathHelper.PiOver2 * t); };
+        public static readonly Easer SineInOut = (float t) => { return -MathF.Cos(MathHelper.Pi * t) / 2f + .5f; };
 
         public static readonly Easer QuadIn = (float t) => { return t * t; };
         public static readonly Easer QuadOut = Invert(QuadIn);
@@ -23,7 +23,7 @@ namespace Monocle {
         public static readonly Easer QuintOut = Invert(QuintIn);
         public static readonly Easer QuintInOut = Follow(QuintIn, QuintOut);
 
-        public static readonly Easer ExpoIn = (float t) => { return (float) Math.Pow(2, 10 * (t - 1)); };
+        public static readonly Easer ExpoIn = (float t) => { return MathF.Pow(2, 10 * (t - 1)); };
         public static readonly Easer ExpoOut = Invert(ExpoIn);
         public static readonly Easer ExpoInOut = Follow(ExpoIn, ExpoOut);
 

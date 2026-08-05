@@ -26,7 +26,7 @@ namespace Monocle {
         }
 
         public static Vector2 Round(this Vector2 vec) {
-            return new Vector2((float) Math.Round(vec.X), (float) Math.Round(vec.Y));
+            return new Vector2(MathF.Round(vec.X), MathF.Round(vec.Y));
         }
 
         public static Point RoundToPoint(this Vector2 vec) {
@@ -38,7 +38,7 @@ namespace Monocle {
         }
 
         public static float Angle(this Vector2 vector) {
-            return (float) Math.Atan2(vector.Y, vector.X);
+            return MathF.Atan2(vector.Y, vector.X);
         }
 
         public static Vector2 Clamp(this Vector2 val, float minX, float minY, float maxX, float maxY) {
@@ -92,7 +92,7 @@ namespace Monocle {
                 return Vector2.Zero;
 
             float angle = vec.Angle();
-            angle = (float) Math.Floor((angle + MathHelper.PiOver2 / 2f) / MathHelper.PiOver2) * MathHelper.PiOver2;
+            angle = MathF.Floor((angle + MathHelper.PiOver2 / 2f) / MathHelper.PiOver2) * MathHelper.PiOver2;
 
             vec = Calc.AngleToVector(angle, 1f);
             if (Math.Abs(vec.X) < .5f)
@@ -113,7 +113,7 @@ namespace Monocle {
                 return Vector2.Zero;
 
             float angle = vec.Angle();
-            angle = (float) Math.Floor((angle + MathHelper.PiOver4 / 2f) / MathHelper.PiOver4) * MathHelper.PiOver4;
+            angle = MathF.Floor((angle + MathHelper.PiOver4 / 2f) / MathHelper.PiOver4) * MathHelper.PiOver4;
 
             vec = Calc.AngleToVector(angle, 1f);
             if (Math.Abs(vec.X) < .5f)
@@ -128,7 +128,7 @@ namespace Monocle {
             float divider = MathHelper.TwoPi / slices;
 
             float angle = vec.Angle();
-            angle = (float) Math.Floor((angle + divider / 2f) / divider) * divider;
+            angle = MathF.Floor((angle + divider / 2f) / divider) * divider;
             return Calc.AngleToVector(angle, 1f);
         }
 
@@ -136,7 +136,7 @@ namespace Monocle {
             float divider = MathHelper.TwoPi / slices;
 
             float angle = vec.Angle();
-            angle = (float) Math.Floor((angle + divider / 2f) / divider) * divider;
+            angle = MathF.Floor((angle + divider / 2f) / divider) * divider;
             return Calc.AngleToVector(angle, vec.Length());
         }
 

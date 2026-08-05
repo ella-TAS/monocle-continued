@@ -87,8 +87,6 @@ namespace Monocle {
             default:
                 throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
-
-            Logger.Log($"File {folderName}/{fileName} saved");
         }
 
         public static bool SafeSave<T>(T data, string fileName, SerializeMode mode, string folderName = "Saves")
@@ -112,7 +110,6 @@ namespace Monocle {
             string path = GetSavePath(fileName, folderName);
 
             if (!File.Exists(path)) {
-                Logger.Log($"File {folderName}/{fileName} not found");
                 return null;
             }
 
@@ -150,8 +147,6 @@ namespace Monocle {
             default:
                 throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
-
-            Logger.Log($"File {folderName}/{fileName} loaded");
 
             return result;
         }

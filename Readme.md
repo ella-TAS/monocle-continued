@@ -13,6 +13,7 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - port to FNA
 - clean .csproj file
 - reformat all files
+- several small bug fixes
 - SaveLoad rewrite
 - add Logger and update ErrorLogger
 - open the console with F12 and close it with Escape
@@ -28,3 +29,4 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - option for Camera to unlock the pixel grid
 - Image.FlipX/Y respects the original dimensions of trimmed MTextures
 - Add a default Camera to Scene
+- MonocleSettings class for options of choice

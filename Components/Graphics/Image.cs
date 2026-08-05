@@ -5,10 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Monocle {
     public class Image : GraphicsComponent {
         public MTexture Texture;
+        public bool SnapToPixel;
 
         public Image(MTexture texture)
             : base(false) {
             Texture = texture;
+            SnapToPixel = MonocleSettings.ImageSnapDefault;
         }
 
         internal Image(MTexture texture, bool active)
@@ -19,7 +21,7 @@ namespace Monocle {
         public override void Render() {
             if (Texture != null) {
                 Vector2 flipOffset = Vector2.Zero;
-                if (Effects != SpriteEffects.None) {
+                if (MonocleSettings.ImageFlipFix && Effects != SpriteEffects.None) {
                     if (FlipX) {
                         flipOffset.X = Width - Texture.ClipRect.Width - 2f * Texture.DrawOffset.X;
                     }
@@ -28,7 +30,12 @@ namespace Monocle {
                     }
                     flipOffset = (flipOffset * Scale).Rotate(Rotation);
                 }
-                Texture.Draw(RenderPosition + flipOffset, Origin, Color, Scale, Rotation, Effects);
+                // snap the render position to the pixel grid
+                Vector2 renderPos = RenderPosition + flipOffset;
+                if (SnapToPixel) {
+                    renderPos = renderPos.Round();
+                }
+                Texture.Draw(renderPos, Origin, Color, Scale, Rotation, Effects);
             }
         }
 

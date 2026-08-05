@@ -57,7 +57,7 @@ namespace Monocle {
         }
 
         public float ValueOffset(float offset) {
-            return (float) Math.Sin(counter + offset);
+            return MathF.Sin(counter + offset);
         }
 
         public SineWave Randomize() {
@@ -85,9 +85,9 @@ namespace Monocle {
             set {
                 counter = (value + MathHelper.TwoPi * 4) % (MathHelper.TwoPi * 4);
 
-                Value = (float) Math.Sin(counter);
-                ValueOverTwo = (float) Math.Sin(counter / 2);
-                TwoValue = (float) Math.Sin(counter * 2);
+                Value = MathF.Sin(counter);
+                ValueOverTwo = MathF.Sin(counter / 2);
+                TwoValue = MathF.Sin(counter * 2);
             }
         }
     }

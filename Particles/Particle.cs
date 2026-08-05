@@ -98,7 +98,7 @@ namespace Monocle {
             Speed += Type.Acceleration * dt;
             Speed = Vector2Ext.Approach(Speed, Vector2.Zero, Type.Friction * dt);
             if (Type.SpeedMultiplier != 1)
-                Speed *= (float) Math.Pow(Type.SpeedMultiplier, dt);
+                Speed *= MathF.Pow(Type.SpeedMultiplier, dt);
 
             //Scale Out
             if (Type.ScaleOut)

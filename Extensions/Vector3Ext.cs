@@ -7,7 +7,7 @@ namespace Monocle {
             var c = Vector3.Cross(from, target);
             var alen = from.Length();
             var blen = target.Length();
-            var w = (float) Math.Sqrt((alen * alen) * (blen * blen)) + Vector3.Dot(from, target);
+            var w = MathF.Sqrt((alen * alen) * (blen * blen)) + Vector3.Dot(from, target);
             var q = new Quaternion(c.X, c.Y, c.Z, w);
 
             if (q.Length() <= maxRotationRadians)

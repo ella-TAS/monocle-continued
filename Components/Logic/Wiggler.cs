@@ -104,7 +104,7 @@ namespace Monocle {
                     RemoveSelf();
             }
 
-            Value = (float) Math.Cos(sineCounter) * Counter;
+            Value = MathF.Cos(sineCounter) * Counter;
 
             if (onChange != null)
                 onChange(Value);

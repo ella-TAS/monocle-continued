@@ -439,7 +439,7 @@ namespace Monocle {
 
             int num = 0;
             while (clip.X < tex.ClipRect.X + tex.ClipRect.Width) {
-                Vector2 add = new Vector2(sliceSize * num, (float) Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude));
+                Vector2 add = new Vector2(sliceSize * num, MathF.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude));
                 Draw.SpriteBatch.Draw(tex.Texture, position, clip, color, rotation, origin - add, scale, effects, 0);
 
                 num++;
@@ -455,7 +455,7 @@ namespace Monocle {
 
             int num = 0;
             while (clip.Y < tex.ClipRect.Y + tex.ClipRect.Height) {
-                Vector2 add = new Vector2((float) Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude), sliceSize * num);
+                Vector2 add = new Vector2(MathF.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude), sliceSize * num);
                 Draw.SpriteBatch.Draw(tex.Texture, position, clip, color, rotation, origin - add, scale, effects, 0);
 
                 num++;
@@ -475,7 +475,7 @@ namespace Monocle {
                 clip.Height = (int) MathHelper.Lerp(sliceSize, 1, fade);
                 clip.Height = Math.Min(sliceSize, tex.ClipRect.Y + tex.ClipRect.Height - clip.Y);
 
-                Vector2 add = new Vector2((float) Math.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude * fade), clip.Y - tex.ClipRect.Y);
+                Vector2 add = new Vector2(MathF.Round(Math.Sin(sineCounter + sliceAdd * num) * amplitude * fade), clip.Y - tex.ClipRect.Y);
                 Draw.SpriteBatch.Draw(tex.Texture, position, clip, color, rotation, origin - add, scale, effects, 0);
 
                 num++;
