@@ -49,6 +49,7 @@ namespace Monocle {
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class Pooled : Attribute {
 
     }

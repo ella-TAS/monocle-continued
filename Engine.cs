@@ -416,6 +416,7 @@ namespace Monocle {
         /// <param name="sender">The event sender.</param>
         /// <param name="args">The exit event arguments.</param>
         protected override void OnExiting(object sender, EventArgs args) {
+            Scene?.End();
             base.OnExiting(sender, args);
             MInput.Shutdown();
             Logger.Release("Monocle", "Game Closed");

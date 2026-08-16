@@ -329,6 +329,7 @@ namespace Monocle {
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class Tracked : Attribute {
         public bool Inherited;
 

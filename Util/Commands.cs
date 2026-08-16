@@ -738,6 +738,7 @@ namespace Monocle {
         }
     }
 
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class Command : Attribute {
         public string Name;
         public string Help;

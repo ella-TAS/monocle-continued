@@ -25,11 +25,16 @@ namespace Monocle {
             XMLLight
         }
 
-        private static readonly JsonSerializerOptions JsonOptions = new() {
-            WriteIndented = true,
-            IncludeFields = true,
-            Converters = { new JsonStringEnumConverter() },
-        };
+        public static JsonSerializerOptions GetJsonOptions() {
+            JsonSerializerOptions options = new() {
+                IncludeFields = true,
+                WriteIndented = MonocleSettings.JsonPrettyPrint,
+                Converters = { new JsonStringEnumConverter() },
+            };
+            MonocleSettings.JsonConverters.ForEach(c => options.Converters.Add(c));
+
+            return options;
+        }
 
         // maybe different on a platform basis, works on linux/win
         public static string GetSaveFolder(string folderName = "Saves")
@@ -57,6 +62,7 @@ namespace Monocle {
                 FileAccess.Write,
                 FileShare.None
             );
+            JsonSerializerOptions JsonOptions = GetJsonOptions();
 
             switch (mode) {
             case SerializeMode.Json:
@@ -113,6 +119,7 @@ namespace Monocle {
                 return null;
             }
 
+            JsonSerializerOptions JsonOptions = GetJsonOptions();
             using Stream stream = TitleContainer.OpenStream(path);
 
             T result;
