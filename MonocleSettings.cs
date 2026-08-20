@@ -5,7 +5,7 @@ namespace Monocle {
     public static class MonocleSettings {
         public static bool ImageSnapDefault = true;
 
-        public static List<JsonConverter> JsonConverters { get; } = [];
+        public static List<JsonConverter> JsonConverters = [new JsonStringEnumConverter()];
         public static bool JsonPrettyPrint = false;
     }
 }

@@ -433,10 +433,6 @@ namespace Monocle {
 
         #region Colors
 
-        public static Color Invert(this Color color) {
-            return new Color(255 - color.R, 255 - color.G, 255 - color.B, color.A);
-        }
-
         public static Color HexToColor(string hex) {
             if (hex.Length >= 6) {
                 float r = (HexToByte(hex[0]) * 16 + HexToByte(hex[1])) / 255.0f;
@@ -505,7 +501,11 @@ namespace Monocle {
         }
 
         public static byte HexToByte(char c) {
-            return (byte) Hex.IndexOf(char.ToUpper(c));
+            int index = Hex.IndexOf(char.ToUpper(c));
+            if (index < 0) {
+                throw new ArgumentException("Invalid Hex character: " + c);
+            }
+            return (byte) index;
         }
 
         public static float Percent(float num, float zeroAt, float oneAt) {

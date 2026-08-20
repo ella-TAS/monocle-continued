@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -29,7 +28,7 @@ namespace Monocle {
             JsonSerializerOptions options = new() {
                 IncludeFields = true,
                 WriteIndented = MonocleSettings.JsonPrettyPrint,
-                Converters = { new JsonStringEnumConverter() },
+                Converters = { },
             };
             MonocleSettings.JsonConverters.ForEach(c => options.Converters.Add(c));
 
@@ -178,10 +177,6 @@ namespace Monocle {
 
         public static T LoadContentFile<T>(string fileName, SerializeMode mode) where T : class {
             return Load<T>(fileName, mode, Engine.ContentDirectory);
-        }
-
-        public static void SaveContentFile<T>(T data, string fileName, SerializeMode mode) where T : class {
-            Save(data, fileName, mode, Engine.ContentDirectory);
         }
     }
 }
