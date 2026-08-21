@@ -33,6 +33,14 @@ namespace Monocle {
             return new Point((int) Math.Round(vec.X), (int) Math.Round(vec.Y));
         }
 
+        public static Point FloorToPoint(this Vector2 vec) {
+            return new Point((int) Math.Floor(vec.X), (int) Math.Floor(vec.Y));
+        }
+
+        public static Point CeilToPoint(this Vector2 vec) {
+            return new Point((int) Math.Ceiling(vec.X), (int) Math.Ceiling(vec.Y));
+        }
+
         public static Vector2 Perpendicular(this Vector2 vector) {
             return new Vector2(-vector.Y, vector.X);
         }

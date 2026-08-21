@@ -53,9 +53,9 @@ namespace Monocle {
         /// <summary>Crashes while in DEBUG mode, sends a warning otherwise</summary>
         public static void DebugCrash(string origin, string message) {
 #if DEBUG
-            throw new Exception($"[{origin}] {message}");
+            throw new DebugCrash($"[{origin}] {message}");
 #else
-            Release(origin, message);
+            Release(origin, "WARNING: " + message);
 #endif
         }
 
@@ -110,4 +110,6 @@ namespace Monocle {
             return "";
         }
     }
+
+    public class DebugCrash(string message) : Exception(message) { }
 }
