@@ -128,7 +128,7 @@ namespace Monocle {
             return array;
         }
 
-        public static T At<T>(this T[,] arr, Pnt at) {
+        public static T At<T>(this T[,] arr, Point at) {
             return arr[at.X, at.Y];
         }
     }
