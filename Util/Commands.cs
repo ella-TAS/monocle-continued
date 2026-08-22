@@ -91,7 +91,7 @@ namespace Monocle {
         internal void UpdateClosed() {
             if (!canOpen)
                 canOpen = true;
-            else if (MInput.Keyboard.Pressed(Keys.OemTilde, Keys.Oem8, Keys.F12)) {
+            else if (MInput.Keyboard.Pressed(Keys.OemTilde, Keys.Oem8, Keys.OemPeriod)) {
                 Open = true;
                 currentState = Keyboard.GetState();
             }
@@ -135,137 +135,139 @@ namespace Monocle {
             if (key != Keys.Tab && key != Keys.LeftShift && key != Keys.RightShift && key != Keys.RightAlt && key != Keys.LeftAlt && key != Keys.RightControl && key != Keys.LeftControl)
                 tabIndex = -1;
 
-            if (key != Keys.OemTilde && key != Keys.Oem8 && key != Keys.F12 && key != Keys.Enter && repeatKey != key) {
+            if (key != Keys.OemTilde && key != Keys.Oem8 && key != Keys.Escape && key != Keys.Enter && repeatKey != key) {
                 repeatKey = key;
                 repeatCounter = 0;
             }
 
+            bool shift = currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down;
+
             switch (key) {
             default:
                 if (key.ToString().Length == 1) {
-                    if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                    if (shift)
                         currentText += key.ToString();
                     else
                         currentText += key.ToString().ToLower();
                 }
                 break;
 
-            case (Keys.D1):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D1:
+                if (shift)
                     currentText += '!';
                 else
                     currentText += '1';
                 break;
-            case (Keys.D2):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D2:
+                if (shift)
                     currentText += '@';
                 else
                     currentText += '2';
                 break;
-            case (Keys.D3):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D3:
+                if (shift)
                     currentText += '#';
                 else
                     currentText += '3';
                 break;
-            case (Keys.D4):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D4:
+                if (shift)
                     currentText += '$';
                 else
                     currentText += '4';
                 break;
-            case (Keys.D5):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D5:
+                if (shift)
                     currentText += '%';
                 else
                     currentText += '5';
                 break;
-            case (Keys.D6):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D6:
+                if (shift)
                     currentText += '^';
                 else
                     currentText += '6';
                 break;
-            case (Keys.D7):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D7:
+                if (shift)
                     currentText += '&';
                 else
                     currentText += '7';
                 break;
-            case (Keys.D8):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D8:
+                if (shift)
                     currentText += '*';
                 else
                     currentText += '8';
                 break;
-            case (Keys.D9):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D9:
+                if (shift)
                     currentText += '(';
                 else
                     currentText += '9';
                 break;
-            case (Keys.D0):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.D0:
+                if (shift)
                     currentText += ')';
                 else
                     currentText += '0';
                 break;
-            case (Keys.OemComma):
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+            case Keys.OemComma:
+                if (shift)
                     currentText += '<';
                 else
                     currentText += ',';
                 break;
             case Keys.OemPeriod:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '>';
                 else
                     currentText += '.';
                 break;
             case Keys.OemQuestion:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '?';
                 else
                     currentText += '/';
                 break;
             case Keys.OemSemicolon:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += ':';
                 else
                     currentText += ';';
                 break;
             case Keys.OemQuotes:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '"';
                 else
                     currentText += '\'';
                 break;
             case Keys.OemBackslash:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '|';
                 else
                     currentText += '\\';
                 break;
             case Keys.OemOpenBrackets:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '{';
                 else
                     currentText += '[';
                 break;
             case Keys.OemCloseBrackets:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '}';
                 else
                     currentText += ']';
                 break;
             case Keys.OemMinus:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '_';
                 else
                     currentText += '-';
                 break;
             case Keys.OemPlus:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down)
+                if (shift)
                     currentText += '+';
                 else
                     currentText += '=';
@@ -299,7 +301,7 @@ namespace Monocle {
                 break;
 
             case Keys.Tab:
-                if (currentState[Keys.LeftShift] == KeyState.Down || currentState[Keys.RightShift] == KeyState.Down) {
+                if (shift) {
                     if (tabIndex == -1) {
                         tabSearch = currentText;
                         FindLastTab();
@@ -333,6 +335,7 @@ namespace Monocle {
             case Keys.F9:
             case Keys.F10:
             case Keys.F11:
+            case Keys.F12:
                 ExecuteFunctionKeyAction((int) (key - Keys.F1));
                 break;
 
@@ -341,7 +344,6 @@ namespace Monocle {
                     EnterCommand();
                 break;
 
-            case Keys.F12:
             case Keys.Escape:
             case Keys.Oem8:
             case Keys.OemTilde:
