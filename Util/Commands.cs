@@ -14,6 +14,7 @@ namespace Monocle {
 
         public bool Enabled = true;
         public bool Open;
+        public bool JustClosed => Enabled && !canOpen;
         public Action[] FunctionKeyActions { get; private set; }
 
         private Dictionary<string, CommandInfo> commands;
