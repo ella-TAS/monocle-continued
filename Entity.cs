@@ -190,7 +190,7 @@ namespace Monocle {
         /// Gets or sets the depth of this entity for rendering order.
         /// </summary>
         /// <remarks>
-        /// Lower values are rendered first (behind), higher values are rendered
+        /// Higher values are rendered first (behind), lower values are rendered
         /// last (in front). Changing this value updates the scene's depth sorting.
         /// </remarks>
         public int Depth {

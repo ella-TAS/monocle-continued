@@ -55,7 +55,7 @@ namespace Monocle {
                 return;
             }
 
-            //Split the string if you overlow horizontally
+            //Split the string if you overflow horizontally
             int maxWidth = Engine.Instance.Window.ClientBounds.Width - 40;
             while (Draw.DefaultFont.MeasureString(str).X > maxWidth) {
                 int split = -1;
