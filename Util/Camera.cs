@@ -335,5 +335,12 @@ namespace Monocle {
             else
                 Position += move;
         }
+
+        public bool Contains(Rectangle rect, int leniency = 0) {
+            return rect.Right + leniency >= Left
+                && rect.Left - leniency <= Right
+                && rect.Top + leniency >= Top
+                && rect.Bottom - leniency <= Bottom;
+        }
     }
 }
