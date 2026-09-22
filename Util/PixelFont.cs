@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿#nullable enable
+
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,20 +26,18 @@ namespace Monocle {
         }
     }
 
-    public class PixelFontSize {
-        public List<MTexture> Textures;
-        public Dictionary<int, PixelFontCharacter> Characters;
+    public class PixelFontData {
+        public List<MTexture> Textures = [];
+        public Dictionary<int, PixelFontCharacter> Characters = [];
         public int LineHeight;
         public float Size;
-        public bool Outline;
-
-        private StringBuilder temp = new StringBuilder();
+        public bool HasOutline;
 
         public string AutoNewline(string text, int width) {
             if (string.IsNullOrEmpty(text))
                 return text;
 
-            temp.Clear();
+            var builder = new StringBuilder();
 
             var words = Regex.Split(text, @"(\s)");
             var lineWidth = 0f;
@@ -45,7 +45,7 @@ namespace Monocle {
             foreach (var word in words) {
                 var wordWidth = Measure(word).X;
                 if (wordWidth + lineWidth > width) {
-                    temp.Append('\n');
+                    builder.Append('\n');
                     lineWidth = 0;
 
                     if (word.Equals(" "))
@@ -57,34 +57,34 @@ namespace Monocle {
                     int i = 1, start = 0;
                     for (; i < word.Length; i++)
                         if (i - start > 1 && Measure(word.Substring(start, i - start - 1)).X > width) {
-                            temp.Append(word.Substring(start, i - start - 1));
-                            temp.Append('\n');
+                            builder.Append(word.AsSpan(start, i - start - 1));
+                            builder.Append('\n');
                             start = i - 1;
                         }
 
 
-                    var remaining = word.Substring(start, word.Length - start);
-                    temp.Append(remaining);
+                    var remaining = word[start..];
+                    builder.Append(remaining);
                     lineWidth += Measure(remaining).X;
                 }
                 // normal word, add it
                 else {
                     lineWidth += wordWidth;
-                    temp.Append(word);
+                    builder.Append(word);
                 }
             }
 
-            return temp.ToString();
+            return builder.ToString();
         }
 
-        public PixelFontCharacter Get(int id) {
-            if (Characters.TryGetValue(id, out PixelFontCharacter val))
+        public PixelFontCharacter? Get(int id) {
+            if (Characters.TryGetValue(id, out PixelFontCharacter? val))
                 return val;
             return null;
         }
 
         public Vector2 Measure(char text) {
-            if (Characters.TryGetValue(text, out PixelFontCharacter c))
+            if (Characters.TryGetValue(text, out PixelFontCharacter? c))
                 return new Vector2(c.XAdvance, LineHeight);
             return Vector2.Zero;
         }
@@ -103,7 +103,7 @@ namespace Monocle {
                         size.X = currentLineWidth;
                     currentLineWidth = 0f;
                 } else {
-                    if (Characters.TryGetValue(text[i], out PixelFontCharacter c)) {
+                    if (Characters.TryGetValue(text[i], out PixelFontCharacter? c)) {
                         currentLineWidth += c.XAdvance;
 
                         if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
@@ -128,7 +128,7 @@ namespace Monocle {
                 if (text[i] == '\n')
                     break;
 
-                if (Characters.TryGetValue(text[i], out PixelFontCharacter c)) {
+                if (Characters.TryGetValue(text[i], out PixelFontCharacter? c)) {
                     currentLineWidth += c.XAdvance;
 
                     if (i < j - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
@@ -155,7 +155,7 @@ namespace Monocle {
             if (char.IsWhiteSpace(character))
                 return;
 
-            if (Characters.TryGetValue(character, out PixelFontCharacter c)) {
+            if (Characters.TryGetValue(character, out PixelFontCharacter? c)) {
                 var measure = Measure(character);
                 var justified = new Vector2(measure.X * justify.X, measure.Y * justify.Y);
                 var pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
@@ -180,11 +180,11 @@ namespace Monocle {
                     continue;
                 }
 
-                if (Characters.TryGetValue(text[i], out PixelFontCharacter c)) {
-                    var pos = (position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale);
+                if (Characters.TryGetValue(text[i], out PixelFontCharacter? c)) {
+                    var pos = position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale;
 
                     // draw stroke
-                    if (stroke > 0 && !Outline) {
+                    if (stroke > 0 && !HasOutline) {
                         if (edgeDepth > 0) {
                             c.Texture.Draw(pos + new Vector2(0, -stroke), Vector2.Zero, strokeColor, scale);
                             for (var j = -stroke; j < edgeDepth + stroke; j += stroke) {
@@ -234,35 +234,26 @@ namespace Monocle {
             Draw(text, position, justify, scale, color, 0f, Color.Transparent, stroke, strokeColor);
         }
 
-        public void DrawEdgeOutline(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke = 0f, Color strokeColor = default(Color)) {
+        public void DrawEdgeOutline(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke = 0f, Color strokeColor = default) {
             Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
     }
 
     public class PixelFont {
-        public string Face;
-        public List<PixelFontSize> Sizes = new List<PixelFontSize>();
+        public PixelFontData Data { get; private set; }
         public List<MTexture> Textures;
 
-        public PixelFont(string face) {
-            Face = face;
+        public PixelFont(string path, Atlas? atlas = null)
+            : this(path, Calc.LoadContentXML(path)["font"]!, atlas) {
         }
 
-        public PixelFontSize AddFontSize(string path, Atlas atlas = null, bool outline = false) {
-            var data = Calc.LoadContentXML(path)["font"];
-            return AddFontSize(path, data, atlas, outline);
-        }
-
-        public PixelFontSize AddFontSize(string path, XmlElement data, Atlas atlas = null, bool outline = false) {
+        public PixelFont(string path, XmlElement data, Atlas? atlas = null) {
             // check if size already exists
             var size = data["info"].AttrFloat("size");
-            foreach (var fs in Sizes)
-                if (fs.Size == size)
-                    return fs;
 
             // get textures
-            Textures = new List<MTexture>();
-            var pages = data["pages"];
+            Textures = [];
+            XmlElement pages = data["pages"]!;
             foreach (XmlElement page in pages) {
                 var file = page.Attr("file");
                 var atlasPath = Path.GetFileNameWithoutExtension(file);
@@ -270,93 +261,68 @@ namespace Monocle {
                 if (atlas != null && atlas.Has(atlasPath)) {
                     Textures.Add(atlas[atlasPath]);
                 } else {
-                    var dir = Path.GetDirectoryName(path);
+                    var dir = Path.GetDirectoryName(path) ?? "";
                     Textures.Add(MTexture.FromFile(Path.Combine(Engine.ContentDirectory, dir, file)));
                 }
             }
 
             // create font size
-            var fontSize = new PixelFontSize() {
+            Data = new PixelFontData() {
                 Textures = Textures,
-                Characters = new Dictionary<int, PixelFontCharacter>(),
+                Characters = [],
                 LineHeight = data["common"].AttrInt("lineHeight"),
                 Size = size,
-                Outline = outline
+                HasOutline = data["info"].AttrInt("outline") > 0,
             };
 
             // get characters
-            foreach (XmlElement character in data["chars"]) {
+            foreach (XmlElement character in data["chars"]!) {
                 int id = character.AttrInt("id");
                 int page = character.AttrInt("page", 0);
-                fontSize.Characters.Add(id, new PixelFontCharacter(id, Textures[page], character));
+                Data.Characters.Add(id, new PixelFontCharacter(id, Textures[page], character));
             }
 
             // get kerning
-            if (data["kernings"] != null)
-                foreach (XmlElement kerning in data["kernings"]) {
+            if (data["kernings"] is XmlElement kernings)
+                foreach (XmlElement kerning in kernings) {
                     var from = kerning.AttrInt("first");
                     var to = kerning.AttrInt("second");
                     var push = kerning.AttrInt("amount");
 
-                    if (fontSize.Characters.TryGetValue(from, out PixelFontCharacter c))
+                    if (Data.Characters.TryGetValue(from, out PixelFontCharacter? c))
                         c.Kerning.Add(to, push);
                 }
-
-            // add font size
-            Sizes.Add(fontSize);
-            Sizes.Sort((a, b) => { return Math.Sign(a.Size - b.Size); });
-
-            return fontSize;
         }
 
-        public PixelFontSize Get(float size) {
-            for (int i = 0, j = Sizes.Count - 1; i < j; i++)
-                if (Sizes[i].Size >= size)
-                    return Sizes[i];
-            return Sizes[Sizes.Count - 1];
+        public void Draw(char character, Vector2 position, Vector2 justify, Vector2 scale, Color color) {
+            Data.Draw(character, position, justify, scale, color);
         }
 
-        public void Draw(float baseSize, char character, Vector2 position, Vector2 justify, Vector2 scale, Color color) {
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
-            scale *= (baseSize / fontSize.Size);
-            fontSize.Draw(character, position, justify, scale, color);
+        public void Draw(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke, Color strokeColor) {
+            Data.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
 
-        public void Draw(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke, Color strokeColor) {
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
-            scale *= (baseSize / fontSize.Size);
-            fontSize.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
+        public void Draw(string text, Vector2 position, Color color) {
+            Data.Draw(text, position, Vector2.Zero, Vector2.One, color, 0, Color.Transparent, 0, Color.Transparent);
         }
 
-        public void Draw(float baseSize, string text, Vector2 position, Color color) {
-            var scale = Vector2.One;
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
-            scale *= (baseSize / fontSize.Size);
-            fontSize.Draw(text, position, Vector2.Zero, Vector2.One, color, 0, Color.Transparent, 0, Color.Transparent);
+        public void Draw(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color) {
+            Data.Draw(text, position, justify, scale, color, 0, Color.Transparent, 0, Color.Transparent);
         }
 
-        public void Draw(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color) {
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
-            scale *= (baseSize / fontSize.Size);
-            fontSize.Draw(text, position, justify, scale, color, 0, Color.Transparent, 0, Color.Transparent);
+        public void DrawOutline(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float stroke, Color strokeColor) {
+            Data.Draw(text, position, justify, scale, color, 0f, Color.Transparent, stroke, strokeColor);
         }
 
-        public void DrawOutline(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float stroke, Color strokeColor) {
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
-            scale *= (baseSize / fontSize.Size);
-            fontSize.Draw(text, position, justify, scale, color, 0f, Color.Transparent, stroke, strokeColor);
-        }
-
-        public void DrawEdgeOutline(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke = 0f, Color strokeColor = default(Color)) {
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
-            scale *= (baseSize / fontSize.Size);
-            fontSize.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
+        public void DrawEdgeOutline(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke = 0f, Color strokeColor = default) {
+            Data.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
 
         public void Dispose() {
             foreach (var tex in Textures)
                 tex.Dispose();
-            Sizes.Clear();
+            Textures.Clear();
+            Data = null!;
         }
     }
 }

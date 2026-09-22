@@ -14,7 +14,7 @@ namespace Monocle {
 
         private List<Char> characters = new List<Char>();
         private PixelFont font;
-        private PixelFontSize size;
+        private PixelFontData data;
         private HorizontalAlign horizontalOrigin;
         private VerticalAlign verticalOrigin;
         private string text;
@@ -30,12 +30,7 @@ namespace Monocle {
         }
 
         public float Size {
-            get { return size.Size; }
-            set {
-                if (value != size.Size)
-                    dirty = true;
-                size = font.Get(value);
-            }
+            get { return data.Size; }
         }
 
         public string Text {
@@ -72,7 +67,7 @@ namespace Monocle {
             Text = text;
             Color = color;
             Text = text;
-            size = Font.Sizes[0];
+            data = Font.Data;
             Position = position;
             horizontalOrigin = horizontalAlign;
             verticalOrigin = verticalAlign;
@@ -91,12 +86,12 @@ namespace Monocle {
                 // new line
                 if (text[i] == '\n') {
                     offset.X = 0;
-                    offset.Y += size.LineHeight;
+                    offset.Y += data.LineHeight;
                     lines++;
                 }
 
                 // add char
-                var fontChar = size.Get(text[i]);
+                var fontChar = data.Get(text[i]);
                 if (fontChar != null) {
                     characters.Add(new Char() {
                         Offset = offset + new Vector2(fontChar.XOffset, fontChar.YOffset),
@@ -111,7 +106,7 @@ namespace Monocle {
             }
 
             Width = widest;
-            Height = lines * size.LineHeight;
+            Height = lines * data.LineHeight;
 
             UpdateCentering();
         }
