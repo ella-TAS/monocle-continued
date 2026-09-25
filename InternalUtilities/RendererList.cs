@@ -15,17 +15,20 @@ namespace Monocle {
             removing = new List<Renderer>();
         }
 
-        internal void UpdateLists() {
-            if (adding.Count > 0)
-                foreach (var renderer in adding)
+        public void UpdateLists() {
+            if (adding.Count > 0) {
+                foreach (var renderer in adding) {
                     Renderers.Add(renderer);
-            adding.Clear();
-            if (removing.Count > 0)
+                }
+                adding.Clear();
+            }
+            if (removing.Count > 0) {
                 foreach (var renderer in removing) {
                     Renderers.Remove(renderer);
                     renderer.Dispose();
                 }
-            removing.Clear();
+                removing.Clear();
+            }
         }
 
         internal void Update() {
