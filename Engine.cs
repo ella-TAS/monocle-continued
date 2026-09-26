@@ -472,6 +472,7 @@ namespace Monocle {
 
         public static Viewport Viewport { get; private set; }
         public static Matrix ScreenMatrix;
+        public static Matrix ViewportMatrix;
 
         /// <summary>
         /// Sets the game to windowed mode with the specified dimensions.
@@ -534,9 +535,6 @@ namespace Monocle {
             ViewWidth -= ViewPadding * 2;
             ViewHeight -= (int) (aspect * ViewPadding * 2);
 
-            // update screen matrix
-            ScreenMatrix = Matrix.CreateScale(ViewWidth / (float) Width);
-
             // update viewport
             Viewport = new Viewport {
                 X = (int) (screenWidth / 2 - ViewWidth / 2),
@@ -547,8 +545,12 @@ namespace Monocle {
                 MaxDepth = 1
             };
 
+            // update screen matrix
+            ScreenMatrix = Matrix.CreateScale(ViewWidth / (float) Width);
+            ViewportMatrix = ScreenMatrix * Matrix.CreateTranslation(Viewport.X, Viewport.Y, 0f);
+
             //Debug Log
-            //Calc.Log("Update View - " + screenWidth + "x" + screenHeight + " - " + viewport.Width + "x" + viewport.GuiHeight + " - " + viewport.X + "," + viewport.Y);
+            //Logger.Log("Update View - " + screenWidth + "x" + screenHeight + " - " + Viewport.Width + "x" + Viewport.Height + " - " + Viewport.X + "," + Viewport.Y);
         }
 
         #endregion
