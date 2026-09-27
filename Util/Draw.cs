@@ -275,11 +275,7 @@ namespace Monocle {
             ArgumentOutOfRangeException.ThrowIfNegative(height);
 
             if (Pixel.Texture != null) {
-                rect.X = (int) Math.Round(x);
-                rect.Y = (int) Math.Round(y);
-                rect.Width = (int) Math.Round(width);
-                rect.Height = (int) Math.Round(height);
-                SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
+                SpriteBatch.Draw(Pixel.Texture, new Vector2(x, y), Pixel.ClipRect, color, 0f, Vector2.Zero, new Vector2(width, height), SpriteEffects.None, 0f);
             }
         }
 
@@ -300,27 +296,11 @@ namespace Monocle {
 
         #region Hollow Rect
 
-        public static void HollowRect(float x, float y, float width, float height, Color color) {
-            rect.X = (int) Math.Round(x);
-            rect.Y = (int) Math.Round(y);
-            rect.Width = (int) Math.Round(width);
-            rect.Height = 1;
-
-            SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
-
-            rect.Y += (int) Math.Round(height - 1);
-
-            SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
-
-            rect.Y -= (int) Math.Round(height - 1);
-            rect.Width = 1;
-            rect.Height = (int) Math.Round(height);
-
-            SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
-
-            rect.X += (int) Math.Round(width - 1);
-
-            SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
+        public static void HollowRect(float x, float y, float width, float height, Color color, float thickness = 1f) {
+            Rect(x, y, width, thickness, color);
+            Rect(x, y, thickness, height, color);
+            Rect(x, y + height - thickness, width, thickness, color);
+            Rect(x + width - thickness, y, thickness, height, color);
         }
 
         public static void HollowRect(Vector2 position, float width, float height, Color color) {
