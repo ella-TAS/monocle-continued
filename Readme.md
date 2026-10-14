@@ -16,9 +16,10 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - several small bug fixes
 - SaveLoad rewrite
 - add Logger and update ErrorLogger
-- open the console with F12 and close it with Escape
+- open the console with . and close it with Escape
 - remove obsolete methods and outsource most extensions from Calc
 - mouse position fix with black bars in a non-16:9 window
+- simplify PixelFont by removing font sizes
 - extend PixelText component to work like the Text one
 - RenderBuffer, a resizable wrapper of RenderTarget2D
 - builtin Scene Transitions between two scenes

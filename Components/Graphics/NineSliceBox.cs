@@ -8,8 +8,8 @@ namespace Monocle {
         private MTexture[,] nineSlice;
         private int tileSize;
 
-        public NineSliceBox(MTexture texture, int boxWidth, int boxHeight, Vector2 position = default, int tileSize = 8) : base(false, true) {
-            Position = position;
+        public NineSliceBox(MTexture texture, int boxWidth, int boxHeight, Vector2 offset = default, int tileSize = 8) : base(false, true) {
+            Position = offset;
             Width = boxWidth;
             Height = boxHeight;
             this.tileSize = tileSize;
@@ -24,7 +24,7 @@ namespace Monocle {
         public override void Render() {
             base.Render();
 
-            Vector2 drawPos = Position.Round();
+            Vector2 drawPos = (Entity.Position + Position).Round();
             Vector2 offset = Vector2.Zero;
 
             // first row
