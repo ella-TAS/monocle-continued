@@ -22,7 +22,6 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 - extend PixelText component to work like the Text one
 - RenderBuffer, a resizable wrapper of RenderTarget2D
 - builtin Scene Transitions between two scenes
-- NineSliceBox component
 - add Camera.Bounds rectangle
 - Renderer.Dispose for renderers with target buffers
 - SceneEntity<Scene> to designate an entity for that scene
