@@ -548,7 +548,12 @@ namespace Monocle {
             };
 
             //Debug Log
-            //Calc.Log("Update View - " + screenWidth + "x" + screenHeight + " - " + viewport.Width + "x" + viewport.GuiHeight + " - " + viewport.X + "," + viewport.Y);
+            //Logger.Log("Update View - " + screenWidth + "x" + screenHeight + " - " + Viewport.Width + "x" + Viewport.Height + " - " + Viewport.X + "," + Viewport.Y);
+        }
+
+        public static void ResetRenderTarget() {
+            Graphics?.GraphicsDevice.SetRenderTarget(null);
+            Graphics?.GraphicsDevice.Viewport = Viewport;
         }
 
         #endregion

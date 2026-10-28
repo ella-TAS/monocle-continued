@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -197,7 +199,7 @@ namespace Monocle {
             LockMode = ComponentList.LockModes.Open;
         }
 
-        public T Get<T>() where T : Component {
+        public T? Get<T>() where T : Component {
             foreach (var component in components)
                 if (component is T)
                     return component as T;
@@ -206,8 +208,8 @@ namespace Monocle {
 
         public IEnumerable<T> GetAll<T>() where T : Component {
             foreach (var component in components)
-                if (component is T)
-                    yield return component as T;
+                if (component is T t)
+                    yield return t;
         }
     }
 }

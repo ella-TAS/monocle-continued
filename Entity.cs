@@ -962,7 +962,7 @@ namespace Monocle {
             Components.Remove(components);
         }
 
-        public T Get<T>() where T : Component {
+        public T? Get<T>() where T : Component {
             return Components.Get<T>();
         }
 
