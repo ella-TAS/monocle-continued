@@ -400,6 +400,8 @@ namespace Monocle {
                                     Scene.TagLists[i].Remove(this);
                             }
                         }
+                    } else {
+                        Logger.Log("Warning: Tag added to Entity without a Scene; TagLists not updated");
                     }
 
                     tag = value;
