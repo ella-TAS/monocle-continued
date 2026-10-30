@@ -106,14 +106,10 @@ namespace Monocle {
         /// run after all entities are added but before updates begin.
         /// </remarks>
         public virtual void Added(Scene scene) {
-            int tempTag = Tag;
-            Tag = 0;
-
             Scene = scene;
             foreach (var component in Components)
                 component.EntityAdded(scene);
             Scene.SetActualDepth(this);
-            Tag = tempTag;
         }
 
         /// <summary>
