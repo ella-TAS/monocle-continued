@@ -46,8 +46,12 @@ namespace Monocle {
 
         public static void LogEach<T>(IEnumerable<T> collection) {
             string origin = GetCallerInfo();
-            foreach (T o in collection)
+            if (!collection.Any()) {
+                Debug("[]", origin: origin);
+            }
+            foreach (T o in collection) {
                 Debug(o?.ToString() ?? "<null>", origin: origin);
+            }
         }
 
         /// <summary>Crashes while in DEBUG mode, sends a warning otherwise</summary>

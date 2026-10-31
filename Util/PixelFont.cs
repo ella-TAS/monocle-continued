@@ -44,7 +44,14 @@ namespace Monocle {
 
             foreach (var word in words) {
                 var wordWidth = Measure(word).X;
-                if (wordWidth + lineWidth > width) {
+
+                if (word.Equals("\n")) {
+                    builder.Append('\n');
+                    lineWidth = 0;
+                    continue;
+                }
+
+                if (wordWidth + lineWidth > width && lineWidth > 0) {
                     builder.Append('\n');
                     lineWidth = 0;
 
@@ -55,12 +62,13 @@ namespace Monocle {
                 // this word is longer than the max-width, split where ever we can
                 if (wordWidth > width) {
                     int i = 1, start = 0;
-                    for (; i < word.Length; i++)
+                    for (; i < word.Length; i++) {
                         if (i - start > 1 && Measure(word.Substring(start, i - start - 1)).X > width) {
                             builder.Append(word.AsSpan(start, i - start - 1));
                             builder.Append('\n');
                             start = i - 1;
                         }
+                    }
 
 
                     var remaining = word[start..];

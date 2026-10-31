@@ -13,11 +13,9 @@ namespace Monocle {
                 lists[i] = new List<Entity>();
         }
 
-        public List<Entity> this[int index] {
-            get {
-                return lists[index];
-            }
-        }
+        public List<Entity> this[BitTag tag] => lists[tag.ID];
+
+        public List<Entity> this[int index] => lists[index];
 
         internal void MarkUnsorted(int index) {
             areAnyUnsorted = true;
