@@ -91,22 +91,21 @@ namespace Monocle {
                 }
 
                 // add char
-                var fontChar = data.Get(text[i]);
-                if (fontChar != null) {
-                    characters.Add(new Char() {
-                        Offset = offset + new Vector2(fontChar.XOffset, fontChar.YOffset),
-                        CharData = fontChar,
-                        Bounds = fontChar.Texture.ClipRect,
-                    });
+                var fontChar = data.Get(text[i]) ?? data.Get(PixelFontCharacter.FALLBACK);
 
-                    offset.X += fontChar.XAdvance;
+                characters.Add(new Char() {
+                    Offset = offset + new Vector2(fontChar.XOffset, fontChar.YOffset),
+                    CharData = fontChar,
+                    Bounds = fontChar.Texture.ClipRect,
+                });
 
-                    if (i < text.Length - 1 && fontChar.Kerning.TryGetValue(text[i + 1], out int kerning))
-                        offset.X += kerning;
+                offset.X += fontChar.XAdvance;
 
-                    if (offset.X > widest)
-                        widest = (int) offset.X;
-                }
+                if (i < text.Length - 1 && fontChar.Kerning.TryGetValue(text[i + 1], out int kerning))
+                    offset.X += kerning;
+
+                if (offset.X > widest)
+                    widest = (int) offset.X;
             }
 
             Width = widest;

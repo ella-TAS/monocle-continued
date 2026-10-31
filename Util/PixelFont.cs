@@ -10,6 +10,8 @@ using System.Xml;
 
 namespace Monocle {
     public class PixelFontCharacter {
+        public const char FALLBACK = '?';
+
         public int Character;
         public MTexture Texture;
         public int XOffset;
@@ -163,12 +165,12 @@ namespace Monocle {
             if (char.IsWhiteSpace(character))
                 return;
 
-            if (Characters.TryGetValue(character, out PixelFontCharacter? c)) {
-                var measure = Measure(character);
-                var justified = new Vector2(measure.X * justify.X, measure.Y * justify.Y);
-                var pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
-                c.Texture.Draw(pos.Floor(), Vector2.Zero, color, scale);
-            }
+            PixelFontCharacter c = Get(character) ?? Characters[PixelFontCharacter.FALLBACK];
+
+            var measure = Measure(character);
+            var justified = new Vector2(measure.X * justify.X, measure.Y * justify.Y);
+            var pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
+            c.Texture.Draw(pos.Floor(), Vector2.Zero, color, scale);
         }
 
         public void Draw(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke, Color strokeColor) {
@@ -188,46 +190,45 @@ namespace Monocle {
                     continue;
                 }
 
-                if (Characters.TryGetValue(text[i], out PixelFontCharacter? c)) {
-                    var pos = position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale;
+                PixelFontCharacter c = Get(text[i]) ?? Characters[PixelFontCharacter.FALLBACK];
 
-                    // draw stroke
-                    if (stroke > 0 && !HasOutline) {
-                        if (edgeDepth > 0) {
-                            c.Texture.Draw(pos + new Vector2(0, -stroke), Vector2.Zero, strokeColor, scale);
-                            for (var j = -stroke; j < edgeDepth + stroke; j += stroke) {
-                                c.Texture.Draw(pos + new Vector2(-stroke, j), Vector2.Zero, strokeColor, scale);
-                                c.Texture.Draw(pos + new Vector2(stroke, j), Vector2.Zero, strokeColor, scale);
-                            }
-                            c.Texture.Draw(pos + new Vector2(-stroke, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(0, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(stroke, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
-                        } else {
-                            c.Texture.Draw(pos + new Vector2(-1, -1) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(0, -1) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(1, -1) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(-1, 0) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(1, 0) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(-1, 1) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(0, 1) * stroke, Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(1, 1) * stroke, Vector2.Zero, strokeColor, scale);
+                var pos = position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale;
+
+                // draw stroke
+                if (stroke > 0 && !HasOutline) {
+                    if (edgeDepth > 0) {
+                        c.Texture.Draw(pos + new Vector2(0, -stroke), Vector2.Zero, strokeColor, scale);
+                        for (var j = -stroke; j < edgeDepth + stroke; j += stroke) {
+                            c.Texture.Draw(pos + new Vector2(-stroke, j), Vector2.Zero, strokeColor, scale);
+                            c.Texture.Draw(pos + new Vector2(stroke, j), Vector2.Zero, strokeColor, scale);
                         }
+                        c.Texture.Draw(pos + new Vector2(-stroke, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(0, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(stroke, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
+                    } else {
+                        c.Texture.Draw(pos + new Vector2(-1, -1) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(0, -1) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(1, -1) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(-1, 0) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(1, 0) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(-1, 1) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(0, 1) * stroke, Vector2.Zero, strokeColor, scale);
+                        c.Texture.Draw(pos + new Vector2(1, 1) * stroke, Vector2.Zero, strokeColor, scale);
                     }
-
-                    // draw edge
-                    if (edgeDepth > 0)
-                        c.Texture.Draw(pos + Vector2.UnitY * edgeDepth, Vector2.Zero, edgeColor, scale);
-
-                    // draw normal character
-                    c.Texture.Draw(pos, Vector2.Zero, color, scale);
-
-                    offset.X += c.XAdvance;
-
-                    if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
-                        offset.X += kerning;
                 }
-            }
 
+                // draw edge
+                if (edgeDepth > 0)
+                    c.Texture.Draw(pos + Vector2.UnitY * edgeDepth, Vector2.Zero, edgeColor, scale);
+
+                // draw normal character
+                c.Texture.Draw(pos, Vector2.Zero, color, scale);
+
+                offset.X += c.XAdvance;
+
+                if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out int kerning))
+                    offset.X += kerning;
+            }
         }
 
         public void Draw(string text, Vector2 position, Color color) {
