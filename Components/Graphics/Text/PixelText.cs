@@ -100,6 +100,10 @@ namespace Monocle {
                     });
 
                     offset.X += fontChar.XAdvance;
+
+                    if (i < text.Length - 1 && fontChar.Kerning.TryGetValue(text[i + 1], out int kerning))
+                        offset.X += kerning;
+
                     if (offset.X > widest)
                         widest = (int) offset.X;
                 }

@@ -254,7 +254,7 @@ namespace Monocle {
             // get textures
             Textures = [];
             XmlElement pages = data["pages"]!;
-            foreach (XmlElement page in pages) {
+            foreach (XmlElement page in pages.GetElements()) {
                 var file = page.Attr("file");
                 var atlasPath = Path.GetFileNameWithoutExtension(file);
 
@@ -276,7 +276,7 @@ namespace Monocle {
             };
 
             // get characters
-            foreach (XmlElement character in data["chars"]!) {
+            foreach (XmlElement character in data["chars"]!.GetElements()) {
                 int id = character.AttrInt("id");
                 int page = character.AttrInt("page", 0);
                 Data.Characters.Add(id, new PixelFontCharacter(id, Textures[page], character));
@@ -284,7 +284,7 @@ namespace Monocle {
 
             // get kerning
             if (data["kernings"] is XmlElement kernings)
-                foreach (XmlElement kerning in kernings) {
+                foreach (XmlElement kerning in kernings.GetElements()) {
                     var from = kerning.AttrInt("first");
                     var to = kerning.AttrInt("second");
                     var push = kerning.AttrInt("amount");

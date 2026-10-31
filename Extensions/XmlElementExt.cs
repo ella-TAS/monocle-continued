@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 
@@ -450,5 +451,11 @@ namespace Monocle {
         }
 
         #endregion
+
+        public static IEnumerable<XmlElement> GetElements(this XmlElement xml) {
+            foreach (XmlNode node in xml)
+                if (node is XmlElement element)
+                    yield return element;
+        }
     }
 }
