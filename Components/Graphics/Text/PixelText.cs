@@ -88,6 +88,7 @@ namespace Monocle {
                     offset.X = 0;
                     offset.Y += data.LineHeight;
                     lines++;
+                    continue;
                 }
 
                 // add char
