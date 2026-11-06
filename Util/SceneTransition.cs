@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Monocle {
@@ -25,8 +26,8 @@ namespace Monocle {
                 return;
             }
 
-            FromBuffer = new RenderBuffer();
-            ToBuffer = new RenderBuffer();
+            FromBuffer = new RenderBuffer(RenderTargetUsage.PreserveContents);
+            ToBuffer = new RenderBuffer(RenderTargetUsage.PreserveContents);
 
             Engine.ReplaceSceneSilent(this);
             ToScene.Begin();

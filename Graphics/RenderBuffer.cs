@@ -16,11 +16,15 @@ namespace Monocle {
             set => Resize(Width, value);
         }
 
+        private RenderTargetUsage Usage;
+
         public Rectangle Bounds => Target.Bounds;
 
-        public RenderBuffer() { }
+        public RenderBuffer(RenderTargetUsage renderTargetUsage = RenderTargetUsage.DiscardContents) {
+            Usage = renderTargetUsage;
+        }
 
-        public RenderBuffer(int width, int height) {
+        public RenderBuffer(int width, int height, RenderTargetUsage renderTargetUsage = RenderTargetUsage.DiscardContents) : this(renderTargetUsage) {
             Resize(width, height);
         }
 
@@ -30,7 +34,16 @@ namespace Monocle {
             }
 
             Target?.Dispose();
-            Target = new RenderTarget2D(Engine.Instance.GraphicsDevice, newWidth, newHeight);
+            Target = new RenderTarget2D(
+                Engine.Instance.GraphicsDevice,
+                newWidth,
+                newHeight,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None,
+                0,
+                Usage
+            );
         }
 
         public void Dispose() {
