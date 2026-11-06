@@ -97,6 +97,8 @@ namespace Monocle {
         private static int viewPadding = 0;
         private static bool resizing;
 
+        public static RenderTarget2D? DefaultRenderTarget;
+
         // time
         /// <summary>
         /// The time in seconds since the last frame, affected by TimeRate and FreezeTimer.
@@ -400,7 +402,7 @@ namespace Monocle {
             if (scene != null)
                 scene.BeforeRender();
 
-            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetRenderTarget(DefaultRenderTarget);
             GraphicsDevice.Viewport = Viewport;
             GraphicsDevice.Clear(ClearColor);
 
@@ -552,7 +554,7 @@ namespace Monocle {
         }
 
         public static void ResetRenderTarget() {
-            Graphics?.GraphicsDevice.SetRenderTarget(null);
+            Graphics?.GraphicsDevice.SetRenderTarget(DefaultRenderTarget);
             Graphics?.GraphicsDevice.Viewport = Viewport;
         }
 

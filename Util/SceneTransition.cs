@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System;
 
 namespace Monocle {
@@ -66,12 +67,17 @@ namespace Monocle {
             FromBuffer.Resize(Engine.WindowWidth, Engine.WindowHeight);
             ToBuffer.Resize(Engine.WindowWidth, Engine.WindowHeight);
 
-            Engine.Graphics.GraphicsDevice.SetRenderTarget(FromBuffer);
-            Engine.Graphics.GraphicsDevice.Clear(Engine.ClearColor);
+            Engine.DefaultRenderTarget = FromBuffer;
+            Engine.ResetRenderTarget();
+            Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
             FromScene.Render();
-            Engine.Graphics.GraphicsDevice.SetRenderTarget(ToBuffer);
-            Engine.Graphics.GraphicsDevice.Clear(Engine.ClearColor);
+
+            Engine.DefaultRenderTarget = ToBuffer;
+            Engine.ResetRenderTarget();
+            Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
             ToScene.Render();
+
+            Engine.DefaultRenderTarget = null;
             Engine.Graphics.GraphicsDevice.SetRenderTarget(null);
             Engine.Graphics.GraphicsDevice.Clear(Engine.ClearColor);
         }
