@@ -277,7 +277,13 @@ namespace Monocle {
         public Vector2 TopRight => new Vector2(Right, Top);
         public Vector2 BottomLeft => new Vector2(Left, Bottom);
         public Vector2 BottomRight => new Vector2(Right, Bottom);
-        public Vector2 Center => Bounds.Center.ToVector();
+        public Vector2 Center {
+            get {
+                if (changed)
+                    UpdateMatrices();
+                return Vector2.Transform(new Vector2(Viewport.Width, Viewport.Height) / 2f, Inverse);
+            }
+        }
 
         /*
          *  Utils
