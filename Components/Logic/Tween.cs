@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Monocle {
     public class Tween : Component {
-        public enum TweenMode { Persist, Oneshot, Looping, YoyoOneshot, YoyoLooping };
+        public enum TweenMode { Persist, Oneshot, Looping, YoyoPersist, YoyoOneshot, YoyoLooping };
 
         public Ease.Easer Easer;
         public Action<Tween> OnUpdate;
@@ -123,6 +123,15 @@ namespace Monocle {
 
                 case TweenMode.Looping:
                     Start(Reverse);
+                    break;
+
+                case TweenMode.YoyoPersist:
+                    if (Reverse == startedReversed) {
+                        Start(!Reverse);
+                        startedReversed = !Reverse;
+                    } else {
+                        Active = false;
+                    }
                     break;
 
                 case TweenMode.YoyoOneshot:
