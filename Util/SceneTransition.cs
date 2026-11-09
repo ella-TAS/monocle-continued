@@ -37,6 +37,7 @@ namespace Monocle {
         public virtual void Finish() {
             FromScene.End();
             Engine.ReplaceSceneSilent(ToScene);
+            Engine.Instance.OnSceneTransition(FromScene, ToScene);
             End();
         }
 

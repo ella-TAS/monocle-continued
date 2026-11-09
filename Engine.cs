@@ -445,7 +445,7 @@ namespace Monocle {
         /// </summary>
         /// <param name="from">The scene that is ending (can be null).</param>
         /// <param name="to">The scene that is beginning (can be null).</param>
-        protected virtual void OnSceneTransition(Scene? from, Scene? to) {
+        public virtual void OnSceneTransition(Scene? from, Scene? to) {
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
