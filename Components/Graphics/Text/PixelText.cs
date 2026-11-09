@@ -61,14 +61,14 @@ namespace Monocle {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public PixelText(PixelFont font, Vector2 position, string text, Color color, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
+        public PixelText(PixelFont font, Vector2 offset, string text, Color color, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
             : base(false) {
             Font = font;
             Text = text;
             Color = color;
             Text = text;
             data = Font.Data;
-            Position = position;
+            Position = offset;
             horizontalOrigin = horizontalAlign;
             verticalOrigin = verticalAlign;
             Refresh();
