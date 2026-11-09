@@ -53,6 +53,10 @@ namespace Monocle {
             return new Vector2(MathHelper.Clamp(val.X, minX, maxX), MathHelper.Clamp(val.Y, minY, maxY));
         }
 
+        public static Vector2 Clamp(this Vector2 val, Vector2 min, Vector2 max) {
+            return Vector2.Clamp(val, min, max);
+        }
+
         public static Vector2 ClampLength(this Vector2 val, float minLength, float maxLength) {
             float length = val.Length();
             if (length < minLength) {
