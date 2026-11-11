@@ -9,7 +9,7 @@ namespace Monocle {
         public Pooler() {
             Pools = new Dictionary<Type, Stack<Entity>>();
 
-            foreach (var type in Assembly.GetEntryAssembly()!.GetTypes()) {
+            foreach (Type type in Assembly.GetEntryAssembly()!.GetTypes()) {
                 if (type.GetCustomAttributes(typeof(Pooled), false).Length > 0) {
                     if (!typeof(Entity).IsAssignableFrom(type))
                         throw new Exception("Type '" + type.Name + "' cannot be Pooled because it doesn't derive from Entity");
@@ -22,14 +22,14 @@ namespace Monocle {
         }
 
         public T Create<T>() where T : Entity, new() {
-            if (!Pools.TryGetValue(typeof(T), out var pool) || pool.Count == 0)
+            if (!Pools.TryGetValue(typeof(T), out Stack<Entity>? pool) || pool.Count == 0)
                 return new T();
 
             return (T) pool.Pop();
         }
 
         internal void EntityRemoved(Entity entity) {
-            if (Pools.TryGetValue(entity.GetType(), out var pool))
+            if (Pools.TryGetValue(entity.GetType(), out Stack<Entity>? pool))
                 pool.Push(entity);
         }
 
@@ -37,7 +37,7 @@ namespace Monocle {
             if (Pools.Count == 0)
                 Engine.Commands.Log("No Entity types are marked as Pooled!");
 
-            foreach (var kv in Pools) {
+            foreach (KeyValuePair<Type, Stack<Entity>> kv in Pools) {
                 string output = kv.Key.Name + " : " + kv.Value.Count;
                 Engine.Commands.Log(output);
             }

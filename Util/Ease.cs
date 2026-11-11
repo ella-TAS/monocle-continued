@@ -36,13 +36,13 @@ namespace Monocle {
         public static readonly Easer BigBackInOut = Follow(BigBackIn, BigBackOut);
 
         public static readonly Easer ElasticIn = (float t) => {
-            var ts = t * t;
-            var tc = ts * t;
+            float ts = t * t;
+            float tc = ts * t;
             return (33 * tc * ts + -59 * ts * ts + 32 * tc + -5 * ts);
         };
         public static readonly Easer ElasticOut = (float t) => {
-            var ts = t * t;
-            var tc = ts * t;
+            float ts = t * t;
+            float tc = ts * t;
             return (33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t);
         };
         public static readonly Easer ElasticInOut = Follow(ElasticIn, ElasticOut);

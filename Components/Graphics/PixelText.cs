@@ -77,9 +77,9 @@ namespace Monocle {
             dirty = false;
             characters.Clear();
 
-            var widest = 0;
-            var lines = 1;
-            var offset = Vector2.Zero;
+            int widest = 0;
+            int lines = 1;
+            Vector2 offset = Vector2.Zero;
 
             for (int i = 0; i < text.Length; i++) {
                 // new line
@@ -136,7 +136,7 @@ namespace Monocle {
             if (dirty)
                 Refresh();
 
-            for (var i = 0; i < characters.Count; i++)
+            for (int i = 0; i < characters.Count; i++)
                 characters[i].CharData.Texture.Draw(RenderPosition + characters[i].Offset * Scale.X, Origin, Color, Scale);
         }
     }

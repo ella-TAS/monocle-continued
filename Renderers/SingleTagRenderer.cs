@@ -20,12 +20,12 @@ namespace Monocle {
         public override void Render(Scene scene) {
             Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState, SamplerState, DepthStencilState.None, RasterizerState.CullNone, Effect, scene.Camera.Matrix * Engine.ScreenMatrix);
 
-            foreach (var entity in scene[Tag])
+            foreach (Entity entity in scene[Tag])
                 if (entity.Visible)
                     entity.Render();
 
             if (Engine.Commands.Open)
-                foreach (var entity in scene[Tag])
+                foreach (Entity entity in scene[Tag])
                     entity.DebugRender(scene.Camera);
 
             Draw.SpriteBatch.End();

@@ -22,12 +22,12 @@ namespace Monocle {
         }
 
         public override void Update() {
-            foreach (var node in Nodes)
+            foreach (VirtualAxis.Node node in Nodes)
                 node.Update();
 
             PreviousValue = Value;
             Value = 0;
-            foreach (var node in Nodes) {
+            foreach (VirtualAxis.Node node in Nodes) {
                 float value = node.Value;
                 if (value != 0) {
                     Value = Math.Sign(value);

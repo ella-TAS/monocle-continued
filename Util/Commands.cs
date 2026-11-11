@@ -49,8 +49,8 @@ namespace Monocle {
 
             //Newline splits
             if (str.Contains("\n")) {
-                var all = str.Split('\n');
-                foreach (var line in all)
+                string[] all = str.Split('\n');
+                foreach (string line in all)
                     Log(line, color);
                 return;
             }
@@ -426,17 +426,17 @@ namespace Monocle {
         private void BuildCommandsList() {
 #if !CONSOLE
             //Check Monocle for Commands
-            foreach (var type in Assembly.GetCallingAssembly().GetTypes())
-                foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (Type type in Assembly.GetCallingAssembly().GetTypes())
+                foreach (MethodInfo method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                     ProcessMethod(method);
 
             //Check the calling assembly for Commands
-            foreach (var type in Assembly.GetEntryAssembly()?.GetTypes() ?? [])
-                foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (Type type in Assembly.GetEntryAssembly()?.GetTypes() ?? [])
+                foreach (MethodInfo method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                     ProcessMethod(method);
 
             //Maintain the sorted command list
-            foreach (var command in commands)
+            foreach (KeyValuePair<string, CommandInfo> command in commands)
                 sorted.Add(command.Key);
             sorted.Sort();
 #endif
@@ -445,7 +445,7 @@ namespace Monocle {
         private void ProcessMethod(MethodInfo method) {
             Command? attr = null;
             {
-                var attrs = method.GetCustomAttributes(typeof(Command), false);
+                object[] attrs = method.GetCustomAttributes(typeof(Command), false);
                 if (attrs.Length > 0)
                     attr = attrs[0] as Command;
             }
@@ -457,12 +457,12 @@ namespace Monocle {
                     CommandInfo info = new CommandInfo();
                     info.Help = attr.Help;
 
-                    var parameters = method.GetParameters();
-                    var defaults = new object?[parameters.Length];
+                    ParameterInfo[] parameters = method.GetParameters();
+                    object?[] defaults = new object?[parameters.Length];
                     string[] usage = new string[parameters.Length];
 
                     for (int i = 0; i < parameters.Length; i++) {
-                        var p = parameters[i];
+                        ParameterInfo p = parameters[i];
                         usage[i] = p.Name + ":";
 
                         if (p.ParameterType == typeof(string))
@@ -529,27 +529,27 @@ namespace Monocle {
         }
 
         private void LogStackTrace(string stackTrace) {
-            foreach (var call in stackTrace.Split('\n')) {
+            foreach (string call in stackTrace.Split('\n')) {
                 string log = call;
 
                 //Remove File Path
                 {
-                    var from = log.LastIndexOf(" in ") + 4;
-                    var to = log.LastIndexOf('\\') + 1;
+                    int from = log.LastIndexOf(" in ") + 4;
+                    int to = log.LastIndexOf('\\') + 1;
                     if (from != -1 && to != -1)
                         log = log.Substring(0, from) + log.Substring(to);
                 }
 
                 //Remove arguments list
                 {
-                    var from = log.IndexOf('(') + 1;
-                    var to = log.IndexOf(')');
+                    int from = log.IndexOf('(') + 1;
+                    int to = log.IndexOf(')');
                     if (from != -1 && to != -1)
                         log = log.Substring(0, from) + log.Substring(to);
                 }
 
                 //Space out the colon line number
-                var colon = log.LastIndexOf(':');
+                int colon = log.LastIndexOf(':');
                 if (colon != -1)
                     log = log.Insert(colon + 1, " ").Insert(colon, " ");
 
@@ -694,7 +694,7 @@ namespace Monocle {
         [Command("help", "Shows usage help for a given command")]
         private static void Help(string command) {
             if (Engine.Commands.sorted.Contains(command)) {
-                var c = Engine.Commands.commands[command];
+                CommandInfo c = Engine.Commands.commands[command];
                 StringBuilder str = new StringBuilder();
 
                 //Title

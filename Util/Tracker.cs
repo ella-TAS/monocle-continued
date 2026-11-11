@@ -22,7 +22,7 @@ namespace Monocle {
             StoredComponentTypes = new HashSet<Type>();
             StoredCollidableComponentTypes = new HashSet<Type>();
 
-            foreach (var type in Assembly.GetEntryAssembly()!.GetTypes()) {
+            foreach (Type type in Assembly.GetEntryAssembly()!.GetTypes()) {
                 Tracked? attr = type.GetCustomAttribute<Tracked>(false);
                 if (attr == null)
                     continue;
@@ -39,7 +39,7 @@ namespace Monocle {
                     StoredEntityTypes.Add(type);
 
                     if (inherited) {
-                        foreach (var subclass in GetSubclasses(type)) {
+                        foreach (Type subclass in GetSubclasses(type)) {
                             if (!subclass.IsAbstract) {
                                 if (!TrackedEntityTypes.ContainsKey(subclass))
                                     TrackedEntityTypes.Add(subclass, new List<Type>());
@@ -57,7 +57,7 @@ namespace Monocle {
                     StoredComponentTypes.Add(type);
 
                     if (inherited) {
-                        foreach (var subclass in GetSubclasses(type)) {
+                        foreach (Type subclass in GetSubclasses(type)) {
                             if (!subclass.IsAbstract) {
                                 if (!TrackedComponentTypes.ContainsKey(subclass))
                                     TrackedComponentTypes.Add(subclass, new List<Type>());
@@ -76,7 +76,7 @@ namespace Monocle {
                         StoredCollidableComponentTypes.Add(type);
 
                         if (inherited) {
-                            foreach (var subclass in GetSubclasses(type)) {
+                            foreach (Type subclass in GetSubclasses(type)) {
                                 if (!subclass.IsAbstract) {
                                     if (!TrackedCollidableComponentTypes.ContainsKey(subclass))
                                         TrackedCollidableComponentTypes.Add(subclass, new List<Type>());
@@ -93,7 +93,7 @@ namespace Monocle {
         private static List<Type> GetSubclasses(Type type) {
             List<Type> matches = new List<Type>();
 
-            foreach (var check in Assembly.GetEntryAssembly()?.GetTypes() ?? [])
+            foreach (Type check in Assembly.GetEntryAssembly()?.GetTypes() ?? [])
                 if (type != check && type.IsAssignableFrom(check))
                     matches.Add(check);
 
@@ -108,15 +108,15 @@ namespace Monocle {
 
         public Tracker() {
             Entities = new Dictionary<Type, List<Entity>>(TrackedEntityTypes.Count);
-            foreach (var type in StoredEntityTypes)
+            foreach (Type type in StoredEntityTypes)
                 Entities.Add(type, new List<Entity>());
 
             Components = new Dictionary<Type, List<Component>>(TrackedComponentTypes.Count);
-            foreach (var type in StoredComponentTypes)
+            foreach (Type type in StoredComponentTypes)
                 Components.Add(type, new List<Component>());
 
             CollidableComponents = new Dictionary<Type, List<CollidableComponent>>(TrackedComponentTypes.Count);
-            foreach (var type in StoredCollidableComponentTypes)
+            foreach (Type type in StoredCollidableComponentTypes)
                 CollidableComponents.Add(type, new List<CollidableComponent>());
         }
 
@@ -134,7 +134,7 @@ namespace Monocle {
                 return null;
             }
 
-            var list = Entities[typeof(T)];
+            List<Entity> list = Entities[typeof(T)];
             if (list.Count == 0)
                 return null;
             else
@@ -142,7 +142,7 @@ namespace Monocle {
         }
 
         public T? GetNearestEntity<T>(Vector2 nearestTo) where T : Entity {
-            var list = GetEntities<T>();
+            List<Entity> list = GetEntities<T>();
 
             T? nearest = null;
             float nearestDistSq = 0;
@@ -178,7 +178,7 @@ namespace Monocle {
                 yield break;
             }
 
-            foreach (var e in Entities[typeof(T)])
+            foreach (Entity e in Entities[typeof(T)])
                 yield return (T) e;
         }
 
@@ -197,7 +197,7 @@ namespace Monocle {
                 return null;
             }
 
-            var list = Components[typeof(T)];
+            List<Component> list = Components[typeof(T)];
             if (list.Count == 0)
                 return null;
             else
@@ -205,7 +205,7 @@ namespace Monocle {
         }
 
         public T? GetNearestComponent<T>(Vector2 nearestTo) where T : Component {
-            var list = GetComponents<T>();
+            List<Component> list = GetComponents<T>();
 
             T? nearest = null;
             float nearestDistSq = 0;
@@ -241,7 +241,7 @@ namespace Monocle {
                 yield break;
             }
 
-            foreach (var c in Components[typeof(T)])
+            foreach (Component c in Components[typeof(T)])
                 yield return (T) c;
         }
 
@@ -255,40 +255,40 @@ namespace Monocle {
         }
 
         internal void EntityAdded(Entity entity) {
-            var type = entity.GetType();
+            Type type = entity.GetType();
 
             if (TrackedEntityTypes.TryGetValue(type, out List<Type>? trackAs))
-                foreach (var track in trackAs)
+                foreach (Type track in trackAs)
                     Entities[track].Add(entity);
         }
 
         internal void EntityRemoved(Entity entity) {
-            var type = entity.GetType();
+            Type type = entity.GetType();
 
             if (TrackedEntityTypes.TryGetValue(type, out List<Type>? trackAs))
-                foreach (var track in trackAs)
+                foreach (Type track in trackAs)
                     Entities[track].Remove(entity);
         }
 
         internal void ComponentAdded(Component component) {
-            var type = component.GetType();
+            Type type = component.GetType();
 
             if (TrackedComponentTypes.TryGetValue(type, out List<Type>? trackAs))
-                foreach (var track in trackAs)
+                foreach (Type track in trackAs)
                     Components[track].Add(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
-                foreach (var track in trackAs)
+                foreach (Type track in trackAs)
                     CollidableComponents[track].Add((CollidableComponent) component);
         }
 
         internal void ComponentRemoved(Component component) {
-            var type = component.GetType();
+            Type type = component.GetType();
 
             if (TrackedComponentTypes.TryGetValue(type, out List<Type>? trackAs))
-                foreach (var track in trackAs)
+                foreach (Type track in trackAs)
                     Components[track].Remove(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
-                foreach (var track in trackAs)
+                foreach (Type track in trackAs)
                     CollidableComponents[track].Remove((CollidableComponent) component);
         }
 
@@ -296,7 +296,7 @@ namespace Monocle {
             if (Entities.Count == 0)
                 Engine.Commands.Log("n/a", Color.Red);
             else {
-                foreach (var kv in Entities) {
+                foreach (KeyValuePair<Type, List<Entity>> kv in Entities) {
                     string output = kv.Key.Name + " : " + kv.Value.Count;
                     Engine.Commands.Log(output);
                 }
@@ -307,7 +307,7 @@ namespace Monocle {
             if (Components.Count == 0)
                 Engine.Commands.Log("n/a", Color.Red);
             else {
-                foreach (var kv in Components) {
+                foreach (KeyValuePair<Type, List<Component>> kv in Components) {
                     string output = kv.Key.Name + " : " + kv.Value.Count;
                     Engine.Commands.Log(output);
                 }
@@ -318,7 +318,7 @@ namespace Monocle {
             if (CollidableComponents.Count == 0)
                 Engine.Commands.Log("n/a", Color.Red);
             else {
-                foreach (var kv in CollidableComponents) {
+                foreach (KeyValuePair<Type, List<CollidableComponent>> kv in CollidableComponents) {
                     string output = kv.Key.Name + " : " + kv.Value.Count;
                     Engine.Commands.Log(output);
                 }

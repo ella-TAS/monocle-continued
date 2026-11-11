@@ -74,7 +74,7 @@ namespace Monocle {
 
                 //End of Animation
                 if (CurrentAnimationFrame < 0 || CurrentAnimationFrame >= currentAnimation.Frames.Length) {
-                    var was = CurrentAnimationID;
+                    string was = CurrentAnimationID;
                     OnLastFrame?.Invoke(CurrentAnimationID);
 
                     // only do stuff if OnLastFrame didn't just change the animation
@@ -102,7 +102,7 @@ namespace Monocle {
                                 CurrentAnimationFrame = currentAnimation.Frames.Length - 1;
 
                             Animating = false;
-                            var id = CurrentAnimationID;
+                            string id = CurrentAnimationID;
                             CurrentAnimationID = "";
                             currentAnimation = null;
                             animationTimer = 0;
@@ -215,10 +215,10 @@ namespace Monocle {
             if (frames == null || frames.Length <= 0)
                 ret = atlas.GetAtlasSubtextures(this.Path + path).ToArray();
             else {
-                var fullPath = this.Path + path;
+                string fullPath = this.Path + path;
                 var finalFrames = new MTexture[frames.Length];
                 for (int i = 0; i < frames.Length; i++) {
-                    var frame = atlas.GetAtlasSubtexturesAt(fullPath, frames[i]);
+                    MTexture? frame = atlas.GetAtlasSubtexturesAt(fullPath, frames[i]);
                     if (frame == null)
                         throw new Exception("Can't find sprite " + fullPath + " with index " + frames[i]);
                     finalFrames[i] = frame;
@@ -414,7 +414,7 @@ namespace Monocle {
 
         public void DrawSubrect(Vector2 offset, Rectangle rectangle) {
             if (Texture != null) {
-                var clip = Texture.GetRelativeRect(rectangle);
+                Rectangle clip = Texture.GetRelativeRect(rectangle);
                 var clipOffset = new Vector2(-Math.Min(rectangle.X - Texture.DrawOffset.X, 0), -Math.Min(rectangle.Y - Texture.DrawOffset.Y, 0));
                 Draw.SpriteBatch.Draw(Texture.Texture, RenderPosition + offset, clip, Color, Rotation, Origin - clipOffset, Scale, Effects, 0);
             }
@@ -423,8 +423,8 @@ namespace Monocle {
         public void LogAnimations() {
             StringBuilder str = new StringBuilder();
 
-            foreach (var kv in animations) {
-                var anim = kv.Value;
+            foreach (KeyValuePair<string, Animation> kv in animations) {
+                Animation anim = kv.Value;
 
                 str.Append(kv.Key);
                 str.Append("\n{\n\t");

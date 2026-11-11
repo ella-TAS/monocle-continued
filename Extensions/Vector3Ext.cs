@@ -5,9 +5,9 @@ namespace Monocle {
     public static class Vector3Ext {
         public static Vector3 RotateTowards(this Vector3 from, Vector3 target, float maxRotationRadians) {
             var c = Vector3.Cross(from, target);
-            var alen = from.Length();
-            var blen = target.Length();
-            var w = MathF.Sqrt((alen * alen) * (blen * blen)) + Vector3.Dot(from, target);
+            float alen = from.Length();
+            float blen = target.Length();
+            float w = MathF.Sqrt((alen * alen) * (blen * blen)) + Vector3.Dot(from, target);
             var q = new Quaternion(c.X, c.Y, c.Z, w);
 
             if (q.Length() <= maxRotationRadians)
@@ -31,7 +31,7 @@ namespace Monocle {
         }
 
         public static Vector3 SafeNormalize(this Vector3 v) {
-            var len = v.Length();
+            float len = v.Length();
             if (len > Calc.EPSILON)
                 return v / len;
             return Vector3.Zero;

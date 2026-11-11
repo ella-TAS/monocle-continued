@@ -44,7 +44,7 @@ namespace Monocle {
         public static T StringToEnum<T>(string value) where T : struct, Enum {
             ArgumentException.ThrowIfNullOrEmpty(value);
 
-            if (Enum.TryParse<T>(value, out var result))
+            if (Enum.TryParse(value, out T result))
                 return result;
 
             throw new ArgumentException($"The string '{value}' cannot be converted to enum type {typeof(T).Name}.", nameof(value));
@@ -93,7 +93,7 @@ namespace Monocle {
             if (string.IsNullOrEmpty(str))
                 return false;
 
-            foreach (var match in matches)
+            foreach (string match in matches)
                 if (str.Equals(match, StringComparison.InvariantCultureIgnoreCase))
                     return true;
 
@@ -129,12 +129,12 @@ namespace Monocle {
 
             var lines = new List<string>();
 
-            foreach (var forcedLine in text.Split(newLine)) {
-                var line = string.Empty;
-                var words = forcedLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            foreach (string forcedLine in text.Split(newLine)) {
+                string line = string.Empty;
+                string[] words = forcedLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var word in words) {
-                    var testLine = string.IsNullOrEmpty(line) ? word : $"{line} {word}";
+                foreach (string word in words) {
+                    string testLine = string.IsNullOrEmpty(line) ? word : $"{line} {word}";
 
                     if (font.MeasureString(testLine).X > maxLineWidth && !string.IsNullOrEmpty(line)) {
                         lines.Add(line);
@@ -163,7 +163,7 @@ namespace Monocle {
         /// <param name="b">Second value to check.</param>
         /// <returns>The number of values that match the target (0-2).</returns>
         public static int Count<T>(T target, T a, T b) where T : notnull {
-            var count = 0;
+            int count = 0;
             if (target.Equals(a)) count++;
             if (target.Equals(b)) count++;
             return count;
@@ -179,7 +179,7 @@ namespace Monocle {
         /// <param name="c">Third value to check.</param>
         /// <returns>The number of values that match the target (0-3).</returns>
         public static int Count<T>(T target, T a, T b, T c) where T : notnull {
-            var count = 0;
+            int count = 0;
             if (target.Equals(a)) count++;
             if (target.Equals(b)) count++;
             if (target.Equals(c)) count++;
@@ -197,7 +197,7 @@ namespace Monocle {
         /// <param name="d">Fourth value to check.</param>
         /// <returns>The number of values that match the target (0-4).</returns>
         public static int Count<T>(T target, T a, T b, T c, T d) where T : notnull {
-            var count = 0;
+            int count = 0;
             if (target.Equals(a)) count++;
             if (target.Equals(b)) count++;
             if (target.Equals(c)) count++;
@@ -217,7 +217,7 @@ namespace Monocle {
         /// <param name="e">Fifth value to check.</param>
         /// <returns>The number of values that match the target (0-5).</returns>
         public static int Count<T>(T target, T a, T b, T c, T d, T e) where T : notnull {
-            var count = 0;
+            int count = 0;
             if (target.Equals(a)) count++;
             if (target.Equals(b)) count++;
             if (target.Equals(c)) count++;
@@ -239,7 +239,7 @@ namespace Monocle {
         /// <param name="f">Sixth value to check.</param>
         /// <returns>The number of values that match the target (0-6).</returns>
         public static int Count<T>(T target, T a, T b, T c, T d, T e, T f) where T : notnull {
-            var count = 0;
+            int count = 0;
             if (target.Equals(a)) count++;
             if (target.Equals(b)) count++;
             if (target.Equals(c)) count++;
@@ -257,8 +257,8 @@ namespace Monocle {
         /// <param name="values">The span of values to check.</param>
         /// <returns>The number of values that match the target.</returns>
         public static int Count<T>(T target, ReadOnlySpan<T> values) where T : notnull {
-            var count = 0;
-            foreach (var value in values) {
+            int count = 0;
+            foreach (T value in values) {
                 if (target.Equals(value))
                     count++;
             }
@@ -632,7 +632,7 @@ namespace Monocle {
         }
 
         public static float AngleApproach(float val, float target, float maxMove) {
-            var diff = AngleDiff(val, target);
+            float diff = AngleDiff(val, target);
             if (Math.Abs(diff) < maxMove)
                 return target;
             return val + MathHelper.Clamp(diff, -maxMove, maxMove);
@@ -721,11 +721,11 @@ namespace Monocle {
         }
 
         public static Vector2[] ParseVector2List(string list, char seperator = '|') {
-            var entries = list.Split(seperator);
+            string[] entries = list.Split(seperator);
             var data = new Vector2[entries.Length];
 
             for (int i = 0; i < entries.Length; i++) {
-                var sides = entries[i].Split(',');
+                string[] sides = entries[i].Split(',');
                 data[i] = new Vector2(Convert.ToInt32(sides[0]), Convert.ToInt32(sides[1]));
             }
 
@@ -780,9 +780,9 @@ namespace Monocle {
             string[] values = csv.Split(',');
             List<int> ret = new List<int>();
 
-            foreach (var val in values) {
+            foreach (string val in values) {
                 if (val.IndexOf('-') != -1) {
-                    var split = val.Split('-');
+                    string[] split = val.Split('-');
                     int a = Convert.ToInt32(split[0]);
                     int b = Convert.ToInt32(split[1]);
 
@@ -790,7 +790,7 @@ namespace Monocle {
                         ret.Add(i);
                     ret.Add(b);
                 } else if (val.IndexOf('*') != -1) {
-                    var split = val.Split('*');
+                    string[] split = val.Split('*');
                     int a = Convert.ToInt32(split[0]);
                     int b = Convert.ToInt32(split[1]);
 
@@ -947,7 +947,7 @@ namespace Monocle {
 
         public static XmlDocument LoadXML(string filename) {
             XmlDocument xml = new XmlDocument();
-            using (var stream = TitleContainer.OpenStream(filename))
+            using (Stream stream = TitleContainer.OpenStream(filename))
                 xml.Load(stream);
             return xml;
         }
@@ -989,7 +989,7 @@ namespace Monocle {
         #region Reflection
 
         public static Delegate? GetMethod<T>(object obj, string method) where T : class {
-            var info = obj.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            MethodInfo? info = obj.GetType().GetMethod(method, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
             if (info == null)
                 return null;
             else
@@ -1017,12 +1017,12 @@ namespace Monocle {
                 yield return numerators[0];
             else {
                 List<Coroutine> routines = new List<Coroutine>();
-                foreach (var enumerator in numerators)
+                foreach (IEnumerator enumerator in numerators)
                     routines.Add(new Coroutine(enumerator));
 
                 while (true) {
                     bool moving = false;
-                    foreach (var routine in routines) {
+                    foreach (Coroutine routine in routines) {
                         routine.Update();
                         if (!routine.Finished)
                             moving = true;

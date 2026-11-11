@@ -56,7 +56,7 @@ namespace Monocle {
             bufferCounter -= Engine.DeltaTime;
 
             bool check = false;
-            foreach (var node in Nodes) {
+            foreach (Node node in Nodes) {
                 node.Update();
                 if (node.Pressed) {
                     bufferCounter = BufferTime;
@@ -88,7 +88,7 @@ namespace Monocle {
                 if (MInput.Disabled)
                     return false;
 
-                foreach (var node in Nodes)
+                foreach (Node node in Nodes)
                     if (node.Check)
                         return true;
                 return false;
@@ -106,7 +106,7 @@ namespace Monocle {
                 if (bufferCounter > 0 || Repeating)
                     return true;
 
-                foreach (var node in Nodes)
+                foreach (Node node in Nodes)
                     if (node.Pressed)
                         return true;
                 return false;
@@ -118,7 +118,7 @@ namespace Monocle {
                 if (MInput.Disabled)
                     return false;
 
-                foreach (var node in Nodes)
+                foreach (Node node in Nodes)
                     if (node.Released)
                         return true;
                 return false;

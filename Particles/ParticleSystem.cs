@@ -19,8 +19,8 @@ namespace Monocle {
 
         public void ClearRect(Rectangle rect, bool inside) {
             for (int i = 0; i < particles.Length; i++) {
-                var pos = particles[i].Position;
-                var isInside = (pos.X > rect.Left && pos.Y > rect.Top && pos.X < rect.Right && pos.Y < rect.Bottom);
+                Vector2 pos = particles[i].Position;
+                bool isInside = (pos.X > rect.Left && pos.Y > rect.Top && pos.X < rect.Right && pos.Y < rect.Bottom);
 
                 if (isInside == inside)
                     particles[i].Active = false;
@@ -34,19 +34,19 @@ namespace Monocle {
         }
 
         public override void Render() {
-            foreach (var p in particles)
+            foreach (Particle p in particles)
                 if (p.Active)
                     p.Render();
         }
 
         public void Render(float alpha) {
-            foreach (var p in particles)
+            foreach (Particle p in particles)
                 if (p.Active)
                     p.Render(alpha);
         }
 
         public void Simulate(float duration, float interval, Action<ParticleSystem> emitter) {
-            var delta = 0.016f;
+            float delta = 0.016f;
             for (float time = 0f; time < duration; time += delta) {
                 if ((int) ((time - delta) / interval) < (int) (time / interval))
                     emitter(this);

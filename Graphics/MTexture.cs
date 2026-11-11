@@ -22,7 +22,7 @@ namespace Monocle {
             if (Engine.Instance?.GraphicsDevice == null)
                 throw new InvalidOperationException("Engine.Instance or GraphicsDevice is not initialized.");
 
-            using var fileStream = TitleContainer.OpenStream(filename);
+            using Stream fileStream = TitleContainer.OpenStream(filename);
             var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
             return new MTexture(texture);
         }
@@ -626,8 +626,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, -DrawOffset, 1f, SpriteEffects.None, 0);
@@ -642,8 +642,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, origin - DrawOffset, 1f, SpriteEffects.None, 0);
@@ -658,8 +658,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, origin - DrawOffset, 1f, SpriteEffects.None, 0);
@@ -674,8 +674,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, origin - DrawOffset, scale, SpriteEffects.None, 0);
@@ -690,8 +690,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, origin - DrawOffset, scale, SpriteEffects.None, 0);
@@ -706,8 +706,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, origin - DrawOffset, scale, flip, 0);
@@ -722,8 +722,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, origin - DrawOffset, scale, SpriteEffects.None, 0);
@@ -738,8 +738,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, origin - DrawOffset, scale, SpriteEffects.None, 0);
@@ -754,8 +754,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, origin - DrawOffset, scale, flip, 0);
@@ -774,8 +774,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, Center - DrawOffset, 1f, SpriteEffects.None, 0);
@@ -790,8 +790,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, Center - DrawOffset, 1f, SpriteEffects.None, 0);
@@ -806,8 +806,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, Center - DrawOffset, scale, SpriteEffects.None, 0);
@@ -822,8 +822,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, Center - DrawOffset, scale, SpriteEffects.None, 0);
@@ -838,8 +838,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, Center - DrawOffset, scale, flip, 0);
@@ -854,8 +854,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, Center - DrawOffset, scale, SpriteEffects.None, 0);
@@ -870,8 +870,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, Center - DrawOffset, scale, SpriteEffects.None, 0);
@@ -886,8 +886,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, Center - DrawOffset, scale, flip, 0);
@@ -906,8 +906,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, 1f, SpriteEffects.None, 0);
@@ -922,8 +922,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, 1f, SpriteEffects.None, 0);
@@ -938,8 +938,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, scale, SpriteEffects.None, 0);
@@ -954,8 +954,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, scale, SpriteEffects.None, 0);
@@ -970,8 +970,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, scale, flip, 0);
@@ -986,8 +986,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, scale, SpriteEffects.None, 0);
@@ -1002,8 +1002,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, scale, SpriteEffects.None, 0);
@@ -1018,8 +1018,8 @@ namespace Monocle {
                 return;
             }
 
-            for (var i = -1; i <= 1; i++)
-                for (var j = -1; j <= 1; j++)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                     if (i != 0 || j != 0)
                         if (Texture != null)
                             Monocle.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, rotation, new Vector2(Width * justify.X, Height * justify.Y) - DrawOffset, scale, flip, 0);

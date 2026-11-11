@@ -27,12 +27,12 @@ namespace Monocle {
         }
 
         public override void Update() {
-            foreach (var node in Nodes)
+            foreach (Node node in Nodes)
                 node.Update();
 
             PreviousValue = Value;
             Value = Vector2.Zero;
-            foreach (var node in Nodes) {
+            foreach (Node node in Nodes) {
                 Vector2 value = node.Value;
                 if (value != Vector2.Zero) {
                     if (Normalized) {

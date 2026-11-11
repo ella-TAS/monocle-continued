@@ -40,7 +40,7 @@ namespace Monocle {
         public override void Update() {
             //Detect input
             bool changed = false;
-            foreach (var input in inputs) {
+            foreach (Tuple<char, Func<bool>> input in inputs) {
                 if (input.Item2()) {
                     CurrentInput += input.Item1;
                     changed = true;
@@ -55,7 +55,7 @@ namespace Monocle {
                 if (Logging)
                     Logger.Log(CurrentInput);
 
-                foreach (var cheat in cheats) {
+                foreach (Tuple<string, Action> cheat in cheats) {
                     if (CurrentInput.Contains(cheat.Item1)) {
                         CurrentInput = "";
                         cheat.Item2?.Invoke();

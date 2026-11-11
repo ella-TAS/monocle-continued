@@ -34,19 +34,19 @@ namespace Monocle {
                     XmlDocument xml = Calc.LoadContentXML(path);
                     XmlElement at = xml["TextureAtlas"]!;
 
-                    var texturePath = at.Attr("imagePath", "");
-                    var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", texturePath));
+                    string texturePath = at.Attr("imagePath", "");
+                    Stream fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", texturePath));
                     var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                     fileStream.Close();
 
                     var mTexture = new MTexture(texture);
                     atlas.Sources.Add(texture);
 
-                    var subtextures = at.GetElementsByTagName("SubTexture");
+                    XmlNodeList subtextures = at.GetElementsByTagName("SubTexture");
 
                     foreach (XmlElement sub in subtextures) {
-                        var name = sub.Attr("name");
-                        var clipRect = sub.Rect();
+                        string name = sub.Attr("name");
+                        Rectangle clipRect = sub.Rect();
                         if (sub.HasAttr("frameX"))
                             atlas.textures[name] = new MTexture(mTexture, name, clipRect, new Vector2(-sub.AttrInt("frameX"), -sub.AttrInt("frameY")), sub.AttrInt("frameWidth"), sub.AttrInt("frameHeight"));
                         else
@@ -59,8 +59,8 @@ namespace Monocle {
                     XmlElement at = xml["atlas"]!;
 
                     foreach (XmlElement tex in at) {
-                        var texturePath = tex.Attr("n", "");
-                        var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", texturePath + ".png"));
+                        string texturePath = tex.Attr("n", "");
+                        Stream fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", texturePath + ".png"));
                         var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                         fileStream.Close();
 
@@ -68,7 +68,7 @@ namespace Monocle {
                         atlas.Sources.Add(texture);
 
                         foreach (XmlElement sub in tex) {
-                            var name = sub.Attr("n");
+                            string name = sub.Attr("n");
                             var clipRect = new Rectangle(sub.AttrInt("x"), sub.AttrInt("y"), sub.AttrInt("w"), sub.AttrInt("h"));
                             if (sub.HasAttr("fx"))
                                 atlas.textures[name] = new MTexture(mTexture, name, clipRect, new Vector2(-sub.AttrInt("fx"), -sub.AttrInt("fy")), sub.AttrInt("fw"), sub.AttrInt("fh"));
@@ -80,31 +80,31 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.CrunchBinary:
-                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path))) {
+                using (Stream stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path))) {
                     var reader = new BinaryReader(stream);
-                    var textures = reader.ReadInt16();
+                    short textures = reader.ReadInt16();
 
                     for (int i = 0; i < textures; i++) {
-                        var textureName = reader.ReadNullTerminatedString();
-                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", textureName + ".png");
-                        var fileStream = TitleContainer.OpenStream(texturePath);
+                        string textureName = reader.ReadNullTerminatedString();
+                        string texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", textureName + ".png");
+                        Stream fileStream = TitleContainer.OpenStream(texturePath);
                         var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                         fileStream.Close();
 
                         atlas.Sources.Add(texture);
 
                         var mTexture = new MTexture(texture);
-                        var subtextures = reader.ReadInt16();
+                        short subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
-                            var name = reader.ReadNullTerminatedString();
-                            var x = reader.ReadInt16();
-                            var y = reader.ReadInt16();
-                            var w = reader.ReadInt16();
-                            var h = reader.ReadInt16();
-                            var fx = reader.ReadInt16();
-                            var fy = reader.ReadInt16();
-                            var fw = reader.ReadInt16();
-                            var fh = reader.ReadInt16();
+                            string name = reader.ReadNullTerminatedString();
+                            short x = reader.ReadInt16();
+                            short y = reader.ReadInt16();
+                            short w = reader.ReadInt16();
+                            short h = reader.ReadInt16();
+                            short fx = reader.ReadInt16();
+                            short fy = reader.ReadInt16();
+                            short fw = reader.ReadInt16();
+                            short fh = reader.ReadInt16();
 
                             atlas.textures[name] = new MTexture(mTexture, name, new Rectangle(x, y, w, h), new Vector2(-fx, -fy), fw, fh);
                         }
@@ -113,27 +113,27 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.CrunchBinaryNoAtlas:
-                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".bin"))) {
+                using (Stream stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".bin"))) {
                     var reader = new BinaryReader(stream);
-                    var folders = reader.ReadInt16();
+                    short folders = reader.ReadInt16();
 
                     for (int i = 0; i < folders; i++) {
-                        var folderName = reader.ReadNullTerminatedString();
-                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", folderName);
+                        string folderName = reader.ReadNullTerminatedString();
+                        string folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", folderName);
 
-                        var subtextures = reader.ReadInt16();
+                        short subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
-                            var name = reader.ReadNullTerminatedString();
-                            var x = reader.ReadInt16();
-                            var y = reader.ReadInt16();
-                            var w = reader.ReadInt16();
-                            var h = reader.ReadInt16();
-                            var fx = reader.ReadInt16();
-                            var fy = reader.ReadInt16();
-                            var fw = reader.ReadInt16();
-                            var fh = reader.ReadInt16();
+                            string name = reader.ReadNullTerminatedString();
+                            short x = reader.ReadInt16();
+                            short y = reader.ReadInt16();
+                            short w = reader.ReadInt16();
+                            short h = reader.ReadInt16();
+                            short fx = reader.ReadInt16();
+                            short fy = reader.ReadInt16();
+                            short fw = reader.ReadInt16();
+                            short fh = reader.ReadInt16();
 
-                            var fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".png"));
+                            Stream fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".png"));
                             var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                             fileStream.Close();
 
@@ -145,34 +145,34 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.Packer:
-                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
+                using (Stream stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
                     var reader = new BinaryReader(stream);
                     reader.ReadInt32(); // version
                     reader.ReadString(); // args
                     reader.ReadInt32(); // hash
 
-                    var textures = reader.ReadInt16();
+                    short textures = reader.ReadInt16();
                     for (int i = 0; i < textures; i++) {
-                        var textureName = reader.ReadString();
-                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", textureName + ".data");
-                        var fileStream = TitleContainer.OpenStream(texturePath);
+                        string textureName = reader.ReadString();
+                        string texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", textureName + ".data");
+                        Stream fileStream = TitleContainer.OpenStream(texturePath);
                         var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                         fileStream.Close();
 
                         atlas.Sources.Add(texture);
 
                         var mTexture = new MTexture(texture);
-                        var subtextures = reader.ReadInt16();
+                        short subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
-                            var name = reader.ReadString().Replace('\\', '/');
-                            var x = reader.ReadInt16();
-                            var y = reader.ReadInt16();
-                            var w = reader.ReadInt16();
-                            var h = reader.ReadInt16();
-                            var fx = reader.ReadInt16();
-                            var fy = reader.ReadInt16();
-                            var fw = reader.ReadInt16();
-                            var fh = reader.ReadInt16();
+                            string name = reader.ReadString().Replace('\\', '/');
+                            short x = reader.ReadInt16();
+                            short y = reader.ReadInt16();
+                            short w = reader.ReadInt16();
+                            short h = reader.ReadInt16();
+                            short fx = reader.ReadInt16();
+                            short fy = reader.ReadInt16();
+                            short fw = reader.ReadInt16();
+                            short fh = reader.ReadInt16();
 
                             atlas.textures[name] = new MTexture(mTexture, name, new Rectangle(x, y, w, h), new Vector2(-fx, -fy), fw, fh);
                         }
@@ -182,30 +182,30 @@ namespace Monocle {
                 break;
 
             case AtlasDataFormat.PackerNoAtlas:
-                using (var stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
+                using (Stream stream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, path + ".meta"))) {
                     var reader = new BinaryReader(stream);
                     reader.ReadInt32(); // version
                     reader.ReadString(); // args
                     reader.ReadInt32(); // hash
 
-                    var folders = reader.ReadInt16();
+                    short folders = reader.ReadInt16();
                     for (int i = 0; i < folders; i++) {
-                        var folderName = reader.ReadString();
-                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", folderName);
+                        string folderName = reader.ReadString();
+                        string folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", folderName);
 
-                        var subtextures = reader.ReadInt16();
+                        short subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
-                            var name = reader.ReadString().Replace('\\', '/');
-                            var x = reader.ReadInt16();
-                            var y = reader.ReadInt16();
-                            var w = reader.ReadInt16();
-                            var h = reader.ReadInt16();
-                            var fx = reader.ReadInt16();
-                            var fy = reader.ReadInt16();
-                            var fw = reader.ReadInt16();
-                            var fh = reader.ReadInt16();
+                            string name = reader.ReadString().Replace('\\', '/');
+                            short x = reader.ReadInt16();
+                            short y = reader.ReadInt16();
+                            short w = reader.ReadInt16();
+                            short h = reader.ReadInt16();
+                            short fx = reader.ReadInt16();
+                            short fy = reader.ReadInt16();
+                            short fw = reader.ReadInt16();
+                            short fh = reader.ReadInt16();
 
-                            var fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".data"));
+                            Stream fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".data"));
                             var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                             fileStream.Close();
 
@@ -245,9 +245,9 @@ namespace Monocle {
             var atlas = new Atlas();
             atlas.Sources = new List<Texture2D>();
 
-            var index = 0;
+            int index = 0;
             while (true) {
-                var dataPath = Path.Combine(rootPath, filename + index.ToString() + ".xml");
+                string dataPath = Path.Combine(rootPath, filename + index.ToString() + ".xml");
 
                 if (!File.Exists(Path.Combine(Engine.ContentDirectory, dataPath)))
                     break;
@@ -263,25 +263,25 @@ namespace Monocle {
             var atlas = new Atlas();
             atlas.Sources = new List<Texture2D>();
 
-            var contentDirectory = Engine.ContentDirectory;
-            var contentDirectoryLength = contentDirectory.Length;
-            var contentPath = Path.Combine(contentDirectory, path);
-            var contentPathLength = contentPath.Length;
+            string contentDirectory = Engine.ContentDirectory;
+            int contentDirectoryLength = contentDirectory.Length;
+            string contentPath = Path.Combine(contentDirectory, path);
+            int contentPathLength = contentPath.Length;
 
-            foreach (var file in Directory.GetFiles(contentPath, "*", SearchOption.AllDirectories)) {
-                var ext = Path.GetExtension(file);
+            foreach (string file in Directory.GetFiles(contentPath, "*", SearchOption.AllDirectories)) {
+                string ext = Path.GetExtension(file);
                 if (ext != ".png" && ext != ".xnb")
                     continue;
 
                 // get path and load
-                var fileStream = TitleContainer.OpenStream(file.Substring(contentDirectoryLength + 1));
+                Stream fileStream = TitleContainer.OpenStream(file.Substring(contentDirectoryLength + 1));
                 var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                 fileStream.Close();
 
                 atlas.Sources.Add(texture);
 
                 // make nice for dictionary
-                var filepath = file.Substring(contentPathLength + 1);
+                string filepath = file.Substring(contentPathLength + 1);
                 filepath = filepath.Substring(0, filepath.Length - 4);
                 filepath = filepath.Replace('\\', '/');
 
@@ -311,9 +311,9 @@ namespace Monocle {
             if (!orderedTexturesCache.TryGetValue(key, out List<MTexture>? list)) {
                 list = new List<MTexture>();
 
-                var index = 0;
+                int index = 0;
                 while (true) {
-                    var texture = GetAtlasSubtextureFromAtlasAt(key, index);
+                    MTexture? texture = GetAtlasSubtextureFromAtlasAt(key, index);
                     if (texture != null)
                         list.Add(texture);
                     else
@@ -335,8 +335,8 @@ namespace Monocle {
             if (index == 0 && textures.ContainsKey(key))
                 return textures[key];
 
-            var indexString = index.ToString();
-            var startLength = indexString.Length;
+            string indexString = index.ToString();
+            int startLength = indexString.Length;
             while (indexString.Length < startLength + 6) {
                 if (textures.TryGetValue(key + indexString, out MTexture? result))
                     return result;
@@ -354,7 +354,7 @@ namespace Monocle {
         }
 
         public void Dispose() {
-            foreach (var texture in Sources)
+            foreach (Texture2D texture in Sources)
                 texture.Dispose();
             Sources.Clear();
             textures.Clear();

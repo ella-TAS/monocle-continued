@@ -25,7 +25,7 @@ namespace Monocle {
         }
 
         internal static void Shutdown() {
-            foreach (var gamepad in GamePads)
+            foreach (GamePadData gamepad in GamePads)
                 gamepad.StopRumble();
         }
 
@@ -61,7 +61,7 @@ namespace Monocle {
         }
 
         private static void UpdateVirtualInputs() {
-            foreach (var virtualInput in VirtualInputs)
+            foreach (VirtualInput virtualInput in VirtualInputs)
                 virtualInput.Update();
         }
 

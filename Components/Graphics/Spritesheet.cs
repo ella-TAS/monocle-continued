@@ -89,7 +89,7 @@ namespace Monocle {
         #region Animation Definition
 
         public void Add(T id, bool loop, float delay, params int[] frames) {
-            foreach (var i in frames)
+            foreach (int i in frames)
                 if (i >= Frames.Length)
                     Logger.DebugCrash("SpriteSheet", "Specified frames is out of max range for this Spritesheet");
 

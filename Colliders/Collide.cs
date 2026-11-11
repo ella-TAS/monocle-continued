@@ -46,7 +46,7 @@ namespace Monocle {
         #region Check
 
         public static bool Check(Entity a, IEnumerable<Entity> b) {
-            foreach (var e in b)
+            foreach (Entity e in b)
                 if (Check(a, e))
                     return true;
 
@@ -66,7 +66,7 @@ namespace Monocle {
         #region First
 
         public static Entity? First(Entity a, IEnumerable<Entity> b) {
-            foreach (var e in b)
+            foreach (Entity e in b)
                 if (Check(a, e))
                     return e;
 
@@ -86,7 +86,7 @@ namespace Monocle {
         #region All
 
         public static List<Entity> All(Entity a, IEnumerable<Entity> b, List<Entity> into) {
-            foreach (var e in b)
+            foreach (Entity e in b)
                 if (Check(a, e))
                     into.Add(e);
 

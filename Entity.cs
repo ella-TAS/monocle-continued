@@ -77,7 +77,7 @@ namespace Monocle {
         /// </summary>
         /// <param name="scene">The scene that is ending.</param>
         public virtual void SceneEnd(Scene scene) {
-            foreach (var component in Components)
+            foreach (Component component in Components)
                 component.SceneEnd(scene);
         }
 
@@ -91,7 +91,7 @@ namespace Monocle {
         /// need to detect each other before the first update.
         /// </remarks>
         public virtual void Awake(Scene scene) {
-            foreach (var component in Components)
+            foreach (Component component in Components)
                 component.EntityAwake();
         }
 
@@ -106,7 +106,7 @@ namespace Monocle {
         /// </remarks>
         public virtual void Added(Scene scene) {
             Scene = scene;
-            foreach (var component in Components)
+            foreach (Component component in Components)
                 component.EntityAdded(scene);
             Scene.SetActualDepth(this);
         }
@@ -116,7 +116,7 @@ namespace Monocle {
         /// </summary>
         /// <param name="scene">The scene this entity was removed from.</param>
         public virtual void Removed(Scene scene) {
-            foreach (var component in Components)
+            foreach (Component component in Components)
                 component.EntityRemoved(scene);
             Scene = null;
         }
@@ -497,8 +497,8 @@ namespace Monocle {
                 return false;
             }
 
-            var exclude = Scene.Tracker.Entities[typeof(Exclude)];
-            foreach (var e in Scene.Tracker.Entities[typeof(T)])
+            List<Entity> exclude = Scene.Tracker.Entities[typeof(Exclude)];
+            foreach (Entity e in Scene.Tracker.Entities[typeof(T)])
                 if (!exclude.Contains(e))
                     if (Collide.Check(this, e))
                         return true;
@@ -506,9 +506,9 @@ namespace Monocle {
         }
 
         public bool CollideCheck<T, Exclude>(Vector2 at) where T : Entity where Exclude : Entity {
-            var was = Position;
+            Vector2 was = Position;
             Position = at;
-            var ret = CollideCheck<T, Exclude>();
+            bool ret = CollideCheck<T, Exclude>();
             Position = was;
             return ret;
         }
@@ -522,7 +522,7 @@ namespace Monocle {
                 return false;
             }
 
-            foreach (var c in Scene.Tracker.CollidableComponents[typeof(T)])
+            foreach (CollidableComponent c in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (Collide.Check(this, c))
                     return true;
             return false;
@@ -550,7 +550,7 @@ namespace Monocle {
                 return false;
             }
 
-            foreach (var entity in Scene[tag])
+            foreach (Entity entity in Scene[tag])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return true;
 
@@ -566,7 +566,7 @@ namespace Monocle {
                 return false;
             }
 
-            foreach (var entity in Scene.Tracker.Entities[typeof(T)])
+            foreach (Entity entity in Scene.Tracker.Entities[typeof(T)])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return true;
             return false;
@@ -581,7 +581,7 @@ namespace Monocle {
                 return false;
             }
 
-            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
+            foreach (CollidableComponent component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (!Collide.Check(this, component) && Collide.Check(this, component, at))
                     return true;
             return false;
@@ -642,7 +642,7 @@ namespace Monocle {
                 return null;
             }
 
-            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
+            foreach (CollidableComponent component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (Collide.Check(this, component))
                     return component as T;
             return null;
@@ -657,7 +657,7 @@ namespace Monocle {
                 return null;
             }
 
-            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
+            foreach (CollidableComponent component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (Collide.Check(this, component, at))
                     return component as T;
             return null;
@@ -673,7 +673,7 @@ namespace Monocle {
                 return null;
             }
 
-            foreach (var entity in Scene[tag])
+            foreach (Entity entity in Scene[tag])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return entity;
             return null;
@@ -688,7 +688,7 @@ namespace Monocle {
                 return null;
             }
 
-            foreach (var entity in Scene.Tracker.Entities[typeof(T)])
+            foreach (Entity entity in Scene.Tracker.Entities[typeof(T)])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return entity as T;
             return null;
@@ -703,7 +703,7 @@ namespace Monocle {
                 return null;
             }
 
-            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
+            foreach (CollidableComponent component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (!Collide.Check(this, component) && Collide.Check(this, component, at))
                     return component as T;
             return null;
@@ -778,7 +778,7 @@ namespace Monocle {
             }
 
             List<T> list = new List<T>();
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
+            foreach (CollidableComponent component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
                 if (Collide.Check(this, component))
                     if (component is T typed)
                         list.Add(typed);
@@ -788,7 +788,7 @@ namespace Monocle {
         public List<T> CollideAllByComponent<T>(Vector2 at) where T : CollidableComponent {
             Vector2 old = Position;
             Position = at;
-            var ret = CollideAllByComponent<T>();
+            List<T> ret = CollideAllByComponent<T>();
             Position = old;
             return ret;
         }
@@ -804,7 +804,7 @@ namespace Monocle {
             }
 
             bool hit = false;
-            foreach (var other in Scene?[tag] ?? []) {
+            foreach (Entity other in Scene?[tag] ?? []) {
                 if (CollideCheck(other)) {
                     action(other);
                     hit = true;
@@ -820,10 +820,10 @@ namespace Monocle {
             }
 
             bool hit = false;
-            var was = Position;
+            Vector2 was = Position;
             Position = at;
 
-            foreach (var other in Scene?[tag] ?? []) {
+            foreach (Entity other in Scene?[tag] ?? []) {
                 if (CollideCheck(other)) {
                     action(other);
                     hit = true;
@@ -844,7 +844,7 @@ namespace Monocle {
             }
 
             bool hit = false;
-            foreach (var other in Scene?.Tracker.Entities[typeof(T)] ?? []) {
+            foreach (Entity other in Scene?.Tracker.Entities[typeof(T)] ?? []) {
                 if (CollideCheck(other)) {
                     if (other is T typed)
                         action(typed);
@@ -864,10 +864,10 @@ namespace Monocle {
             }
 
             bool hit = false;
-            var was = Position;
+            Vector2 was = Position;
             Position = at;
 
-            foreach (var other in Scene?.Tracker.Entities[typeof(T)] ?? []) {
+            foreach (Entity other in Scene?.Tracker.Entities[typeof(T)] ?? []) {
                 if (CollideCheck(other)) {
                     if (other is T typed)
                         action(typed);
@@ -889,7 +889,7 @@ namespace Monocle {
             }
 
             bool hit = false;
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? []) {
+            foreach (CollidableComponent component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? []) {
                 if (CollideCheck(component)) {
                     if (component is T typed)
                         action(typed);
@@ -909,10 +909,10 @@ namespace Monocle {
             }
 
             bool hit = false;
-            var was = Position;
+            Vector2 was = Position;
             Position = at;
 
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? []) {
+            foreach (CollidableComponent component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? []) {
                 if (CollideCheck(component)) {
                     if (component is T typed)
                         action(typed);
@@ -1030,7 +1030,7 @@ namespace Monocle {
         }
 
         public Entity? Closest(BitTag tag) {
-            var list = Scene?[tag] ?? [];
+            List<Entity> list = Scene?[tag] ?? [];
             Entity? closest = null;
             float dist;
 

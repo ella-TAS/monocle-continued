@@ -52,10 +52,10 @@ namespace Monocle {
         }
 
         public static Vector3 AttrVector3(this XmlElement xml, string attributeName) {
-            var attr = xml.Attr(attributeName).Split(',');
-            var x = float.Parse(attr[0].Trim(), CultureInfo.InvariantCulture);
-            var y = float.Parse(attr[1].Trim(), CultureInfo.InvariantCulture);
-            var z = float.Parse(attr[2].Trim(), CultureInfo.InvariantCulture);
+            string[] attr = xml.Attr(attributeName).Split(',');
+            float x = float.Parse(attr[0].Trim(), CultureInfo.InvariantCulture);
+            float y = float.Parse(attr[1].Trim(), CultureInfo.InvariantCulture);
+            float z = float.Parse(attr[2].Trim(), CultureInfo.InvariantCulture);
 
             return new Vector3(x, y, z);
         }
@@ -365,7 +365,7 @@ namespace Monocle {
         }
 
         public static Vector2[] Nodes(this XmlElement xml, Vector2 offset, bool includePosition = false) {
-            var nodes = Nodes(xml, includePosition);
+            Vector2[] nodes = Nodes(xml, includePosition);
 
             for (int i = 0; i < nodes.Length; i++)
                 nodes[i] += offset;

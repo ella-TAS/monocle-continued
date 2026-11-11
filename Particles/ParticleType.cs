@@ -118,7 +118,7 @@ namespace Monocle {
                 particle.StartColor = particle.Color = color;
 
             // speed / direction
-            var moveDirection = direction - DirectionRange / 2 + Calc.Random.NextFloat() * DirectionRange;
+            float moveDirection = direction - DirectionRange / 2 + Calc.Random.NextFloat() * DirectionRange;
             particle.Speed = Calc.AngleToVector(moveDirection, Calc.Random.Range(SpeedMin, SpeedMax));
 
             // life

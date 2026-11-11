@@ -38,7 +38,7 @@ namespace Monocle {
                 lockMode = value;
 
                 if (toAdd.Count > 0) {
-                    foreach (var component in toAdd) {
+                    foreach (Component component in toAdd) {
                         if (!current.Contains(component)) {
                             current.Add(component);
                             components.Add(component);
@@ -51,7 +51,7 @@ namespace Monocle {
                 }
 
                 if (toRemove.Count > 0) {
-                    foreach (var component in toRemove) {
+                    foreach (Component component in toRemove) {
                         if (current.Contains(component)) {
                             current.Remove(component);
                             components.Remove(component);
@@ -110,12 +110,12 @@ namespace Monocle {
         }
 
         public void Add(IEnumerable<Component> components) {
-            foreach (var component in components)
+            foreach (Component component in components)
                 Add(component);
         }
 
         public void Remove(IEnumerable<Component> components) {
-            foreach (var component in components)
+            foreach (Component component in components)
                 Remove(component);
         }
 
@@ -124,12 +124,12 @@ namespace Monocle {
         }
 
         public void Add(params Component[] components) {
-            foreach (var component in components)
+            foreach (Component component in components)
                 Add(component);
         }
 
         public void Remove(params Component[] components) {
-            foreach (var component in components)
+            foreach (Component component in components)
                 Remove(component);
         }
 
@@ -162,7 +162,7 @@ namespace Monocle {
 
         internal void Update() {
             LockMode = ComponentList.LockModes.Locked;
-            foreach (var component in components)
+            foreach (Component component in components)
                 if (component.Active)
                     component.Update();
             LockMode = ComponentList.LockModes.Open;
@@ -170,7 +170,7 @@ namespace Monocle {
 
         internal void Render() {
             LockMode = ComponentList.LockModes.Error;
-            foreach (var component in components)
+            foreach (Component component in components)
                 if (component.Visible)
                     component.Render();
             LockMode = ComponentList.LockModes.Open;
@@ -178,34 +178,34 @@ namespace Monocle {
 
         internal void DebugRender(Camera camera) {
             LockMode = ComponentList.LockModes.Error;
-            foreach (var component in components)
+            foreach (Component component in components)
                 component.DebugRender(camera);
             LockMode = ComponentList.LockModes.Open;
         }
 
         internal void HandleGraphicsReset() {
             LockMode = ComponentList.LockModes.Error;
-            foreach (var component in components)
+            foreach (Component component in components)
                 component.HandleGraphicsReset();
             LockMode = ComponentList.LockModes.Open;
         }
 
         internal void HandleGraphicsCreate() {
             LockMode = ComponentList.LockModes.Error;
-            foreach (var component in components)
+            foreach (Component component in components)
                 component.HandleGraphicsCreate();
             LockMode = ComponentList.LockModes.Open;
         }
 
         public T? Get<T>() where T : Component {
-            foreach (var component in components)
+            foreach (Component component in components)
                 if (component is T)
                     return component as T;
             return null;
         }
 
         public IEnumerable<T> GetAll<T>() where T : Component {
-            foreach (var component in components)
+            foreach (Component component in components)
                 if (component is T t)
                     yield return t;
         }

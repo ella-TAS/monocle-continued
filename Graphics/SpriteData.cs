@@ -29,7 +29,7 @@ namespace Monocle {
 
             //Error Checking
             {
-                var prefix = "Sprite '" + source.XML.Name + "': ";
+                string prefix = "Sprite '" + source.XML.Name + "': ";
 
                 //Path
                 if (!source.XML.HasAttr("path") && string.IsNullOrEmpty(overridePath))
@@ -53,8 +53,8 @@ namespace Monocle {
 
             //Create the Sprite
             {
-                var normalPath = source.XML.Attr("path", "");
-                var masterDelay = source.XML.AttrFloat("delay", 0);
+                string normalPath = source.XML.Attr("path", "");
+                float masterDelay = source.XML.AttrFloat("delay", 0);
 
                 //Build Animations
                 foreach (XmlElement anim in source.XML.GetElementsByTagName("Anim")) {
@@ -64,9 +64,9 @@ namespace Monocle {
                     else
                         into = null;
 
-                    var id = anim.Attr("id");
-                    var path = anim.Attr("path", "");
-                    var frames = Calc.ReadCSVIntWithTricks(anim.Attr("frames", ""));
+                    string id = anim.Attr("id");
+                    string path = anim.Attr("path", "");
+                    int[] frames = Calc.ReadCSVIntWithTricks(anim.Attr("frames", ""));
 
                     if (!string.IsNullOrEmpty(overridePath) && HasFrames(Atlas, overridePath + path, frames))
                         path = overridePath + path;
@@ -78,9 +78,9 @@ namespace Monocle {
 
                 //Build Loops
                 foreach (XmlElement loop in source.XML.GetElementsByTagName("Loop")) {
-                    var id = loop.Attr("id");
-                    var path = loop.Attr("path", "");
-                    var frames = Calc.ReadCSVIntWithTricks(loop.Attr("frames", ""));
+                    string id = loop.Attr("id");
+                    string path = loop.Attr("path", "");
+                    int[] frames = Calc.ReadCSVIntWithTricks(loop.Attr("frames", ""));
 
                     if (!string.IsNullOrEmpty(overridePath) && HasFrames(Atlas, overridePath + path, frames))
                         path = overridePath + path;

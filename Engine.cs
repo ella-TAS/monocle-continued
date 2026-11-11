@@ -360,7 +360,7 @@ namespace Monocle {
 
             //Changing scenes
             if (scene != nextScene) {
-                var lastScene = scene;
+                Scene? lastScene = scene;
                 if (scene != null)
                     scene.End();
                 scene = nextScene;
@@ -530,7 +530,7 @@ namespace Monocle {
             }
 
             // apply View Padding
-            var aspect = ViewHeight / (float) ViewWidth;
+            float aspect = ViewHeight / (float) ViewWidth;
             ViewWidth -= ViewPadding * 2;
             ViewHeight -= (int) (aspect * ViewPadding * 2);
 

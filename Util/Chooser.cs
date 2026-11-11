@@ -25,7 +25,7 @@ namespace Monocle {
         /// </summary>
         public Chooser(params T[] choices)
             : this() {
-            foreach (var choice in choices)
+            foreach (T choice in choices)
                 Add(choice, 1);
         }
 
@@ -68,7 +68,7 @@ namespace Monocle {
             else if (choices.Count == 1)
                 return choices[0].Value;
 
-            var roll = Calc.Random.NextDouble() * TotalWeight;
+            double roll = Calc.Random.NextDouble() * TotalWeight;
             float check = 0;
 
             for (int i = 0; i < choices.Count - 1; i++) {
@@ -116,15 +116,15 @@ namespace Monocle {
             }
 
             //Parse the individual choices
-            foreach (var choice in choices) {
+            foreach (string choice in choices) {
                 if (choice.IndexOf(':') == -1) {
                     //No weight, default to weight of 1
                     chooser.Add((TT) Convert.ChangeType(choice, typeof(TT)), 1f);
                 } else {
                     //Has weight, handle that correctly
-                    var parts = choice.Split(':');
-                    var key = parts[0].Trim();
-                    var weight = parts[1].Trim();
+                    string[] parts = choice.Split(':');
+                    string key = parts[0].Trim();
+                    string weight = parts[1].Trim();
 
                     chooser.Add((TT) Convert.ChangeType(key, typeof(TT)), Convert.ToSingle(weight));
                 }

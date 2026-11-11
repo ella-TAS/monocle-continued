@@ -17,13 +17,13 @@ namespace Monocle {
 
         public void UpdateLists() {
             if (adding.Count > 0) {
-                foreach (var renderer in adding) {
+                foreach (Renderer renderer in adding) {
                     Renderers.Add(renderer);
                 }
                 adding.Clear();
             }
             if (removing.Count > 0) {
-                foreach (var renderer in removing) {
+                foreach (Renderer renderer in removing) {
                     Renderers.Remove(renderer);
                     renderer.Dispose();
                 }
@@ -32,7 +32,7 @@ namespace Monocle {
         }
 
         internal void Update() {
-            foreach (var renderer in Renderers)
+            foreach (Renderer renderer in Renderers)
                 renderer.Update(scene);
         }
 

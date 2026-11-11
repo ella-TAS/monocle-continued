@@ -83,7 +83,7 @@ namespace Monocle {
                 float chance = totalChance / choices.Length;
 
                 int oldTotalWeight = 0;
-                foreach (var c in choices) {
+                foreach (T c in choices) {
                     int oldWeight = 0;
                     this.choices.TryGetValue(c, out oldWeight);
                     oldTotalWeight += oldWeight;
@@ -95,12 +95,12 @@ namespace Monocle {
                     weight = 1;
 
                 if (weight <= 0) {
-                    foreach (var c in choices)
+                    foreach (T c in choices)
                         if (this.choices.ContainsKey(c))
                             this.choices.Remove(c);
                 } else {
                     TotalWeight += weight * choices.Length;
-                    foreach (var c in choices)
+                    foreach (T c in choices)
                         this.choices[c] = weight;
                 }
             }
@@ -114,7 +114,7 @@ namespace Monocle {
         public T Get(Random random) {
             int at = random.Next(TotalWeight);
 
-            foreach (var kv in choices) {
+            foreach (KeyValuePair<T, int> kv in choices) {
                 if (at < kv.Value)
                     return kv.Key;
                 else

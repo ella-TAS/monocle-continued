@@ -39,11 +39,11 @@ namespace Monocle {
 
             var builder = new StringBuilder();
 
-            var words = Regex.Split(text, @"(\s)");
-            var lineWidth = 0f;
+            string[] words = Regex.Split(text, @"(\s)");
+            float lineWidth = 0f;
 
-            foreach (var word in words) {
-                var wordWidth = Measure(word).X;
+            foreach (string word in words) {
+                float wordWidth = Measure(word).X;
 
                 if (word.Equals("\n")) {
                     builder.Append('\n');
@@ -71,7 +71,7 @@ namespace Monocle {
                     }
 
                     if (start < word.Length) {
-                        var remaining = word[start..];
+                        string remaining = word[start..];
                         builder.Append(remaining);
                         lineWidth = Measure(remaining).X;
                     }
@@ -103,9 +103,9 @@ namespace Monocle {
                 return Vector2.Zero;
 
             var size = new Vector2(0, LineHeight);
-            var currentLineWidth = 0f;
+            float currentLineWidth = 0f;
 
-            for (var i = 0; i < text.Length; i++) {
+            for (int i = 0; i < text.Length; i++) {
                 if (text[i] == '\n') {
                     size.Y += LineHeight;
                     if (currentLineWidth > size.X)
@@ -131,7 +131,7 @@ namespace Monocle {
             if (string.IsNullOrEmpty(text))
                 return 0;
 
-            var currentLineWidth = 0f;
+            float currentLineWidth = 0f;
 
             for (int i = start, j = text.Length; i < j; i++) {
                 if (text[i] == '\n')
@@ -166,9 +166,9 @@ namespace Monocle {
 
             PixelFontCharacter c = Get(character) ?? Characters[PixelFontCharacter.FALLBACK];
 
-            var measure = Measure(character);
+            Vector2 measure = Measure(character);
             var justified = new Vector2(measure.X * justify.X, measure.Y * justify.Y);
-            var pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
+            Vector2 pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
             c.Texture.Draw(pos.Floor(), Vector2.Zero, color, scale);
         }
 
@@ -176,8 +176,8 @@ namespace Monocle {
             if (string.IsNullOrEmpty(text))
                 return;
 
-            var offset = Vector2.Zero;
-            var lineWidth = (justify.X != 0 ? WidthToNextLine(text, 0) : 0);
+            Vector2 offset = Vector2.Zero;
+            float lineWidth = (justify.X != 0 ? WidthToNextLine(text, 0) : 0);
             var justified = new Vector2(lineWidth * justify.X, HeightOf(text) * justify.Y);
 
             for (int i = 0; i < text.Length; i++) {
@@ -191,13 +191,13 @@ namespace Monocle {
 
                 PixelFontCharacter c = Get(text[i]) ?? Characters[PixelFontCharacter.FALLBACK];
 
-                var pos = position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale;
+                Vector2 pos = position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale;
 
                 // draw stroke
                 if (stroke > 0 && !HasOutline) {
                     if (edgeDepth > 0) {
                         c.Texture.Draw(pos + new Vector2(0, -stroke), Vector2.Zero, strokeColor, scale);
-                        for (var j = -stroke; j < edgeDepth + stroke; j += stroke) {
+                        for (float j = -stroke; j < edgeDepth + stroke; j += stroke) {
                             c.Texture.Draw(pos + new Vector2(-stroke, j), Vector2.Zero, strokeColor, scale);
                             c.Texture.Draw(pos + new Vector2(stroke, j), Vector2.Zero, strokeColor, scale);
                         }
@@ -257,19 +257,19 @@ namespace Monocle {
 
         public PixelFont(string path, XmlElement data, Atlas? atlas = null) {
             // check if size already exists
-            var size = data["info"]!.AttrFloat("size");
+            float size = data["info"]!.AttrFloat("size");
 
             // get textures
             Textures = [];
             XmlElement pages = data["pages"]!;
             foreach (XmlElement page in pages.GetElements()) {
-                var file = page.Attr("file");
-                var atlasPath = Path.GetFileNameWithoutExtension(file);
+                string file = page.Attr("file");
+                string atlasPath = Path.GetFileNameWithoutExtension(file);
 
                 if (atlas != null && atlas.Has(atlasPath)) {
                     Textures.Add(atlas[atlasPath]);
                 } else {
-                    var dir = Path.GetDirectoryName(path) ?? "";
+                    string dir = Path.GetDirectoryName(path) ?? "";
                     Textures.Add(MTexture.FromFile(Path.Combine(Engine.ContentDirectory, dir, file)));
                 }
             }
@@ -293,9 +293,9 @@ namespace Monocle {
             // get kerning
             if (data["kernings"] is XmlElement kernings)
                 foreach (XmlElement kerning in kernings.GetElements()) {
-                    var from = kerning.AttrInt("first");
-                    var to = kerning.AttrInt("second");
-                    var push = kerning.AttrInt("amount");
+                    int from = kerning.AttrInt("first");
+                    int to = kerning.AttrInt("second");
+                    int push = kerning.AttrInt("amount");
 
                     if (Data.Characters.TryGetValue(from, out PixelFontCharacter? c))
                         c.Kerning.Add(to, push);
@@ -327,7 +327,7 @@ namespace Monocle {
         }
 
         public void Dispose() {
-            foreach (var tex in Textures)
+            foreach (MTexture tex in Textures)
                 tex.Dispose();
             Textures.Clear();
             Data = null!;

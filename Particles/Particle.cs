@@ -27,9 +27,9 @@ namespace Monocle {
                 Active = false;
                 return false;
             } else {
-                var dt = Engine.TimeRate * (Engine.Instance!.TargetElapsedTime.Milliseconds / 1000f);
+                float dt = Engine.TimeRate * (Engine.Instance!.TargetElapsedTime.Milliseconds / 1000f);
                 if (dt > 0)
-                    for (var t = 0f; t < duration; t += dt)
+                    for (float t = 0f; t < duration; t += dt)
                         Update(dt);
 
                 return true;
@@ -37,13 +37,13 @@ namespace Monocle {
         }
 
         public void Update(float? delta = null) {
-            var dt = 0f;
+            float dt = 0f;
             if (delta.HasValue)
                 dt = delta.Value;
             else
                 dt = (Type.UseActualDeltaTime ? Engine.RawDeltaTime : Engine.DeltaTime);
 
-            var ease = Life / StartLife;
+            float ease = Life / StartLife;
 
             //Life
             Life -= dt;

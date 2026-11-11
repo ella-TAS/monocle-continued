@@ -34,7 +34,7 @@ namespace Monocle {
                 if (!on) {
                     Timer = 0;
                     if (Values[0] != Vector2.Zero) {
-                        for (var i = 0; i < Values.Length; i++)
+                        for (int i = 0; i < Values.Length; i++)
                             Values[i] = Vector2.Zero;
                         OnShake?.Invoke(Values);
                     }
@@ -55,7 +55,7 @@ namespace Monocle {
                 Timer -= Engine.DeltaTime;
                 if (Timer <= 0) {
                     on = false;
-                    for (var i = 0; i < Values.Length; i++)
+                    for (int i = 0; i < Values.Length; i++)
                         Values[i] = Vector2.Zero;
                     OnShake?.Invoke(Values);
                     if (RemoveOnFinish)
@@ -65,7 +65,7 @@ namespace Monocle {
             }
 
             if (on && Scene!.OnInterval(Interval)) {
-                for (var i = 0; i < Values.Length; i++)
+                for (int i = 0; i < Values.Length; i++)
                     Values[i] = Calc.Random.ShakeVector();
                 OnShake?.Invoke(Values);
             }

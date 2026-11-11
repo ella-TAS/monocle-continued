@@ -44,12 +44,12 @@ namespace Monocle {
             if (Entity == null)
                 throw new InvalidOperationException("Entity is null");
 
-            var steps = duration / Interval;
-            for (var i = 0; i < steps; i++) {
+            float steps = duration / Interval;
+            for (int i = 0; i < steps; i++) {
                 for (int j = 0; j < Amount; j++) {
                     // create the particle
                     var particle = new Particle();
-                    var pos = Entity.Position + Position + Calc.Random.Range(-Range, Range);
+                    Vector2 pos = Entity.Position + Position + Calc.Random.Range(-Range, Range);
                     if (Direction.HasValue)
                         particle = Type.Create(ref particle, pos, Direction.Value);
                     else
@@ -57,7 +57,7 @@ namespace Monocle {
                     particle.Track = Track;
 
                     // simulate for a duration
-                    var simulateFor = duration - Interval * i;
+                    float simulateFor = duration - Interval * i;
                     if (particle.SimulateFor(simulateFor))
                         System.Add(particle);
                 }

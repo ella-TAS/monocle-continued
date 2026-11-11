@@ -17,7 +17,7 @@ namespace Monocle {
         public override void Update() {
             isRunning = true;
             for (int i = 0; i < coroutineList.Count; i++) {
-                var now = coroutineList[i].Data.Peek();
+                IEnumerator now = coroutineList[i].Data.Peek();
 
                 if (now.MoveNext()) {
                     if (now.Current is IEnumerator enumerator)
@@ -31,14 +31,14 @@ namespace Monocle {
             isRunning = false;
 
             if (toRemove.Count > 0) {
-                foreach (var r in toRemove)
+                foreach (CoroutineData r in toRemove)
                     coroutineList.Remove(r);
                 toRemove.Clear();
             }
         }
 
         public void EndCoroutine(int id) {
-            foreach (var c in coroutineList) {
+            foreach (CoroutineData c in coroutineList) {
                 if (c.ID == id) {
                     if (isRunning)
                         toRemove.Add(c);

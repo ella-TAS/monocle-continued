@@ -118,7 +118,7 @@ namespace Monocle {
         }
 
         public Rectangle GetClippedRenderTiles() {
-            var pos = (Entity?.Position ?? Vector2.Zero) + Position;
+            Vector2 pos = (Entity?.Position ?? Vector2.Zero) + Position;
 
             int left, top, right, bottom;
             if (ClipCamera == null) {
@@ -128,7 +128,7 @@ namespace Monocle {
                 right = TilesX + VisualExtend;
                 bottom = TilesY + VisualExtend;
             } else {
-                var camera = ClipCamera;
+                Camera camera = ClipCamera;
                 left = (int) Math.Max(0, Math.Floor((camera.Left - pos.X) / TileWidth) - VisualExtend);
                 top = (int) Math.Max(0, Math.Floor((camera.Top - pos.Y) / TileHeight) - VisualExtend);
                 right = (int) Math.Min(TilesX, Math.Ceiling((camera.Right - pos.X) / TileWidth) + VisualExtend);
@@ -152,8 +152,8 @@ namespace Monocle {
             if (Alpha <= 0)
                 return;
 
-            var clip = GetClippedRenderTiles();
-            var color = Color * Alpha;
+            Rectangle clip = GetClippedRenderTiles();
+            Color color = Color * Alpha;
             MTexture? tile;
 
             for (int tx = clip.Left; tx < clip.Right; tx++)

@@ -38,7 +38,7 @@ namespace Monocle {
         public void UpdateLists() {
             if (toAdd.Count > 0) {
                 for (int i = 0; i < toAdd.Count; i++) {
-                    var entity = toAdd[i];
+                    Entity entity = toAdd[i];
                     if (!current.Contains(entity)) {
                         current.Add(entity);
                         entities.Add(entity);
@@ -54,7 +54,7 @@ namespace Monocle {
 
             if (toRemove.Count > 0) {
                 for (int i = 0; i < toRemove.Count; i++) {
-                    var entity = toRemove[i];
+                    Entity entity = toRemove[i];
                     if (entities.Contains(entity)) {
                         current.Remove(entity);
                         entities.Remove(entity);
@@ -80,7 +80,7 @@ namespace Monocle {
                 toAdd.Clear();
                 adding.Clear();
 
-                foreach (var entity in toAwake)
+                foreach (Entity entity in toAwake)
                     if (entity.Scene == Scene)
                         entity.Awake(Scene);
                 toAwake.Clear();
@@ -102,12 +102,12 @@ namespace Monocle {
         }
 
         public void Add(IEnumerable<Entity> entities) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 Add(entity);
         }
 
         public void Remove(IEnumerable<Entity> entities) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 Remove(entity);
         }
 
@@ -138,7 +138,7 @@ namespace Monocle {
 
         public int AmountOf<T>() where T : Entity {
             int count = 0;
-            foreach (var e in entities)
+            foreach (Entity e in entities)
                 if (e is T)
                     count++;
 
@@ -146,7 +146,7 @@ namespace Monocle {
         }
 
         public T? FindFirst<T>() where T : Entity {
-            foreach (var e in entities)
+            foreach (Entity e in entities)
                 if (e is T t)
                     return t;
 
@@ -156,7 +156,7 @@ namespace Monocle {
         public List<T> FindAll<T>() where T : Entity {
             List<T> list = new List<T>();
 
-            foreach (var e in entities)
+            foreach (Entity e in entities)
                 if (e is T t)
                     list.Add(t);
 
@@ -164,7 +164,7 @@ namespace Monocle {
         }
 
         public void With<T>(Action<T> action) where T : Entity {
-            foreach (var e in entities)
+            foreach (Entity e in entities)
                 if (e is T t)
                     action(t);
         }
@@ -182,54 +182,54 @@ namespace Monocle {
         }
 
         public bool HasVisibleEntities(int matchTags) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 if (entity.Visible && entity.TagCheck(matchTags))
                     return true;
             return false;
         }
 
         internal void Update() {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 if (entity.Active)
                     entity.Update();
         }
 
         public void Render() {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 if (entity.Visible)
                     entity.Render();
         }
 
         public void RenderOnly(int matchTags) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 if (entity.Visible && entity.TagCheck(matchTags))
                     entity.Render();
         }
 
         public void RenderOnlyFullMatch(int matchTags) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 if (entity.Visible && entity.TagFullCheck(matchTags))
                     entity.Render();
         }
 
         public void RenderExcept(int excludeTags) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 if (entity.Visible && !entity.TagCheck(excludeTags))
                     entity.Render();
         }
 
         public void DebugRender(Camera camera) {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 entity.DebugRender(camera);
         }
 
         internal void HandleGraphicsReset() {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 entity.HandleGraphicsReset();
         }
 
         internal void HandleGraphicsCreate() {
-            foreach (var entity in entities)
+            foreach (Entity entity in entities)
                 entity.HandleGraphicsCreate();
         }
 

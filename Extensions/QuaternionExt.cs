@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 namespace Monocle {
     public static class QuaternionExt {
         public static Quaternion Conjugated(this Quaternion q) {
-            var c = q;
+            Quaternion c = q;
             c.Conjugate();
             return c;
         }

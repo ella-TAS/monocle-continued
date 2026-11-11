@@ -15,14 +15,14 @@ namespace Monocle {
             SpriteData = new Dictionary<string, SpriteData>(StringComparer.OrdinalIgnoreCase);
 
             var elements = new Dictionary<string, XmlElement>();
-            foreach (var e in XML["Sprites"]!.ChildNodes) {
+            foreach (object? e in XML["Sprites"]!.ChildNodes) {
                 if (e is XmlElement element) {
                     elements.Add(element.Name, element);
 
                     if (SpriteData.ContainsKey(element.Name))
                         throw new Exception("Duplicate sprite name in SpriteData: '" + element.Name + "'!");
 
-                    var data = SpriteData[element.Name] = new SpriteData(Atlas);
+                    SpriteData data = SpriteData[element.Name] = new SpriteData(Atlas);
                     if (element.HasAttr("copy"))
                         data.Add(elements[element.Attr("copy")], element.Attr("path"));
                     data.Add(element);

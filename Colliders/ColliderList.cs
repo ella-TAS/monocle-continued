@@ -7,14 +7,14 @@ namespace Monocle {
         public Collider[] colliders { get; private set; }
 
         public ColliderList(params Collider[] colliders) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c == null)
                     throw new Exception("Cannot add a null Collider to a ColliderList.");
             this.colliders = colliders;
         }
 
         public void Add(params Collider[] toAdd) {
-            foreach (var c in toAdd) {
+            foreach (Collider c in toAdd) {
                 if (colliders.Contains(c)) {
                     Logger.DebugCrash("ColliderList", "Adding a Collider to a ColliderList that already contains it!");
                     continue;
@@ -34,7 +34,7 @@ namespace Monocle {
         }
 
         public void Remove(params Collider[] toRemove) {
-            foreach (var c in toRemove) {
+            foreach (Collider c in toRemove) {
                 if (!colliders.Contains(c))
                     throw new Exception("Removing a Collider from a ColliderList that does not contain it!");
                 else if (c == null)
@@ -43,7 +43,7 @@ namespace Monocle {
 
             Collider[] newColliders = new Collider[colliders.Length - toRemove.Length];
             int at = 0;
-            foreach (var c in colliders) {
+            foreach (Collider c in colliders) {
                 if (!toRemove.Contains(c)) {
                     newColliders[at] = c;
                     at++;
@@ -54,13 +54,13 @@ namespace Monocle {
 
         internal override void Added(Entity entity) {
             base.Added(entity);
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 c.Added(entity);
         }
 
         internal override void Removed() {
             base.Removed();
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 c.Removed();
         }
 
@@ -94,7 +94,7 @@ namespace Monocle {
 
             set {
                 float changeX = value - Left;
-                foreach (var c in colliders)
+                foreach (Collider c in colliders)
                     Position.X += changeX;
             }
         }
@@ -110,7 +110,7 @@ namespace Monocle {
 
             set {
                 float changeX = value - Right;
-                foreach (var c in colliders)
+                foreach (Collider c in colliders)
                     Position.X += changeX;
             }
         }
@@ -126,7 +126,7 @@ namespace Monocle {
 
             set {
                 float changeY = value - Top;
-                foreach (var c in colliders)
+                foreach (Collider c in colliders)
                     Position.Y += changeY;
             }
         }
@@ -142,7 +142,7 @@ namespace Monocle {
 
             set {
                 float changeY = value - Bottom;
-                foreach (var c in colliders)
+                foreach (Collider c in colliders)
                     Position.Y += changeY;
             }
         }
@@ -156,7 +156,7 @@ namespace Monocle {
         }
 
         public override void Render(Camera camera, Color color) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 c.Render(camera, color);
         }
 
@@ -165,7 +165,7 @@ namespace Monocle {
          */
 
         public override bool Collide(Vector2 point) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(point))
                     return true;
 
@@ -173,7 +173,7 @@ namespace Monocle {
         }
 
         public override bool Collide(Rectangle rect) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(rect))
                     return true;
 
@@ -181,7 +181,7 @@ namespace Monocle {
         }
 
         public override bool Collide(Vector2 from, Vector2 to) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(from, to))
                     return true;
 
@@ -189,7 +189,7 @@ namespace Monocle {
         }
 
         public override bool Collide(Hitbox hitbox) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(hitbox))
                     return true;
 
@@ -197,7 +197,7 @@ namespace Monocle {
         }
 
         public override bool Collide(Grid grid) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(grid))
                     return true;
 
@@ -205,7 +205,7 @@ namespace Monocle {
         }
 
         public override bool Collide(Circle circle) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(circle))
                     return true;
 
@@ -213,7 +213,7 @@ namespace Monocle {
         }
 
         public override bool Collide(ColliderList list) {
-            foreach (var c in colliders)
+            foreach (Collider c in colliders)
                 if (c.Collide(list))
                     return true;
 

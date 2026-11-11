@@ -38,7 +38,7 @@ namespace Monocle {
         }
 
         public T? InSegment(int segmentX, int segmentY, int x, int y) {
-            var segment = segments[segmentX, segmentY];
+            T?[,] segment = segments[segmentX, segmentY];
             return segment == null ? EmptyValue : segment[x, y];
         }
 
@@ -57,7 +57,7 @@ namespace Monocle {
                 int cx = x / SegmentSize;
                 int cy = y / SegmentSize;
 
-                var seg = segments[cx, cy];
+                T?[,] seg = segments[cx, cy];
                 if (seg == null)
                     return EmptyValue;
 
@@ -94,7 +94,7 @@ namespace Monocle {
             var clone = new VirtualMap<T>(Columns, Rows, EmptyValue);
             for (int x = 0; x < Columns; x++) {
                 for (int y = 0; y < Rows; y++) {
-                    var segment = segments[x, y];
+                    T?[,] segment = segments[x, y];
                     if (segment == null)
                         continue;
 
