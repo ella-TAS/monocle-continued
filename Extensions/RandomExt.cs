@@ -123,6 +123,11 @@ namespace Monocle {
             return choices[random.Next(choices.Length)];
         }
 
+        public static T ChooseEnum<T>(this Random random) where T : struct, Enum {
+            T[] choices = Enum.GetValues<T>();
+            return random.Choose(choices);
+        }
+
         /// <summary>
         /// Returns a random integer between min (inclusive) and max (exclusive)
         /// </summary>
