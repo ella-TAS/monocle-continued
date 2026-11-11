@@ -57,15 +57,15 @@ namespace Monocle {
                 throw new InvalidOperationException("Engine.Instance or Content is not initialized.");
 
             SpriteBatch = new SpriteBatch(graphicsDevice);
-            DefaultFont = Engine.Instance.Content.Load<SpriteFont>(@"Fonts\MonocleDefault");
-            UseDebugPixelTexture();
+            DefaultFont = Engine.Instance.Content.Load<SpriteFont>("MonocleDefault");
+            UsePixelTexture();
         }
 
         /// <summary>
         /// Creates and sets up the default debug pixel textures for drawing operations.
         /// Creates a 2x2 white texture and extracts 1x1 and 2x2 sub-textures for shapes and particles.
         /// </summary>
-        public static void UseDebugPixelTexture() {
+        public static void UsePixelTexture() {
             var texture = new MTexture(2, 2, Color.White);
             Pixel = new MTexture(texture, 0, 0, 1, 1);
             Particle = new MTexture(texture, 0, 0, 2, 2);

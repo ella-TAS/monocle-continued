@@ -20,8 +20,6 @@ namespace Monocle {
         public static void Write(string str) {
             StringBuilder s = new StringBuilder();
 
-            Logger.Release("ErrorLog", "=====>>> GAME CRASH <<<=====\n" + str);
-
             //Get the previous contents
             string content = "";
             if (File.Exists(LogPath)) {
@@ -60,6 +58,8 @@ namespace Monocle {
             }
 
             File.WriteAllText(LogPath, s.ToString());
+
+            Logger.Release("ErrorLog", "=====>>> GAME CRASH <<<=====\n" + str);
         }
 
         public static bool TryOpen() {
