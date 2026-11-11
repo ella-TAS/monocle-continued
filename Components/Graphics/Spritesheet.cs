@@ -89,11 +89,9 @@ namespace Monocle {
         #region Animation Definition
 
         public void Add(T id, bool loop, float delay, params int[] frames) {
-#if DEBUG
             foreach (var i in frames)
                 if (i >= Frames.Length)
-                    throw new IndexOutOfRangeException("Specified frames is out of max range for this Spritesheet");
-#endif
+                    Logger.DebugCrash("SpriteSheet", "Specified frames is out of max range for this Spritesheet");
 
             animations[id] = new Animation() {
                 Delay = delay,
@@ -129,10 +127,10 @@ namespace Monocle {
 
         public void Play(T id, bool restart = false) {
             if (!IsPlaying(id) || restart) {
-#if DEBUG
+
                 if (!animations.ContainsKey(id))
-                    throw new Exception("No Animation defined for ID: " + id.ToString());
-#endif
+                    Logger.DebugCrash("Sprite", "No Animation defined for ID: " + id.ToString());
+
                 CurrentAnimationID = id;
                 currentAnimation = animations[id];
                 animationTimer = 0;

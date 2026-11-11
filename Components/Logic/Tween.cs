@@ -62,13 +62,10 @@ namespace Monocle {
         }
 
         private void Init(TweenMode mode, Ease.Easer? easer, float duration, bool start) {
-#if DEBUG
-            if (duration <= 0)
-                throw new Exception("Tween duration cannot be less than zero");
-#else
-            if (duration <= 0)
+            if (duration <= 0f) {
+                Logger.DebugCrash("Tween", "Tween duration cannot be less than zero");
                 duration = .000001f;
-#endif
+            }
 
             UseRawDeltaTime = false;
             Mode = mode;
@@ -168,10 +165,10 @@ namespace Monocle {
         }
 
         public void Start(float duration, bool reverse = false) {
-#if DEBUG
-            if (duration <= 0)
-                throw new Exception("Tween duration cannot be <= 0");
-#endif
+            if (duration <= 0f) {
+                Logger.DebugCrash("Tween", "Tween duration cannot be less than zero");
+                duration = .000001f;
+            }
 
             Duration = duration;
             Start(reverse);

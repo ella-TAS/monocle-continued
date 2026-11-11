@@ -45,10 +45,10 @@ namespace Monocle {
         public int State {
             get { return state; }
             set {
-#if DEBUG
-                if (value >= updates.Length || value < 0)
-                    throw new Exception("StateMachine state out of range");
-#endif
+                if (value >= updates.Length || value < 0) {
+                    Logger.DebugCrash("StateMachine", "StateMachine state out of range");
+                    return;
+                }
 
                 if (!Locked && state != value) {
                     if (Log)

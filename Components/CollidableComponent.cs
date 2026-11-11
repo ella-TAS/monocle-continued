@@ -30,10 +30,10 @@ namespace Monocle {
             set {
                 if (value == collider)
                     return;
-#if DEBUG
+
                 if (value?.Entity != null)
-                    throw new Exception("Setting an Entity's Collider to a Collider already in use by another object");
-#endif
+                    Logger.DebugCrash("CollidableComponent", "Setting an Entity's Collider to a Collider already in use by another object");
+
                 collider?.Removed();
                 collider = value;
                 collider?.Added(this);

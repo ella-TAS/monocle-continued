@@ -13,10 +13,8 @@ namespace Monocle {
         }
 
         public static string Attr(this XmlElement xml, string attributeName) {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
-                throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
+                Logger.DebugCrash("XmlElement", "Element does not contain the attribute \"" + attributeName + "\"");
             return xml.Attributes[attributeName]?.InnerText ?? "";
         }
 
@@ -28,10 +26,8 @@ namespace Monocle {
         }
 
         public static int AttrInt(this XmlElement xml, string attributeName) {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
-                throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
+                Logger.DebugCrash("XmlElement", "Element does not contain the attribute \"" + attributeName + "\"");
             return Convert.ToInt32(xml.Attributes[attributeName]?.InnerText);
         }
 
@@ -43,10 +39,8 @@ namespace Monocle {
         }
 
         public static float AttrFloat(this XmlElement xml, string attributeName) {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
-                throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
+                Logger.DebugCrash("XmlElement", "Element does not contain the attribute \"" + attributeName + "\"");
             return Convert.ToSingle(xml.Attributes[attributeName]?.InnerText, CultureInfo.InvariantCulture);
         }
 
@@ -75,10 +69,8 @@ namespace Monocle {
         }
 
         public static bool AttrBool(this XmlElement xml, string attributeName) {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
-                throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
+                Logger.DebugCrash("XmlElement", "Element does not contain the attribute \"" + attributeName + "\"");
             return Convert.ToBoolean(xml.Attributes[attributeName]?.InnerText);
         }
 
@@ -90,10 +82,8 @@ namespace Monocle {
         }
 
         public static char AttrChar(this XmlElement xml, string attributeName) {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
-                throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
+                Logger.DebugCrash("XmlElement", "Element does not contain the attribute \"" + attributeName + "\"");
             return Convert.ToChar(xml.Attributes[attributeName]?.InnerText ?? "\0");
         }
 
@@ -122,10 +112,8 @@ namespace Monocle {
         }
 
         public static Color AttrHexColor(this XmlElement xml, string attributeName) {
-#if DEBUG
             if (!xml.HasAttr(attributeName))
-                throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
-#endif
+                Logger.DebugCrash("XmlElement", "Element does not contain the attribute \"" + attributeName + "\"");
             return Calc.HexToColor(xml.Attr(attributeName));
         }
 
@@ -227,10 +215,8 @@ namespace Monocle {
         }
 
         public static string ChildText(this XmlElement xml, string childName) {
-#if DEBUG
             if (!xml.HasChild(childName))
-                throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
+                Logger.DebugCrash("XmlElement", "Cannot find child xml tag with name '" + childName + "'.");
             return xml[childName]?.InnerText ?? "";
         }
 
@@ -242,10 +228,8 @@ namespace Monocle {
         }
 
         public static int ChildInt(this XmlElement xml, string childName) {
-#if DEBUG
             if (!xml.HasChild(childName))
-                throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
+                Logger.DebugCrash("XmlElement", "Cannot find child xml tag with name '" + childName + "'.");
             return xml[childName]?.InnerInt() ?? 0;
         }
 
@@ -257,10 +241,8 @@ namespace Monocle {
         }
 
         public static float ChildFloat(this XmlElement xml, string childName) {
-#if DEBUG
             if (!xml.HasChild(childName))
-                throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
+                Logger.DebugCrash("XmlElement", "Cannot find child xml tag with name '" + childName + "'.");
             return xml[childName]?.InnerFloat() ?? 0f;
         }
 
@@ -272,10 +254,8 @@ namespace Monocle {
         }
 
         public static bool ChildBool(this XmlElement xml, string childName) {
-#if DEBUG
             if (!xml.HasChild(childName))
-                throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
+                Logger.DebugCrash("XmlElement", "Cannot find child xml tag with name '" + childName + "'.");
             return xml[childName]?.InnerBool() ?? false;
         }
 
@@ -307,10 +287,8 @@ namespace Monocle {
         }
 
         public static Color ChildHexColor(this XmlElement xml, string childName) {
-#if DEBUG
             if (!xml.HasChild(childName))
-                throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
+                Logger.DebugCrash("XmlElement", "Cannot find child xml tag with name '" + childName + "'.");
             return Calc.HexToColor(xml[childName]?.InnerText ?? "");
         }
 
@@ -329,10 +307,8 @@ namespace Monocle {
         }
 
         public static Vector2 ChildPosition(this XmlElement xml, string childName) {
-#if DEBUG
             if (!xml.HasChild(childName))
-                throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
-#endif
+                Logger.DebugCrash("XmlElement", "Cannot find child xml tag with name '" + childName + "'.");
             return xml[childName]?.Position() ?? Vector2.Zero;
         }
 

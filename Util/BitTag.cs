@@ -23,10 +23,9 @@ namespace Monocle {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-#if DEBUG
             if (!byName.ContainsKey(name))
                 throw new Exception($"No tag with the name '{name}' has been defined!");
-#endif
+
             return byName[name];
         }
 
@@ -71,13 +70,10 @@ namespace Monocle {
                 throw new ArgumentNullException(nameof(name));
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Tag name cannot be empty or whitespace.", nameof(name));
-
-#if DEBUG
             if (TotalTags >= 32)
                 throw new Exception("Maximum tag limit of 32 exceeded!");
             if (byName.ContainsKey(name))
                 throw new Exception($"Two tags defined with the same name: '{name}'!");
-#endif
 
             ID = TotalTags;
             Value = 1 << TotalTags;

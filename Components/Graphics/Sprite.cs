@@ -226,10 +226,8 @@ namespace Monocle {
                 ret = finalFrames;
             }
 
-#if DEBUG
             if (ret.Length == 0)
-                throw new Exception("No frames found for animation path '" + this.Path + path + "'!");
-#endif
+                Logger.DebugCrash("Sprite", "No frames found for animation path '" + this.Path + path + "'!");
 
             width = Math.Max(ret[0].Width, width);
             height = Math.Max(ret[0].Height, height);
@@ -247,10 +245,9 @@ namespace Monocle {
 
         public void Play(string id, bool restart = false, bool randomizeFrame = false) {
             if (CurrentAnimationID != id || restart) {
-#if DEBUG
                 if (!animations.ContainsKey(id))
-                    throw new Exception("No Animation defined for ID: " + id);
-#endif
+                    Logger.DebugCrash("Sprite", "No Animation defined for ID: " + id);
+
                 OnChange?.Invoke(LastAnimationID, id);
 
                 LastAnimationID = CurrentAnimationID = id;
@@ -271,10 +268,9 @@ namespace Monocle {
 
         public void PlayOffset(string id, float offset, bool restart = false) {
             if (CurrentAnimationID != id || restart) {
-#if DEBUG
                 if (!animations.ContainsKey(id))
-                    throw new Exception("No Animation defined for ID: " + id);
-#endif
+                    Logger.DebugCrash("Sprite", "No Animation defined for ID: " + id);
+
                 OnChange?.Invoke(LastAnimationID, id);
 
                 LastAnimationID = CurrentAnimationID = id;

@@ -7,23 +7,20 @@ namespace Monocle {
         public Collider[] colliders { get; private set; }
 
         public ColliderList(params Collider[] colliders) {
-#if DEBUG
             foreach (var c in colliders)
                 if (c == null)
                     throw new Exception("Cannot add a null Collider to a ColliderList.");
-#endif
             this.colliders = colliders;
         }
 
         public void Add(params Collider[] toAdd) {
-#if DEBUG
             foreach (var c in toAdd) {
-                if (colliders.Contains(c))
-                    throw new Exception("Adding a Collider to a ColliderList that already contains it!");
-                else if (c == null)
+                if (colliders.Contains(c)) {
+                    Logger.DebugCrash("ColliderList", "Adding a Collider to a ColliderList that already contains it!");
+                    continue;
+                } else if (c == null)
                     throw new Exception("Cannot add a null Collider to a ColliderList.");
             }
-#endif
 
             Collider[] newColliders = new Collider[colliders.Length + toAdd.Length];
             for (int i = 0; i < colliders.Length; i++)
@@ -37,14 +34,12 @@ namespace Monocle {
         }
 
         public void Remove(params Collider[] toRemove) {
-#if DEBUG
             foreach (var c in toRemove) {
                 if (!colliders.Contains(c))
                     throw new Exception("Removing a Collider from a ColliderList that does not contain it!");
                 else if (c == null)
                     throw new Exception("Cannot remove a null Collider from a ColliderList.");
             }
-#endif
 
             Collider[] newColliders = new Collider[colliders.Length - toRemove.Length];
             int at = 0;

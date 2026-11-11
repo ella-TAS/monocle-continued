@@ -129,10 +129,10 @@ namespace Monocle {
         }
 
         public T? GetEntity<T>() where T : Entity {
-#if DEBUG
-            if (!IsEntityTracked<T>())
-                throw new Exception("Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsEntityTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                return null;
+            }
 
             var list = Entities[typeof(T)];
             if (list.Count == 0)
@@ -160,10 +160,10 @@ namespace Monocle {
         }
 
         public List<Entity> GetEntities<T>() where T : Entity {
-#if DEBUG
-            if (!IsEntityTracked<T>())
-                throw new Exception("Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsEntityTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                return [];
+            }
 
             return Entities[typeof(T)];
         }
@@ -173,29 +173,29 @@ namespace Monocle {
         }
 
         public IEnumerator<T> EnumerateEntities<T>() where T : Entity {
-#if DEBUG
-            if (!IsEntityTracked<T>())
-                throw new Exception("Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsEntityTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                yield break;
+            }
 
             foreach (var e in Entities[typeof(T)])
                 yield return (T) e;
         }
 
         public int CountEntities<T>() where T : Entity {
-#if DEBUG
-            if (!IsEntityTracked<T>())
-                throw new Exception("Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsEntityTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                return 0;
+            }
 
             return Entities[typeof(T)].Count;
         }
 
         public T? GetComponent<T>() where T : Component {
-#if DEBUG
-            if (!IsComponentTracked<T>())
-                throw new Exception("Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsComponentTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                return null;
+            }
 
             var list = Components[typeof(T)];
             if (list.Count == 0)
@@ -223,10 +223,10 @@ namespace Monocle {
         }
 
         public List<Component> GetComponents<T>() where T : Component {
-#if DEBUG
-            if (!IsComponentTracked<T>())
-                throw new Exception("Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsComponentTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                return [];
+            }
 
             return Components[typeof(T)];
         }
@@ -236,20 +236,20 @@ namespace Monocle {
         }
 
         public IEnumerator<T> EnumerateComponents<T>() where T : Component {
-#if DEBUG
-            if (!IsComponentTracked<T>())
-                throw new Exception("Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsComponentTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                yield break;
+            }
 
             foreach (var c in Components[typeof(T)])
                 yield return (T) c;
         }
 
         public int CountComponents<T>() where T : Component {
-#if DEBUG
-            if (!IsComponentTracked<T>())
-                throw new Exception("Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
-#endif
+            if (!IsComponentTracked<T>()) {
+                Logger.DebugCrash("Tracker", "Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
+                return 0;
+            }
 
             return Components[typeof(T)].Count;
         }

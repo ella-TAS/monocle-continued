@@ -235,10 +235,9 @@ namespace Monocle {
             set {
                 if (ReferenceEquals(value, collider))
                     return;
-#if DEBUG
                 if (value?.Entity != null)
-                    throw new InvalidOperationException("Cannot assign a collider that is already in use by another entity.");
-#endif
+                    Logger.DebugCrash("Entity", "Cannot assign a collider that is already in use by another entity.");
+
                 collider?.Removed();
                 collider = value;
                 collider?.Added(this);
@@ -445,54 +444,61 @@ namespace Monocle {
         }
 
         public bool CollideCheck(BitTag tag) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
-            return Collide.Check(this, Scene?[tag] ?? []);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return false;
+            }
+
+            return Collide.Check(this, Scene[tag]);
         }
 
         public bool CollideCheck(BitTag tag, Vector2 at) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
-            return Collide.Check(this, Scene?[tag] ?? [], at);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return false;
+            }
+
+            return Collide.Check(this, Scene[tag], at);
         }
 
         public bool CollideCheck<T>() where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return false;
+            }
 
-            return Collide.Check(this, Scene?.Tracker.Entities[typeof(T)] ?? []);
+            return Collide.Check(this, Scene.Tracker.Entities[typeof(T)]);
         }
 
         public bool CollideCheck<T>(Vector2 at) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
-            return Collide.Check(this, Scene?.Tracker.Entities[typeof(T)] ?? [], at);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return false;
+            }
+
+            return Collide.Check(this, Scene.Tracker.Entities[typeof(T)], at);
         }
 
         public bool CollideCheck<T, Exclude>() where T : Entity where Exclude : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked objects when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(Exclude)))
-                throw new Exception("Excluded type is an untracked Entity type!");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked objects when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(Exclude))) {
+                Logger.DebugCrash("Entity", "Excluded type is an untracked Entity type!");
+                return false;
+            }
 
-            var exclude = Scene?.Tracker.Entities[typeof(Exclude)] ?? [];
-            foreach (var e in Scene?.Tracker.Entities[typeof(T)] ?? [])
+            var exclude = Scene.Tracker.Entities[typeof(Exclude)];
+            foreach (var e in Scene.Tracker.Entities[typeof(T)])
                 if (!exclude.Contains(e))
                     if (Collide.Check(this, e))
                         return true;
@@ -508,14 +514,15 @@ namespace Monocle {
         }
 
         public bool CollideCheckByComponent<T>() where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.Components.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Components.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return false;
+            }
 
-            foreach (var c in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
+            foreach (var c in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (Collide.Check(this, c))
                     return true;
             return false;
@@ -538,12 +545,12 @@ namespace Monocle {
         }
 
         public bool CollideCheckOutside(BitTag tag, Vector2 at) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return false;
+            }
 
-            foreach (var entity in Scene?[tag] ?? [])
+            foreach (var entity in Scene[tag])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return true;
 
@@ -551,28 +558,30 @@ namespace Monocle {
         }
 
         public bool CollideCheckOutside<T>(Vector2 at) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return false;
+            }
 
-            foreach (var entity in Scene?.Tracker.Entities[typeof(T)] ?? [])
+            foreach (var entity in Scene.Tracker.Entities[typeof(T)])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return true;
             return false;
         }
 
         public bool CollideCheckOutsideByComponent<T>(Vector2 at) where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return false;
+            }
 
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
+            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (!Collide.Check(this, component) && Collide.Check(this, component, at))
                     return true;
             return false;
@@ -583,64 +592,72 @@ namespace Monocle {
         #region Collide First
 
         public Entity? CollideFirst(BitTag tag) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
-            return Collide.First(this, Scene?[tag] ?? []);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return null;
+            }
+
+            return Collide.First(this, Scene[tag]);
         }
 
         public Entity? CollideFirst(BitTag tag, Vector2 at) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
-            return Collide.First(this, Scene?[tag] ?? [], at);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return null;
+            }
+
+            return Collide.First(this, Scene[tag], at);
         }
 
         public T? CollideFirst<T>() where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
-            return Collide.First(this, Scene?.Tracker.Entities[typeof(T)] ?? []) as T;
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return null;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return null;
+            }
+
+            return Collide.First(this, Scene.Tracker.Entities[typeof(T)]) as T;
         }
 
         public T? CollideFirst<T>(Vector2 at) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
-            return Collide.First(this, Scene?.Tracker.Entities[typeof(T)] ?? [], at) as T;
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return null;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return null;
+            }
+
+            return Collide.First(this, Scene.Tracker.Entities[typeof(T)], at) as T;
         }
 
         public T? CollideFirstByComponent<T>() where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return null;
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return null;
+            }
 
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
+            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (Collide.Check(this, component))
                     return component as T;
             return null;
         }
 
         public T? CollideFirstByComponent<T>(Vector2 at) where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return null;
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return null;
+            }
 
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
+            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (Collide.Check(this, component, at))
                     return component as T;
             return null;
@@ -651,40 +668,42 @@ namespace Monocle {
         #region Collide FirstOutside
 
         public Entity? CollideFirstOutside(BitTag tag, Vector2 at) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return null;
+            }
 
-            foreach (var entity in Scene?[tag] ?? [])
+            foreach (var entity in Scene[tag])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return entity;
             return null;
         }
 
         public T? CollideFirstOutside<T>(Vector2 at) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return null;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return null;
+            }
 
-            foreach (var entity in Scene?.Tracker.Entities[typeof(T)] ?? [])
+            foreach (var entity in Scene.Tracker.Entities[typeof(T)])
                 if (!Collide.Check(this, entity) && Collide.Check(this, entity, at))
                     return entity as T;
             return null;
         }
 
         public T? CollideFirstOutsideByComponent<T>(Vector2 at) where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return null;
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return null;
+            }
 
-            foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
+            foreach (var component in Scene.Tracker.CollidableComponents[typeof(T)])
                 if (!Collide.Check(this, component) && Collide.Check(this, component, at))
                     return component as T;
             return null;
@@ -695,62 +714,68 @@ namespace Monocle {
         #region Collide All
 
         public List<Entity> CollideAll(BitTag tag) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
-            return Collide.All(this, Scene?[tag] ?? []);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return [];
+            }
+
+            return Collide.All(this, Scene[tag]);
         }
 
         public List<Entity> CollideAll(BitTag tag, Vector2 at) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
-            return Collide.All(this, Scene?[tag] ?? [], at);
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return [];
+            }
+
+            return Collide.All(this, Scene[tag], at);
         }
 
         public List<Entity> CollideAll<T>() where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return [];
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return [];
+            }
 
-            return Collide.All(this, Scene?.Tracker.Entities[typeof(T)] ?? []);
+            return Collide.All(this, Scene.Tracker.Entities[typeof(T)]);
         }
 
         public List<Entity> CollideAll<T>(Vector2 at) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return [];
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return [];
+            }
 
-            return Collide.All(this, Scene?.Tracker.Entities[typeof(T)] ?? [], at);
+            return Collide.All(this, Scene.Tracker.Entities[typeof(T)], at);
         }
 
         public List<Entity> CollideAll<T>(Vector2 at, List<Entity> into) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return [];
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return [];
+            }
 
             into.Clear();
             return Collide.All(this, Scene?.Tracker.Entities[typeof(T)] ?? [], into, at);
         }
 
         public List<T> CollideAllByComponent<T>() where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return [];
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return [];
+            }
 
             List<T> list = new List<T>();
             foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? [])
@@ -773,10 +798,10 @@ namespace Monocle {
         #region Collide Do
 
         public bool CollideDo(BitTag tag, Action<Entity> action) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return false;
+            }
 
             bool hit = false;
             foreach (var other in Scene?[tag] ?? []) {
@@ -789,10 +814,10 @@ namespace Monocle {
         }
 
         public bool CollideDo(BitTag tag, Action<Entity> action, Vector2 at) {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against a tag list when it is not a member of a Scene");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against a tag list when it is not a member of a Scene");
+                return false;
+            }
 
             bool hit = false;
             var was = Position;
@@ -810,12 +835,13 @@ namespace Monocle {
         }
 
         public bool CollideDo<T>(Action<T> action) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return false;
+            }
 
             bool hit = false;
             foreach (var other in Scene?.Tracker.Entities[typeof(T)] ?? []) {
@@ -829,12 +855,13 @@ namespace Monocle {
         }
 
         public bool CollideDo<T>(Action<T> action, Vector2 at) where T : Entity {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
-            else if (!Scene.Tracker.Entities.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked Entity type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked Entities when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.Entities.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked Entity type");
+                return false;
+            }
 
             bool hit = false;
             var was = Position;
@@ -853,12 +880,13 @@ namespace Monocle {
         }
 
         public bool CollideDoByComponent<T>(Action<T> action) where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return false;
+            }
 
             bool hit = false;
             foreach (var component in Scene?.Tracker.CollidableComponents[typeof(T)] ?? []) {
@@ -872,12 +900,13 @@ namespace Monocle {
         }
 
         public bool CollideDoByComponent<T>(Action<T> action, Vector2 at) where T : CollidableComponent {
-#if DEBUG
-            if (Scene == null)
-                throw new Exception("Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
-            else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T)))
-                throw new Exception("Can't collide check an Entity against an untracked CollidableComponent type");
-#endif
+            if (Scene == null) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against tracked CollidableComponents when it is not a member of a Scene");
+                return false;
+            } else if (!Scene.Tracker.CollidableComponents.ContainsKey(typeof(T))) {
+                Logger.DebugCrash("Entity", "Can't collide check an Entity against an untracked CollidableComponent type");
+                return false;
+            }
 
             bool hit = false;
             var was = Position;

@@ -40,10 +40,9 @@ namespace Monocle {
         }
 
         private void Init(AlarmMode mode, Action onComplete, float duration = 1f, bool start = false) {
-#if DEBUG
             if (duration <= 0)
-                throw new Exception("Alarm duration cannot be less than zero");
-#endif
+                Logger.DebugCrash("Alarm", "Alarm duration cannot be less than zero");
+
             Mode = mode;
             Duration = duration;
             OnComplete = onComplete;
@@ -81,10 +80,8 @@ namespace Monocle {
         }
 
         public void Start(float duration) {
-#if DEBUG
             if (duration <= 0)
-                throw new Exception("Alarm duration cannot be <= 0");
-#endif
+                Logger.DebugCrash("Alarm", "Alarm duration cannot be <= 0");
 
             Duration = duration;
             Start();
