@@ -30,7 +30,8 @@ namespace Monocle {
                 newColliders[i] = colliders[i];
             for (int i = 0; i < toAdd.Length; i++) {
                 newColliders[i + colliders.Length] = toAdd[i];
-                toAdd[i].Added(Entity);
+                if (Entity != null)
+                    toAdd[i].Added(Entity);
             }
             colliders = newColliders;
         }

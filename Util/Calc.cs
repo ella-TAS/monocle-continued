@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
@@ -15,7 +14,6 @@ namespace Monocle {
     /// <summary>
     /// Comprehensive utility class providing mathematical, string manipulation, random number generation,
     /// and various helper functions for game development.
-    /// Modernized for .NET 9 with nullable reference types and performance optimizations.
     /// </summary>
     public static class Calc {
         public const float EPSILON = 0.00000001f;

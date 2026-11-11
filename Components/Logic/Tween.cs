@@ -7,10 +7,10 @@ namespace Monocle {
     public class Tween : Component {
         public enum TweenMode { Persist, Oneshot, Looping, YoyoPersist, YoyoOneshot, YoyoLooping };
 
-        public Ease.Easer Easer;
-        public Action<Tween> OnUpdate;
-        public Action<Tween> OnComplete;
-        public Action<Tween> OnStart;
+        public Ease.Easer? Easer;
+        public Action<Tween>? OnUpdate;
+        public Action<Tween>? OnComplete;
+        public Action<Tween>? OnStart;
         public bool UseRawDeltaTime;
 
         public TweenMode Mode { get; private set; }
@@ -26,7 +26,7 @@ namespace Monocle {
 
         private static Stack<Tween> cached = new Stack<Tween>();
 
-        public static Tween Create(TweenMode mode, Ease.Easer easer = null, float duration = 1f, bool start = false) {
+        public static Tween Create(TweenMode mode, Ease.Easer? easer = null, float duration = 1f, bool start = false) {
             Tween tween;
             if (cached.Count == 0)
                 tween = new Tween();
@@ -38,7 +38,7 @@ namespace Monocle {
             return tween;
         }
 
-        public static Tween Set(Entity entity, TweenMode tweenMode, float duration, Ease.Easer easer, Action<Tween> onUpdate, Action<Tween> onComplete = null) {
+        public static Tween Set(Entity entity, TweenMode tweenMode, float duration, Ease.Easer? easer, Action<Tween>? onUpdate, Action<Tween>? onComplete = null) {
             Tween tween = Tween.Create(tweenMode, easer, duration, true);
             tween.OnUpdate += onUpdate;
             tween.OnComplete += onComplete;
@@ -46,7 +46,7 @@ namespace Monocle {
             return tween;
         }
 
-        public static Tween Position(Entity entity, Vector2 targetPosition, float duration, Ease.Easer easer, TweenMode tweenMode = TweenMode.Oneshot) {
+        public static Tween Position(Entity entity, Vector2 targetPosition, float duration, Ease.Easer? easer, TweenMode tweenMode = TweenMode.Oneshot) {
             Vector2 startPosition = entity.Position;
             Tween tween = Tween.Create(tweenMode, easer, duration, true);
             tween.OnUpdate = (t) => { entity.Position = Vector2.Lerp(startPosition, targetPosition, t.Eased); };
@@ -61,7 +61,7 @@ namespace Monocle {
 
         }
 
-        private void Init(TweenMode mode, Ease.Easer easer, float duration, bool start) {
+        private void Init(TweenMode mode, Ease.Easer? easer, float duration, bool start) {
 #if DEBUG
             if (duration <= 0)
                 throw new Exception("Tween duration cannot be less than zero");

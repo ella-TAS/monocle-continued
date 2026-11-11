@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -258,7 +256,7 @@ namespace Monocle {
 
         public PixelFont(string path, XmlElement data, Atlas? atlas = null) {
             // check if size already exists
-            var size = data["info"].AttrFloat("size");
+            var size = data["info"]!.AttrFloat("size");
 
             // get textures
             Textures = [];
@@ -279,9 +277,9 @@ namespace Monocle {
             Data = new PixelFontData() {
                 Textures = Textures,
                 Characters = [],
-                LineHeight = data["common"].AttrInt("lineHeight"),
+                LineHeight = data["common"]!.AttrInt("lineHeight"),
                 Size = size,
-                HasOutline = data["info"].AttrInt("outline") > 0,
+                HasOutline = data["info"]!.AttrInt("outline") > 0,
             };
 
             // get characters

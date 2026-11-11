@@ -4,7 +4,7 @@ namespace Monocle {
     public class EverythingRenderer : Renderer {
         public BlendState BlendState;
         public SamplerState SamplerState;
-        public Effect Effect;
+        public Effect? Effect;
 
         public EverythingRenderer() {
             BlendState = BlendState.AlphaBlend;

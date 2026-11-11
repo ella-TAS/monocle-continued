@@ -15,10 +15,10 @@ namespace Monocle {
 
         private float increment;
         private float sineAdd;
-        private Action<float> onChange;
+        private Action<float>? onChange;
         private bool removeSelfOnFinish;
 
-        public static Wiggler Create(float duration, float frequency, Action<float> onChange = null, bool start = false, bool removeSelfOnFinish = false) {
+        public static Wiggler Create(float duration, float frequency, Action<float>? onChange = null, bool start = false, bool removeSelfOnFinish = false) {
             Wiggler wiggler;
 
             if (cache.Count > 0)
@@ -35,7 +35,7 @@ namespace Monocle {
 
         }
 
-        private void Init(float duration, float frequency, Action<float> onChange, bool start, bool removeSelfOnFinish) {
+        private void Init(float duration, float frequency, Action<float>? onChange, bool start, bool removeSelfOnFinish) {
             Counter = sineCounter = 0;
             UseRawDeltaTime = false;
 
@@ -61,13 +61,11 @@ namespace Monocle {
             if (StartZero) {
                 sineCounter = MathHelper.PiOver2;
                 Value = 0;
-                if (onChange != null)
-                    onChange(0);
+                onChange?.Invoke(0);
             } else {
                 sineCounter = 0;
                 Value = 1f;
-                if (onChange != null)
-                    onChange(1f);
+                onChange?.Invoke(1f);
             }
 
             Active = true;
@@ -106,8 +104,7 @@ namespace Monocle {
 
             Value = MathF.Cos(sineCounter) * Counter;
 
-            if (onChange != null)
-                onChange(Value);
+            onChange?.Invoke(Value);
         }
     }
 }

@@ -1,24 +1,26 @@
-﻿namespace Monocle {
+﻿using System;
+
+namespace Monocle {
     public class VirtualMap<T> {
         public const int SegmentSize = 50;
         public readonly int Columns;
         public readonly int Rows;
         public readonly int SegmentColumns;
         public readonly int SegmentRows;
-        public readonly T EmptyValue;
+        public readonly T? EmptyValue;
 
-        private T[,][,] segments;
+        private T?[,][,] segments;
 
-        public VirtualMap(int columns, int rows, T emptyValue = default(T)) {
+        public VirtualMap(int columns, int rows, T? emptyValue = default) {
             Columns = columns;
             Rows = rows;
             SegmentColumns = (columns / SegmentSize) + 1;
             SegmentRows = (rows / SegmentSize) + 1;
-            segments = new T[SegmentColumns, SegmentRows][,];
+            segments = new T?[SegmentColumns, SegmentRows][,];
             EmptyValue = emptyValue;
         }
 
-        public VirtualMap(T[,] map, T emptyValue = default(T)) : this(map.GetLength(0), map.GetLength(1), emptyValue) {
+        public VirtualMap(T[,] map, T? emptyValue = default) : this(map.GetLength(0), map.GetLength(1), emptyValue) {
             for (int x = 0; x < Columns; x++)
                 for (int y = 0; y < Rows; y++)
                     this[x, y] = map[x, y];
@@ -35,21 +37,22 @@
             return segments[segmentX, segmentY] != null;
         }
 
-        public T InSegment(int segmentX, int segmentY, int x, int y) {
-            return segments[segmentX, segmentY][x, y];
+        public T? InSegment(int segmentX, int segmentY, int x, int y) {
+            var segment = segments[segmentX, segmentY];
+            return segment == null ? EmptyValue : segment[x, y];
         }
 
-        public T[,] GetSegment(int segmentX, int segmentY) {
+        public T?[,]? GetSegment(int segmentX, int segmentY) {
             return segments[segmentX, segmentY];
         }
 
-        public T SafeCheck(int x, int y) {
+        public T? SafeCheck(int x, int y) {
             if (x >= 0 && y >= 0 && x < Columns && y < Rows)
                 return this[x, y];
             return EmptyValue;
         }
 
-        public T this[int x, int y] {
+        public T? this[int x, int y] {
             get {
                 int cx = x / SegmentSize;
                 int cy = y / SegmentSize;
@@ -79,8 +82,8 @@
             }
         }
 
-        public T[,] ToArray() {
-            var array = new T[Columns, Rows];
+        public T?[,] ToArray() {
+            var array = new T?[Columns, Rows];
             for (int x = 0; x < Columns; x++)
                 for (int y = 0; y < Rows; y++)
                     array[x, y] = this[x, y];
@@ -89,12 +92,18 @@
 
         public VirtualMap<T> Clone() {
             var clone = new VirtualMap<T>(Columns, Rows, EmptyValue);
-            for (int x = 0; x < Columns; x++)
-                for (int y = 0; y < Rows; y++)
-                    clone[x, y] = this[x, y];
+            for (int x = 0; x < Columns; x++) {
+                for (int y = 0; y < Rows; y++) {
+                    var segment = segments[x, y];
+                    if (segment == null)
+                        continue;
+
+                    var copy = new T?[SegmentSize, SegmentSize];
+                    Array.Copy(segment, copy, segment.Length);
+                    clone.segments[x, y] = copy;
+                }
+            }
             return clone;
         }
-
-
     }
 }

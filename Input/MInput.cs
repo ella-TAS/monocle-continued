@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace Monocle {
     public static class MInput {
-        public static KeyboardData Keyboard { get; private set; }
-        public static MouseData Mouse { get; private set; }
-        public static GamePadData[] GamePads { get; private set; }
+        public static KeyboardData Keyboard { get; private set; } = null!;
+        public static MouseData Mouse { get; private set; } = null!;
+        public static GamePadData[] GamePads { get; private set; } = null!;
 
-        internal static List<VirtualInput> VirtualInputs;
+        internal static List<VirtualInput> VirtualInputs = null!;
 
         public static bool Active = true;
         public static bool Disabled = false;
@@ -30,7 +30,7 @@ namespace Monocle {
         }
 
         internal static void Update() {
-            if (Engine.Instance.IsActive && Active) {
+            if (Engine.Instance!.IsActive && Active) {
                 if (Engine.Commands.Open) {
                     Keyboard.UpdateNull();
                     Mouse.UpdateNull();

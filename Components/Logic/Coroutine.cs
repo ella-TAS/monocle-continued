@@ -32,12 +32,12 @@ namespace Monocle {
             else if (enumerators.Count > 0) {
                 IEnumerator now = enumerators.Peek();
                 if (now.MoveNext() && !ended) {
-                    if (now.Current is int)
-                        waitTimer = (int) now.Current;
-                    if (now.Current is float)
-                        waitTimer = (float) now.Current;
-                    else if (now.Current is IEnumerator)
-                        enumerators.Push(now.Current as IEnumerator);
+                    if (now.Current is int currentInt)
+                        waitTimer = currentInt;
+                    if (now.Current is float currentFloat)
+                        waitTimer = currentFloat;
+                    else if (now.Current is IEnumerator enumerator)
+                        enumerators.Push(enumerator);
                 } else if (!ended) {
                     enumerators.Pop();
                     if (enumerators.Count == 0) {

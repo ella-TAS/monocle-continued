@@ -9,8 +9,8 @@ namespace Monocle {
 
         private static List<ParticleType> AllTypes = new List<ParticleType>();
 
-        public MTexture Source;
-        public Chooser<MTexture> SourceChooser;
+        public MTexture? Source;
+        public Chooser<MTexture>? SourceChooser;
         public Color Color;
         public Color Color2;
         public ColorModes ColorMode;
@@ -96,19 +96,14 @@ namespace Monocle {
             return Create(ref particle, null, position, direction, color);
         }
 
-        public Particle Create(ref Particle particle, Entity entity, Vector2 position, float direction, Color color) {
+        public Particle Create(ref Particle particle, Entity? entity, Vector2 position, float direction, Color color) {
             particle.Track = entity;
             particle.Type = this;
             particle.Active = true;
             particle.Position = position;
 
             // source texture
-            if (SourceChooser != null)
-                particle.Source = SourceChooser.Choose();
-            else if (Source != null)
-                particle.Source = Source;
-            else
-                particle.Source = Draw.Particle;
+            particle.Source = SourceChooser?.Choose() ?? particle.Source ?? Draw.Particle;
 
             // size
             if (SizeRange != 0)

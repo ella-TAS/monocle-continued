@@ -58,9 +58,13 @@ namespace Monocle {
             return this;
         }
 
-        public T Choose() {
+        public bool IsEmpty() {
+            return TotalWeight <= 0;
+        }
+
+        public T? Choose() {
             if (TotalWeight <= 0)
-                return default(T);
+                return default;
             else if (choices.Count == 1)
                 return choices[0].Value;
 

@@ -1,4 +1,3 @@
-#nullable enable
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +9,6 @@ namespace Monocle {
     /// <summary>
     /// Core game engine class that manages the game loop, graphics, input, and scene management.
     /// Inherits from MonoGame's Game class and provides the foundation for all Monocle-based games.
-    /// Modernized for .NET 9 with nullable reference types and improved patterns.
     /// </summary>
     public class Engine : Game {
 
@@ -38,12 +36,12 @@ namespace Monocle {
         /// <summary>
         /// The command system for handling debug commands and console functionality.
         /// </summary>
-        public static Commands? Commands { get; private set; }
+        public static Commands Commands { get; private set; } = null!;
 
         /// <summary>
         /// The object pooler for efficient memory management and object reuse.
         /// </summary>
-        public static Pooler? Pooler { get; private set; }
+        public static Pooler Pooler { get; private set; } = null!;
 
         /// <summary>
         /// Optional action to override the default game loop behavior.
@@ -228,7 +226,7 @@ namespace Monocle {
             }
 #endif
 
-            Content.RootDirectory = @"Content";
+            Content.RootDirectory = "Content";
 
             IsMouseVisible = false;
             IsFixedTimeStep = false;
@@ -355,9 +353,9 @@ namespace Monocle {
             }
 
             //Debug Console
-            if (Commands?.Open ?? false)
+            if (Commands.Open)
                 Commands.UpdateOpen();
-            else if (Commands?.Enabled ?? false)
+            else if (Commands.Enabled)
                 Commands.UpdateClosed();
 
             //Changing scenes
@@ -378,7 +376,7 @@ namespace Monocle {
             RenderCore();
 
             base.Draw(gameTime);
-            if (Commands?.Open ?? false)
+            if (Commands.Open)
                 Commands.Render();
 
             //Frame counter

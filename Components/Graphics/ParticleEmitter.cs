@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace Monocle {
     public class ParticleEmitter : Component {
@@ -6,7 +7,7 @@ namespace Monocle {
         public ParticleSystem System;
         public ParticleType Type;
 
-        public Entity Track;
+        public Entity? Track;
         public float Interval;
         public Vector2 Position;
         public Vector2 Range;
@@ -29,7 +30,7 @@ namespace Monocle {
             Direction = direction;
         }
 
-        public ParticleEmitter(ParticleSystem system, ParticleType type, Entity track, Vector2 position, Vector2 range, float direction, int amount, float interval)
+        public ParticleEmitter(ParticleSystem system, ParticleType type, Entity? track, Vector2 position, Vector2 range, float direction, int amount, float interval)
             : this(system, type, position, range, amount, interval) {
             Direction = direction;
             Track = track;
@@ -40,6 +41,9 @@ namespace Monocle {
         }
 
         public void Simulate(float duration) {
+            if (Entity == null)
+                throw new InvalidOperationException("Entity is null");
+
             var steps = duration / Interval;
             for (var i = 0; i < steps; i++) {
                 for (int j = 0; j < Amount; j++) {
@@ -61,6 +65,9 @@ namespace Monocle {
         }
 
         public void Emit() {
+            if (Entity == null)
+                throw new InvalidOperationException("Entity is null");
+
             if (Direction.HasValue)
                 System.Emit(Type, Amount, Entity.Position + Position, Range, Direction.Value);
             else
@@ -74,6 +81,5 @@ namespace Monocle {
                 Emit();
             }
         }
-
     }
 }

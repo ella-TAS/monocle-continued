@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Monocle {
-    public class Text : GraphicsComponent {
+    public class XnaText : GraphicsComponent {
         public enum HorizontalAlign { Left, Center, Right };
         public enum VerticalAlign { Top, Center, Bottom };
 
@@ -12,7 +12,7 @@ namespace Monocle {
         private VerticalAlign verticalOrigin;
         private Vector2 size;
 
-        public Text(SpriteFont font, string text, Vector2 position, Color color, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
+        public XnaText(SpriteFont font, string text, Vector2 position, Color color, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
             : base(false) {
             this.font = font;
             this.text = text;
@@ -23,7 +23,7 @@ namespace Monocle {
             UpdateSize();
         }
 
-        public Text(SpriteFont font, string text, Vector2 position, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
+        public XnaText(SpriteFont font, string text, Vector2 position, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
             : this(font, text, position, Color.White, horizontalAlign, verticalAlign) {
 
         }

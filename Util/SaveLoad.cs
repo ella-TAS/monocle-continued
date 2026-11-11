@@ -110,7 +110,7 @@ namespace Monocle {
 #endif
         }
 
-        public static T Load<T>(string fileName, SerializeMode mode, string folderName = "Saves")
+        public static T? Load<T>(string fileName, SerializeMode mode, string folderName = "Saves")
                 where T : class {
             string path = GetSavePath(fileName, folderName);
 
@@ -121,7 +121,7 @@ namespace Monocle {
             JsonSerializerOptions JsonOptions = GetJsonOptions();
             using Stream stream = TitleContainer.OpenStream(path);
 
-            T result;
+            T? result;
 
             switch (mode) {
             case SerializeMode.Json:
@@ -142,12 +142,12 @@ namespace Monocle {
 
             case SerializeMode.XML:
                 var serializer = new DataContractSerializer(typeof(T));
-                result = (T) serializer.ReadObject(stream);
+                result = serializer.ReadObject(stream) as T;
                 break;
 
             case SerializeMode.XMLLight:
                 var xs = new XmlSerializer(typeof(T));
-                result = (T) xs.Deserialize(stream);
+                result = xs.Deserialize(stream) as T;
                 break;
 
             default:
@@ -157,7 +157,7 @@ namespace Monocle {
             return result;
         }
 
-        public static T SafeLoad<T>(string fileName, SerializeMode mode, string folderName = "Saves")
+        public static T? SafeLoad<T>(string fileName, SerializeMode mode, string folderName = "Saves")
             where T : class {
 #if DEBUG
             return Load<T>(fileName, mode, folderName);
@@ -176,7 +176,7 @@ namespace Monocle {
         }
 
         public static T LoadContentFile<T>(string fileName, SerializeMode mode) where T : class {
-            return Load<T>(fileName, mode, Engine.ContentDirectory);
+            return Load<T>(fileName, mode, Engine.ContentDirectory)!;
         }
     }
 }

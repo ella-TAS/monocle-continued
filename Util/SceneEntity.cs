@@ -7,7 +7,7 @@ namespace Monocle {
 
         public SceneEntity() { }
 
-        public new S Scene => base.Scene as S;
+        public new S Scene => (S) base.Scene!;
 
         public override void Added(Scene scene) {
             if (scene is not S) {

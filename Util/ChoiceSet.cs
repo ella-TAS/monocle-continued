@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 namespace Monocle {
-    public class ChoiceSet<T> {
+    public class ChoiceSet<T> where T : notnull {
         public int TotalWeight { get; private set; }
-        private Dictionary<T, int> choices;
+        private readonly Dictionary<T, int> choices;
 
         public ChoiceSet() {
             choices = new Dictionary<T, int>();

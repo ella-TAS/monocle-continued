@@ -5,9 +5,9 @@ using System.Xml;
 
 namespace Monocle {
     public class SpriteDataSource {
-        public XmlElement XML;
-        public string Path;
-        public string OverridePath;
+        public required XmlElement XML;
+        public required string Path;
+        public required string? OverridePath;
     }
 
     public class SpriteData {
@@ -20,11 +20,12 @@ namespace Monocle {
             Atlas = atlas;
         }
 
-        public void Add(XmlElement xml, string overridePath = null) {
-            var source = new SpriteDataSource();
-            source.XML = xml;
-            source.Path = source.XML.Attr("path");
-            source.OverridePath = overridePath;
+        public void Add(XmlElement xml, string? overridePath = null) {
+            var source = new SpriteDataSource() {
+                XML = xml,
+                Path = xml.Attr("path"),
+                OverridePath = overridePath
+            };
 
             //Error Checking
             {
@@ -57,7 +58,7 @@ namespace Monocle {
 
                 //Build Animations
                 foreach (XmlElement anim in source.XML.GetElementsByTagName("Anim")) {
-                    Chooser<string> into;
+                    Chooser<string>? into;
                     if (anim.HasAttr("goto"))
                         into = Chooser<string>.FromString<string>(anim.Attr("goto"));
                     else
@@ -111,7 +112,7 @@ namespace Monocle {
             Sources.Add(source);
         }
 
-        private bool HasFrames(Atlas atlas, string path, int[] frames = null) {
+        private bool HasFrames(Atlas atlas, string path, int[]? frames = null) {
             if (frames == null || frames.Length <= 0)
                 return atlas.GetAtlasSubtexturesAt(path, 0) != null;
             else {

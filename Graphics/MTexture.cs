@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -8,7 +7,6 @@ namespace Monocle {
     /// <summary>
     /// Represents a texture or a portion of a texture with additional metadata for drawing.
     /// Provides functionality for texture atlasing, sub-textures, and drawing offsets.
-    /// Modernized for .NET 9 with nullable reference types and improved patterns.
     /// </summary>
     public class MTexture {
         /// <summary>

@@ -43,11 +43,9 @@ namespace Monocle {
                         current.Add(entity);
                         entities.Add(entity);
 
-                        if (Scene != null) {
-                            Scene.TagLists.EntityAdded(entity);
-                            Scene.Tracker.EntityAdded(entity);
-                            entity.Added(Scene);
-                        }
+                        Scene.TagLists.EntityAdded(entity);
+                        Scene.Tracker.EntityAdded(entity);
+                        entity.Added(Scene);
                     }
                 }
 
@@ -61,12 +59,10 @@ namespace Monocle {
                         current.Remove(entity);
                         entities.Remove(entity);
 
-                        if (Scene != null) {
-                            entity.Removed(Scene);
-                            Scene.TagLists.EntityRemoved(entity);
-                            Scene.Tracker.EntityRemoved(entity);
-                            Engine.Pooler.EntityRemoved(entity);
-                        }
+                        entity.Removed(Scene);
+                        Scene.TagLists.EntityRemoved(entity);
+                        Scene.Tracker.EntityRemoved(entity);
+                        Engine.Pooler.EntityRemoved(entity);
                     }
                 }
 
@@ -149,10 +145,10 @@ namespace Monocle {
             return count;
         }
 
-        public T FindFirst<T>() where T : Entity {
+        public T? FindFirst<T>() where T : Entity {
             foreach (var e in entities)
-                if (e is T)
-                    return e as T;
+                if (e is T t)
+                    return t;
 
             return null;
         }
@@ -161,16 +157,16 @@ namespace Monocle {
             List<T> list = new List<T>();
 
             foreach (var e in entities)
-                if (e is T)
-                    list.Add(e as T);
+                if (e is T t)
+                    list.Add(t);
 
             return list;
         }
 
         public void With<T>(Action<T> action) where T : Entity {
             foreach (var e in entities)
-                if (e is T)
-                    action(e as T);
+                if (e is T t)
+                    action(t);
         }
 
         public IEnumerator<Entity> GetEnumerator() {

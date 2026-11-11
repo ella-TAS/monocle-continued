@@ -7,12 +7,12 @@ namespace Monocle {
     public class Tracker {
         #region Static
 
-        public static Dictionary<Type, List<Type>> TrackedEntityTypes { get; private set; }
-        public static Dictionary<Type, List<Type>> TrackedComponentTypes { get; private set; }
-        public static Dictionary<Type, List<Type>> TrackedCollidableComponentTypes { get; private set; }
-        public static HashSet<Type> StoredEntityTypes { get; private set; }
-        public static HashSet<Type> StoredComponentTypes { get; private set; }
-        public static HashSet<Type> StoredCollidableComponentTypes { get; private set; }
+        public static Dictionary<Type, List<Type>> TrackedEntityTypes { get; private set; } = null!;
+        public static Dictionary<Type, List<Type>> TrackedComponentTypes { get; private set; } = null!;
+        public static Dictionary<Type, List<Type>> TrackedCollidableComponentTypes { get; private set; } = null!;
+        public static HashSet<Type> StoredEntityTypes { get; private set; } = null!;
+        public static HashSet<Type> StoredComponentTypes { get; private set; } = null!;
+        public static HashSet<Type> StoredCollidableComponentTypes { get; private set; } = null!;
 
         public static void Initialize() {
             TrackedEntityTypes = new Dictionary<Type, List<Type>>();
@@ -22,77 +22,78 @@ namespace Monocle {
             StoredComponentTypes = new HashSet<Type>();
             StoredCollidableComponentTypes = new HashSet<Type>();
 
-            foreach (var type in Assembly.GetEntryAssembly().GetTypes()) {
-                var attrs = type.GetCustomAttributes(typeof(Tracked), false);
-                if (attrs.Length > 0) {
-                    bool inherited = (attrs[0] as Tracked).Inherited;
+            foreach (var type in Assembly.GetEntryAssembly()!.GetTypes()) {
+                Tracked? attr = type.GetCustomAttribute<Tracked>(false);
+                if (attr == null)
+                    continue;
 
-                    if (typeof(Entity).IsAssignableFrom(type)) {
+                bool inherited = attr.Inherited;
+
+                if (typeof(Entity).IsAssignableFrom(type)) {
+                    if (!type.IsAbstract) {
+                        if (!TrackedEntityTypes.ContainsKey(type))
+                            TrackedEntityTypes.Add(type, new List<Type>());
+                        TrackedEntityTypes[type].Add(type);
+                    }
+
+                    StoredEntityTypes.Add(type);
+
+                    if (inherited) {
+                        foreach (var subclass in GetSubclasses(type)) {
+                            if (!subclass.IsAbstract) {
+                                if (!TrackedEntityTypes.ContainsKey(subclass))
+                                    TrackedEntityTypes.Add(subclass, new List<Type>());
+                                TrackedEntityTypes[subclass].Add(type);
+                            }
+                        }
+                    }
+                } else if (typeof(Component).IsAssignableFrom(type)) {
+                    if (!type.IsAbstract) {
+                        if (!TrackedComponentTypes.ContainsKey(type))
+                            TrackedComponentTypes.Add(type, new List<Type>());
+                        TrackedComponentTypes[type].Add(type);
+                    }
+
+                    StoredComponentTypes.Add(type);
+
+                    if (inherited) {
+                        foreach (var subclass in GetSubclasses(type)) {
+                            if (!subclass.IsAbstract) {
+                                if (!TrackedComponentTypes.ContainsKey(subclass))
+                                    TrackedComponentTypes.Add(subclass, new List<Type>());
+                                TrackedComponentTypes[subclass].Add(type);
+                            }
+                        }
+                    }
+
+                    if (typeof(CollidableComponent).IsAssignableFrom(type)) {
                         if (!type.IsAbstract) {
-                            if (!TrackedEntityTypes.ContainsKey(type))
-                                TrackedEntityTypes.Add(type, new List<Type>());
-                            TrackedEntityTypes[type].Add(type);
+                            if (!TrackedCollidableComponentTypes.ContainsKey(type))
+                                TrackedCollidableComponentTypes.Add(type, new List<Type>());
+                            TrackedCollidableComponentTypes[type].Add(type);
                         }
 
-                        StoredEntityTypes.Add(type);
+                        StoredCollidableComponentTypes.Add(type);
 
                         if (inherited) {
                             foreach (var subclass in GetSubclasses(type)) {
                                 if (!subclass.IsAbstract) {
-                                    if (!TrackedEntityTypes.ContainsKey(subclass))
-                                        TrackedEntityTypes.Add(subclass, new List<Type>());
-                                    TrackedEntityTypes[subclass].Add(type);
+                                    if (!TrackedCollidableComponentTypes.ContainsKey(subclass))
+                                        TrackedCollidableComponentTypes.Add(subclass, new List<Type>());
+                                    TrackedCollidableComponentTypes[subclass].Add(type);
                                 }
                             }
                         }
-                    } else if (typeof(Component).IsAssignableFrom(type)) {
-                        if (!type.IsAbstract) {
-                            if (!TrackedComponentTypes.ContainsKey(type))
-                                TrackedComponentTypes.Add(type, new List<Type>());
-                            TrackedComponentTypes[type].Add(type);
-                        }
-
-                        StoredComponentTypes.Add(type);
-
-                        if (inherited) {
-                            foreach (var subclass in GetSubclasses(type)) {
-                                if (!subclass.IsAbstract) {
-                                    if (!TrackedComponentTypes.ContainsKey(subclass))
-                                        TrackedComponentTypes.Add(subclass, new List<Type>());
-                                    TrackedComponentTypes[subclass].Add(type);
-                                }
-                            }
-                        }
-
-                        if (typeof(CollidableComponent).IsAssignableFrom(type)) {
-                            if (!type.IsAbstract) {
-                                if (!TrackedCollidableComponentTypes.ContainsKey(type))
-                                    TrackedCollidableComponentTypes.Add(type, new List<Type>());
-                                TrackedCollidableComponentTypes[type].Add(type);
-                            }
-
-                            StoredCollidableComponentTypes.Add(type);
-
-                            if (inherited) {
-                                foreach (var subclass in GetSubclasses(type)) {
-                                    if (!subclass.IsAbstract) {
-                                        if (!TrackedCollidableComponentTypes.ContainsKey(subclass))
-                                            TrackedCollidableComponentTypes.Add(subclass, new List<Type>());
-                                        TrackedCollidableComponentTypes[subclass].Add(type);
-                                    }
-                                }
-                            }
-                        }
-                    } else
-                        throw new Exception("Type '" + type.Name + "' cannot be Tracked because it does not derive from Entity or Component");
-                }
+                    }
+                } else
+                    throw new Exception("Type '" + type.Name + "' cannot be Tracked because it does not derive from Entity or Component");
             }
         }
 
         private static List<Type> GetSubclasses(Type type) {
             List<Type> matches = new List<Type>();
 
-            foreach (var check in Assembly.GetEntryAssembly().GetTypes())
+            foreach (var check in Assembly.GetEntryAssembly()?.GetTypes() ?? [])
                 if (type != check && type.IsAssignableFrom(check))
                     matches.Add(check);
 
@@ -127,7 +128,7 @@ namespace Monocle {
             return Components.ContainsKey(typeof(T)) || CollidableComponents.ContainsKey(typeof(T));
         }
 
-        public T GetEntity<T>() where T : Entity {
+        public T? GetEntity<T>() where T : Entity {
 #if DEBUG
             if (!IsEntityTracked<T>())
                 throw new Exception("Entity type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
@@ -140,10 +141,10 @@ namespace Monocle {
                 return list[0] as T;
         }
 
-        public T GetNearestEntity<T>(Vector2 nearestTo) where T : Entity {
+        public T? GetNearestEntity<T>(Vector2 nearestTo) where T : Entity {
             var list = GetEntities<T>();
 
-            T nearest = null;
+            T? nearest = null;
             float nearestDistSq = 0;
 
             foreach (T entity in list) {
@@ -178,7 +179,7 @@ namespace Monocle {
 #endif
 
             foreach (var e in Entities[typeof(T)])
-                yield return e as T;
+                yield return (T) e;
         }
 
         public int CountEntities<T>() where T : Entity {
@@ -190,7 +191,7 @@ namespace Monocle {
             return Entities[typeof(T)].Count;
         }
 
-        public T GetComponent<T>() where T : Component {
+        public T? GetComponent<T>() where T : Component {
 #if DEBUG
             if (!IsComponentTracked<T>())
                 throw new Exception("Component type '" + typeof(T).Name + "' is not marked with the Tracked attribute!");
@@ -203,14 +204,14 @@ namespace Monocle {
                 return list[0] as T;
         }
 
-        public T GetNearestComponent<T>(Vector2 nearestTo) where T : Component {
+        public T? GetNearestComponent<T>(Vector2 nearestTo) where T : Component {
             var list = GetComponents<T>();
 
-            T nearest = null;
+            T? nearest = null;
             float nearestDistSq = 0;
 
             foreach (T component in list) {
-                float distSq = Vector2.DistanceSquared(nearestTo, component.Entity.Position);
+                float distSq = Vector2.DistanceSquared(nearestTo, component.Entity!.Position);
 
                 if (nearest == null || distSq < nearestDistSq) {
                     nearest = component;
@@ -241,7 +242,7 @@ namespace Monocle {
 #endif
 
             foreach (var c in Components[typeof(T)])
-                yield return c as T;
+                yield return (T) c;
         }
 
         public int CountComponents<T>() where T : Component {
@@ -255,44 +256,40 @@ namespace Monocle {
 
         internal void EntityAdded(Entity entity) {
             var type = entity.GetType();
-            List<Type> trackAs;
 
-            if (TrackedEntityTypes.TryGetValue(type, out trackAs))
+            if (TrackedEntityTypes.TryGetValue(type, out List<Type>? trackAs))
                 foreach (var track in trackAs)
                     Entities[track].Add(entity);
         }
 
         internal void EntityRemoved(Entity entity) {
             var type = entity.GetType();
-            List<Type> trackAs;
 
-            if (TrackedEntityTypes.TryGetValue(type, out trackAs))
+            if (TrackedEntityTypes.TryGetValue(type, out List<Type>? trackAs))
                 foreach (var track in trackAs)
                     Entities[track].Remove(entity);
         }
 
         internal void ComponentAdded(Component component) {
             var type = component.GetType();
-            List<Type> trackAs;
 
-            if (TrackedComponentTypes.TryGetValue(type, out trackAs))
+            if (TrackedComponentTypes.TryGetValue(type, out List<Type>? trackAs))
                 foreach (var track in trackAs)
                     Components[track].Add(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
                 foreach (var track in trackAs)
-                    CollidableComponents[track].Add(component as CollidableComponent);
+                    CollidableComponents[track].Add((CollidableComponent) component);
         }
 
         internal void ComponentRemoved(Component component) {
             var type = component.GetType();
-            List<Type> trackAs;
 
-            if (TrackedComponentTypes.TryGetValue(type, out trackAs))
+            if (TrackedComponentTypes.TryGetValue(type, out List<Type>? trackAs))
                 foreach (var track in trackAs)
                     Components[track].Remove(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
                 foreach (var track in trackAs)
-                    CollidableComponents[track].Remove(component as CollidableComponent);
+                    CollidableComponents[track].Remove((CollidableComponent) component);
         }
 
         public void LogEntities() {

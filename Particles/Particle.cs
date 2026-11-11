@@ -4,7 +4,7 @@ using System;
 
 namespace Monocle {
     public struct Particle {
-        public Entity Track;
+        public Entity? Track;
         public ParticleType Type;
         public MTexture Source;
 
@@ -27,7 +27,7 @@ namespace Monocle {
                 Active = false;
                 return false;
             } else {
-                var dt = Engine.TimeRate * (Engine.Instance.TargetElapsedTime.Milliseconds / 1000f);
+                var dt = Engine.TimeRate * (Engine.Instance!.TargetElapsedTime.Milliseconds / 1000f);
                 if (dt > 0)
                     for (var t = 0f; t < duration; t += dt)
                         Update(dt);

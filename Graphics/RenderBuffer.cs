@@ -3,22 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Monocle {
     public class RenderBuffer {
-        public RenderTarget2D Target;
-        public static implicit operator RenderTarget2D(RenderBuffer buffer) => buffer.Target;
+        public RenderTarget2D? Target;
+        public static implicit operator RenderTarget2D(RenderBuffer buffer) => buffer.Target!;
 
         public int Width {
-            get => Target.Width;
+            get => Target!.Width;
             set => Resize(value, Height);
         }
 
         public int Height {
-            get => Target.Height;
+            get => Target!.Height;
             set => Resize(Width, value);
         }
 
         private RenderTargetUsage Usage;
 
-        public Rectangle Bounds => Target.Bounds;
+        public Rectangle Bounds => Target!.Bounds;
 
         public RenderBuffer(RenderTargetUsage renderTargetUsage = RenderTargetUsage.DiscardContents) {
             Usage = renderTargetUsage;
@@ -35,7 +35,7 @@ namespace Monocle {
 
             Target?.Dispose();
             Target = new RenderTarget2D(
-                Engine.Instance.GraphicsDevice,
+                Engine.Instance!.GraphicsDevice,
                 newWidth,
                 newHeight,
                 false,

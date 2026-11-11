@@ -7,18 +7,18 @@ namespace Monocle {
         public float Interval = .05f;
         public float Timer;
         public bool RemoveOnFinish;
-        public Action<Vector2[]> OnShake;
+        public Action<Vector2[]>? OnShake;
 
         private bool on;
 
-        public ShakerList(int length, bool on = true, Action<Vector2[]> onShake = null)
+        public ShakerList(int length, bool on = true, Action<Vector2[]>? onShake = null)
             : base(true, false) {
             Values = new Vector2[length];
             this.on = on;
             OnShake = onShake;
         }
 
-        public ShakerList(int length, float time, bool removeOnFinish, Action<Vector2[]> onShake = null)
+        public ShakerList(int length, float time, bool removeOnFinish, Action<Vector2[]>? onShake = null)
             : this(length, true, onShake) {
             Timer = time;
             RemoveOnFinish = removeOnFinish;
@@ -36,8 +36,7 @@ namespace Monocle {
                     if (Values[0] != Vector2.Zero) {
                         for (var i = 0; i < Values.Length; i++)
                             Values[i] = Vector2.Zero;
-                        if (OnShake != null)
-                            OnShake(Values);
+                        OnShake?.Invoke(Values);
                     }
                 }
             }
@@ -58,19 +57,17 @@ namespace Monocle {
                     on = false;
                     for (var i = 0; i < Values.Length; i++)
                         Values[i] = Vector2.Zero;
-                    if (OnShake != null)
-                        OnShake(Values);
+                    OnShake?.Invoke(Values);
                     if (RemoveOnFinish)
                         RemoveSelf();
                     return;
                 }
             }
 
-            if (on && Scene.OnInterval(Interval)) {
+            if (on && Scene!.OnInterval(Interval)) {
                 for (var i = 0; i < Values.Length; i++)
                     Values[i] = Calc.Random.ShakeVector();
-                if (OnShake != null)
-                    OnShake(Values);
+                OnShake?.Invoke(Values);
             }
         }
     }

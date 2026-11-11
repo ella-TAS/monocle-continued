@@ -15,9 +15,8 @@ namespace Monocle {
             SpriteData = new Dictionary<string, SpriteData>(StringComparer.OrdinalIgnoreCase);
 
             var elements = new Dictionary<string, XmlElement>();
-            foreach (var e in XML["Sprites"].ChildNodes) {
-                if (e is XmlElement) {
-                    var element = e as XmlElement;
+            foreach (var e in XML["Sprites"]!.ChildNodes) {
+                if (e is XmlElement element) {
                     elements.Add(element.Name, element);
 
                     if (SpriteData.ContainsKey(element.Name))

@@ -31,7 +31,7 @@
             }
         }
 
-        public MTexture this[int index] {
+        public MTexture? this[int index] {
             get {
                 if (index < 0)
                     return null;

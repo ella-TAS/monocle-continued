@@ -5,7 +5,7 @@ namespace Monocle {
         public BitTag Tag;
         public BlendState BlendState;
         public SamplerState SamplerState;
-        public Effect Effect;
+        public Effect? Effect;
 
         public SingleTagRenderer(BitTag tag) {
             Tag = tag;

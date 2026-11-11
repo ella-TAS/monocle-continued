@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 
 namespace Monocle {
-    public class Spritesheet<T> : Image {
+    public class Spritesheet<T> : Image where T : notnull {
         public int CurrentFrame;
         public float Rate = 1;
         public bool UseRawDeltaTime;
-        public Action<T> OnFinish;
-        public Action<T> OnLoop;
-        public Action<T> OnAnimate;
+        public Action<T>? OnFinish;
+        public Action<T>? OnLoop;
+        public Action<T>? OnAnimate;
 
         private Dictionary<T, Animation> animations;
         private Animation currentAnimation;
@@ -19,6 +19,7 @@ namespace Monocle {
             : base(texture, true) {
             SetFrames(texture, frameWidth, frameHeight, frameSep);
             animations = new Dictionary<T, Animation>();
+            Frames = [];
         }
 
         public void SetFrames(MTexture texture, int frameWidth, int frameHeight, int frameSep = 0) {
@@ -58,10 +59,8 @@ namespace Monocle {
                             CurrentAnimationFrame -= Math.Sign(CurrentAnimationFrame) * currentAnimation.Frames.Length;
                             CurrentFrame = currentAnimation.Frames[CurrentAnimationFrame];
 
-                            if (OnAnimate != null)
-                                OnAnimate(CurrentAnimationID);
-                            if (OnLoop != null)
-                                OnLoop(CurrentAnimationID);
+                            OnAnimate?.Invoke(CurrentAnimationID!);
+                            OnLoop?.Invoke(CurrentAnimationID!);
                         } else {
                             //Ended
                             if (CurrentAnimationFrame < 0)
@@ -71,14 +70,12 @@ namespace Monocle {
 
                             Animating = false;
                             animationTimer = 0;
-                            if (OnFinish != null)
-                                OnFinish(CurrentAnimationID);
+                            OnFinish?.Invoke(CurrentAnimationID!);
                         }
                     } else {
                         //Continue Animation
                         CurrentFrame = currentAnimation.Frames[CurrentAnimationFrame];
-                        if (OnAnimate != null)
-                            OnAnimate(CurrentAnimationID);
+                        OnAnimate?.Invoke(CurrentAnimationID!);
                     }
                 }
             }
@@ -125,7 +122,7 @@ namespace Monocle {
             if (!played)
                 return false;
             else if (CurrentAnimationID == null)
-                return id == null;
+                return false;
             else
                 return CurrentAnimationID.Equals(id);
         }
@@ -170,7 +167,7 @@ namespace Monocle {
             get; private set;
         }
 
-        public T CurrentAnimationID {
+        public T? CurrentAnimationID {
             get; private set;
         }
 

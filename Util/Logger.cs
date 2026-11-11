@@ -30,7 +30,7 @@ namespace Monocle {
             Trace.WriteLine($"[{Timestamp}] [{origin}] {message}");
         }
 
-        public static void Debug(string message, string end = "\n", string origin = null) {
+        public static void Debug(string message, string end = "\n", string? origin = null) {
 #if DEBUG
             Trace.Write($"[{Timestamp}] [{origin ?? GetCallerInfo()}] {message}{end}");
 #endif
@@ -74,7 +74,7 @@ namespace Monocle {
 
             Debug(prefix + obj.GetType().Name + " {", origin: origin);
             foreach (FieldInfo v in obj.GetType().GetFields()) {
-                object val = v.GetValue(obj);
+                object? val = v.GetValue(obj);
                 if (val is IEnumerable enumerable and not string) {
                     Debug(prefix + "  " + v.Name + ": " + val + " {", origin: origin);
                     foreach (object child in enumerable) {
@@ -101,7 +101,7 @@ namespace Monocle {
             StackTrace trace = new StackTrace(true);
 
             foreach (StackFrame frame in trace.GetFrames()) {
-                string file = frame.GetFileName();
+                string? file = frame.GetFileName();
 
                 if (file == null)
                     continue;

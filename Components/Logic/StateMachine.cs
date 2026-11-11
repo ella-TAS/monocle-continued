@@ -4,10 +4,10 @@ using System.Collections;
 namespace Monocle {
     public class StateMachine : Component {
         private int state;
-        private Action[] begins;
+        private Action?[] begins;
         private Func<int>[] updates;
-        private Action[] ends;
-        private Func<IEnumerator>[] coroutines;
+        private Action?[] ends;
+        private Func<IEnumerator>?[] coroutines;
         private Coroutine currentCoroutine;
 
         public bool ChangedStates;
@@ -31,7 +31,7 @@ namespace Monocle {
         public override void Added(Entity entity) {
             base.Added(entity);
 
-            if (Entity.Scene != null && state == -1)
+            if (entity.Scene != null && state == -1)
                 State = 0;
         }
 
@@ -61,19 +61,19 @@ namespace Monocle {
                     if (PreviousState != -1 && ends[PreviousState] != null) {
                         if (Log)
                             Logger.Log("Calling End " + PreviousState);
-                        ends[PreviousState]();
+                        ends[PreviousState]!();
                     }
 
                     if (begins[state] != null) {
                         if (Log)
                             Logger.Log("Calling Begin " + state);
-                        begins[state]();
+                        begins[state]!();
                     }
 
                     if (coroutines[state] != null) {
                         if (Log)
                             Logger.Log("Starting Coroutine " + state);
-                        currentCoroutine.Replace(coroutines[state]());
+                        currentCoroutine.Replace(coroutines[state]!());
                     } else
                         currentCoroutine.Cancel();
                 }
@@ -94,36 +94,29 @@ namespace Monocle {
                 if (PreviousState != -1 && ends[PreviousState] != null) {
                     if (Log)
                         Logger.Log("Calling End " + state);
-                    ends[PreviousState]();
+                    ends[PreviousState]!();
                 }
 
                 if (begins[state] != null) {
                     if (Log)
                         Logger.Log("Calling Begin " + state);
-                    begins[state]();
+                    begins[state]!();
                 }
 
                 if (coroutines[state] != null) {
                     if (Log)
                         Logger.Log("Starting Coroutine " + state);
-                    currentCoroutine.Replace(coroutines[state]());
+                    currentCoroutine.Replace(coroutines[state]!());
                 } else
                     currentCoroutine.Cancel();
             }
         }
 
-        public void SetCallbacks(int state, Func<int> onUpdate, Func<IEnumerator> coroutine = null, Action begin = null, Action end = null) {
+        public void SetCallbacks(int state, Func<int> onUpdate, Func<IEnumerator>? coroutine = null, Action? begin = null, Action? end = null) {
             updates[state] = onUpdate;
             begins[state] = begin;
             ends[state] = end;
             coroutines[state] = coroutine;
-        }
-
-        public void ReflectState(Entity from, int index, string name) {
-            updates[index] = (Func<int>) Calc.GetMethod<Func<int>>(from, name + "Update");
-            begins[index] = (Action) Calc.GetMethod<Action>(from, name + "Begin");
-            ends[index] = (Action) Calc.GetMethod<Action>(from, name + "End");
-            coroutines[index] = (Func<IEnumerator>) Calc.GetMethod<Func<IEnumerator>>(from, name + "Coroutine");
         }
 
         public override void Update() {

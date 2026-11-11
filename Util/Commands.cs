@@ -29,7 +29,7 @@ namespace Monocle {
         private List<string> commandHistory;
         private int seekIndex = -1;
         private int tabIndex = -1;
-        private string tabSearch;
+        private string tabSearch = "";
         private float repeatCounter = 0;
         private Keys? repeatKey = null;
         private bool canOpen;
@@ -45,7 +45,7 @@ namespace Monocle {
         }
 
         public void Log(object obj, Color color) {
-            string str = obj.ToString();
+            string str = obj.ToString() ?? "null";
 
             //Newline splits
             if (str.Contains("\n")) {
@@ -56,7 +56,7 @@ namespace Monocle {
             }
 
             //Split the string if you overflow horizontally
-            int maxWidth = Engine.Instance.Window.ClientBounds.Width - 40;
+            int maxWidth = Engine.Instance!.Window.ClientBounds.Width - 40;
             while (Draw.DefaultFont.MeasureString(str).X > maxWidth) {
                 int split = -1;
                 for (int i = 0; i < str.Length; i++) {
@@ -354,7 +354,7 @@ namespace Monocle {
         }
 
         private void EnterCommand() {
-            string[] data = currentText.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] data = currentText.Split([' ', ','], StringSplitOptions.RemoveEmptyEntries);
             if (commandHistory.Count == 0 || commandHistory[0] != currentText)
                 commandHistory.Insert(0, currentText);
             drawCommands.Insert(0, new Line(currentText, Color.Aqua));
@@ -416,8 +416,7 @@ namespace Monocle {
         }
 
         public void ExecuteFunctionKeyAction(int num) {
-            if (FunctionKeyActions[num] != null)
-                FunctionKeyActions[num]();
+            FunctionKeyActions[num]?.Invoke();
         }
 
         #endregion
@@ -432,7 +431,7 @@ namespace Monocle {
                     ProcessMethod(method);
 
             //Check the calling assembly for Commands
-            foreach (var type in Assembly.GetEntryAssembly().GetTypes())
+            foreach (var type in Assembly.GetEntryAssembly()?.GetTypes() ?? [])
                 foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                     ProcessMethod(method);
 
@@ -444,7 +443,7 @@ namespace Monocle {
         }
 
         private void ProcessMethod(MethodInfo method) {
-            Command attr = null;
+            Command? attr = null;
             {
                 var attrs = method.GetCustomAttributes(typeof(Command), false);
                 if (attrs.Length > 0)
@@ -453,13 +452,13 @@ namespace Monocle {
 
             if (attr != null) {
                 if (!method.IsStatic)
-                    throw new Exception(method.DeclaringType.Name + "." + method.Name + " is marked as a command, but is not static");
+                    throw new Exception(method.DeclaringType?.Name + "." + method.Name + " is marked as a command, but is not static");
                 else {
                     CommandInfo info = new CommandInfo();
                     info.Help = attr.Help;
 
                     var parameters = method.GetParameters();
-                    var defaults = new object[parameters.Length];
+                    var defaults = new object?[parameters.Length];
                     string[] usage = new string[parameters.Length];
 
                     for (int i = 0; i < parameters.Length; i++) {
@@ -475,7 +474,7 @@ namespace Monocle {
                         else if (p.ParameterType == typeof(bool))
                             usage[i] += "bool";
                         else
-                            throw new Exception(method.DeclaringType.Name + "." + method.Name + " is marked as a command, but has an invalid parameter type. Allowed types are: string, int, float, and bool");
+                            throw new Exception(method.DeclaringType?.Name + "." + method.Name + " is marked as a command, but has an invalid parameter type. Allowed types are: string, int, float, and bool");
 
                         if (p.DefaultValue == DBNull.Value)
                             defaults[i] = null;
@@ -520,12 +519,12 @@ namespace Monocle {
             }
         }
 
-        private void InvokeMethod(MethodInfo method, object[] param = null) {
+        private void InvokeMethod(MethodInfo method, object?[]? param = null) {
             try {
                 method.Invoke(null, param);
             } catch (Exception e) {
-                Engine.Commands.Log(e.InnerException.Message, Color.Yellow);
-                LogStackTrace(e.InnerException.StackTrace);
+                Engine.Commands.Log(e.InnerException?.Message ?? "null", Color.Yellow);
+                LogStackTrace(e.InnerException?.StackTrace ?? "null");
             }
         }
 
@@ -612,25 +611,25 @@ namespace Monocle {
 
         [Command("exit", "Exits the game")]
         private static void Exit() {
-            Engine.Instance.Exit();
+            Engine.Instance!.Exit();
         }
 
         [Command("vsync", "Enables or disables vertical sync")]
         private static void Vsync(bool enabled = true) {
-            Engine.Graphics.SynchronizeWithVerticalRetrace = enabled;
-            Engine.Graphics.ApplyChanges();
+            Engine.Graphics!.SynchronizeWithVerticalRetrace = enabled;
+            Engine.Graphics!.ApplyChanges();
             Engine.Commands.Log("Vertical Sync " + (enabled ? "Enabled" : "Disabled"));
         }
 
         [Command("fixed", "Enables or disables fixed time step")]
         private static void Fixed(bool enabled = true) {
-            Engine.Instance.IsFixedTimeStep = enabled;
+            Engine.Instance!.IsFixedTimeStep = enabled;
             Engine.Commands.Log("Fixed Time Step " + (enabled ? "Enabled" : "Disabled"));
         }
 
         [Command("framerate", "Sets the target framerate")]
         private static void Framerate(float target) {
-            Engine.Instance.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / target);
+            Engine.Instance?.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / target);
         }
 
         [Command("count", "Logs amount of Entities in the Scene. Pass a tagIndex to count only Entities with that tag")]

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,22 +38,22 @@ namespace Monocle {
         /// <summary>
         /// Gets the entity list that manages all entities in this scene.
         /// </summary>
-        public EntityList Entities { get; private set; } = null!; // Assigned in constructor
+        public EntityList Entities { get; private set; }
 
         /// <summary>
         /// Gets the tag lists that provide efficient access to entities by their bit tags.
         /// </summary>
-        public TagLists TagLists { get; private set; } = null!; // Assigned in constructor
+        public TagLists TagLists { get; private set; }
 
         /// <summary>
         /// Gets the renderer list that manages all renderers in this scene.
         /// </summary>
-        public RendererList RendererList { get; private set; } = null!; // Assigned in constructor
+        public RendererList RendererList { get; private set; }
 
         /// <summary>
         /// Gets the camera that can be used in this scene.
         /// </summary>
-        public Camera Camera { get; private set; } = null!; // Assigned in constructor
+        public Camera Camera { get; private set; }
 
         /// <summary>
         /// Gets the mouse position, respecting the Scene camera.
@@ -64,7 +63,7 @@ namespace Monocle {
         /// <summary>
         /// Gets the tracker that manages tracked entity and component types for collision detection.
         /// </summary>
-        public Tracker Tracker { get; private set; } = null!; // Assigned in constructor
+        public Tracker Tracker { get; private set; }
 
         /// <summary>
         /// Dictionary that tracks actual depth values for entities to ensure proper rendering order.
@@ -439,7 +438,7 @@ namespace Monocle {
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideRect(rect))
-                    list.Add(list[i]);
+                    hits.Add(list[i]);
         }
 
         /// <summary>
@@ -623,7 +622,7 @@ namespace Monocle {
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Collidable && list[i].CollideRect(rect))
-                    list.Add(list[i]);
+                    hits.Add(list[i]);
         }
 
         public void CollideInto<T>(Vector2 point, List<T> hits) where T : Entity {
@@ -796,7 +795,7 @@ namespace Monocle {
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Entity?.Collidable == true && list[i].Entity?.CollideRect(rect) == true)
-                    list.Add(list[i]);
+                    hits.Add(list[i]);
         }
 
         public void CollideIntoByComponent<T>(Vector2 point, List<T> hits) where T : Component {
@@ -822,7 +821,8 @@ namespace Monocle {
 
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Entity?.Collidable == true && list[i].Entity?.CollideRect(rect) == true)
-                    list.Add(list[i] as T);
+                    if (list[i] is T typed)
+                        hits.Add(typed);
         }
 
         public List<T> CollideAllByComponent<T>(Vector2 point) where T : Component {
@@ -933,7 +933,7 @@ namespace Monocle {
         /// The entity type must be marked with the Pooled attribute to work with the pooler.
         /// </remarks>
         public T CreateAndAdd<T>() where T : Entity, new() {
-            var entity = Engine.Pooler!.Create<T>();
+            var entity = Engine.Pooler.Create<T>();
             Add(entity);
             return entity;
         }

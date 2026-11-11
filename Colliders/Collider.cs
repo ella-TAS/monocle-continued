@@ -3,8 +3,8 @@ using System;
 
 namespace Monocle {
     public abstract class Collider {
-        public Entity Entity { get; internal set; }
-        public Component Component { get; private set; }
+        public Entity? Entity { get; internal set; }
+        public Component? Component { get; private set; }
         public Vector2 Position;
 
         internal virtual void Added(Entity entity) {
@@ -23,22 +23,26 @@ namespace Monocle {
         }
 
         public bool Collide(Entity entity) {
+            if (entity.Collider == null)
+                return false;
             return Collide(entity.Collider);
         }
 
         public bool Collide(CollidableComponent component) {
+            if (component.Collider == null)
+                return false;
             return Collide(component.Collider);
         }
 
         public bool Collide(Collider collider) {
-            if (collider is Hitbox) {
-                return Collide(collider as Hitbox);
-            } else if (collider is Grid) {
-                return Collide(collider as Grid);
-            } else if (collider is ColliderList) {
-                return Collide(collider as ColliderList);
-            } else if (collider is Circle) {
-                return Collide(collider as Circle);
+            if (collider is Hitbox hitbox) {
+                return Collide(hitbox);
+            } else if (collider is Grid grid) {
+                return Collide(grid);
+            } else if (collider is ColliderList list) {
+                return Collide(list);
+            } else if (collider is Circle circle) {
+                return Collide(circle);
             } else
                 throw new Exception("Collisions against the collider type are not implemented!");
         }

@@ -236,7 +236,7 @@ namespace Monocle {
 
         public static string ChildText(this XmlElement xml, string childName, string defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerText;
+                return xml[childName]!.InnerText;
             else
                 return defaultValue;
         }
@@ -251,7 +251,7 @@ namespace Monocle {
 
         public static int ChildInt(this XmlElement xml, string childName, int defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerInt();
+                return xml[childName]!.InnerInt();
             else
                 return defaultValue;
         }
@@ -266,7 +266,7 @@ namespace Monocle {
 
         public static float ChildFloat(this XmlElement xml, string childName, float defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerFloat();
+                return xml[childName]!.InnerFloat();
             else
                 return defaultValue;
         }
@@ -281,7 +281,7 @@ namespace Monocle {
 
         public static bool ChildBool(this XmlElement xml, string childName, bool defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].InnerBool();
+                return xml[childName]!.InnerBool();
             else
                 return defaultValue;
         }
@@ -290,16 +290,16 @@ namespace Monocle {
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 
-            if (Enum.IsDefined(typeof(T), xml[childName].InnerText))
-                return Enum.Parse<T>(xml[childName].InnerText);
+            if (Enum.IsDefined(typeof(T), xml[childName]!.InnerText))
+                return Enum.Parse<T>(xml[childName]!.InnerText);
             else
                 throw new Exception("The attribute value cannot be converted to the enum type.");
         }
 
         public static T ChildEnum<T>(this XmlElement xml, string childName, T defaultValue) where T : struct {
             if (xml.HasChild(childName)) {
-                if (Enum.IsDefined(typeof(T), xml[childName].InnerText))
-                    return Enum.Parse<T>(xml[childName].InnerText);
+                if (Enum.IsDefined(typeof(T), xml[childName]!.InnerText))
+                    return Enum.Parse<T>(xml[childName]!.InnerText);
                 else
                     throw new Exception("The attribute value cannot be converted to the enum type.");
             } else
@@ -316,14 +316,14 @@ namespace Monocle {
 
         public static Color ChildHexColor(this XmlElement xml, string childName, Color defaultValue) {
             if (xml.HasChild(childName))
-                return Calc.HexToColor(xml[childName].InnerText);
+                return Calc.HexToColor(xml[childName]!.InnerText);
             else
                 return defaultValue;
         }
 
         public static Color ChildHexColor(this XmlElement xml, string childName, string defaultValue) {
             if (xml.HasChild(childName))
-                return Calc.HexToColor(xml[childName].InnerText);
+                return Calc.HexToColor(xml[childName]!.InnerText);
             else
                 return Calc.HexToColor(defaultValue);
         }
@@ -338,7 +338,7 @@ namespace Monocle {
 
         public static Vector2 ChildPosition(this XmlElement xml, string childName, Vector2 defaultValue) {
             if (xml.HasChild(childName))
-                return xml[childName].Position(defaultValue);
+                return xml[childName]!.Position(defaultValue);
             else
                 return defaultValue;
         }
@@ -429,7 +429,7 @@ namespace Monocle {
             XmlElement ele;
 
             if (xml.HasChild(childName))
-                ele = xml[childName];
+                ele = xml[childName]!;
             else {
                 ele = xml.OwnerDocument.CreateElement(null, childName, xml.NamespaceURI);
                 xml.AppendChild(ele);

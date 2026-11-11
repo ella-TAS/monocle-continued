@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Monocle {
     public class Atlas {
-        public List<Texture2D> Sources;
+        public List<Texture2D> Sources = [];
         private Dictionary<string, MTexture> textures = new Dictionary<string, MTexture>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, List<MTexture>> orderedTexturesCache = new Dictionary<string, List<MTexture>>();
 
@@ -32,11 +32,11 @@ namespace Monocle {
             switch (format) {
             case AtlasDataFormat.TexturePacker_Sparrow: {
                     XmlDocument xml = Calc.LoadContentXML(path);
-                    XmlElement at = xml["TextureAtlas"];
+                    XmlElement at = xml["TextureAtlas"]!;
 
                     var texturePath = at.Attr("imagePath", "");
-                    var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), texturePath));
-                    var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                    var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", texturePath));
+                    var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                     fileStream.Close();
 
                     var mTexture = new MTexture(texture);
@@ -56,12 +56,12 @@ namespace Monocle {
                 break;
             case AtlasDataFormat.CrunchXml: {
                     XmlDocument xml = Calc.LoadContentXML(path);
-                    XmlElement at = xml["atlas"];
+                    XmlElement at = xml["atlas"]!;
 
                     foreach (XmlElement tex in at) {
                         var texturePath = tex.Attr("n", "");
-                        var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), texturePath + ".png"));
-                        var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                        var fileStream = TitleContainer.OpenStream(Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", texturePath + ".png"));
+                        var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                         fileStream.Close();
 
                         var mTexture = new MTexture(texture);
@@ -86,9 +86,9 @@ namespace Monocle {
 
                     for (int i = 0; i < textures; i++) {
                         var textureName = reader.ReadNullTerminatedString();
-                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), textureName + ".png");
+                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", textureName + ".png");
                         var fileStream = TitleContainer.OpenStream(texturePath);
-                        var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                        var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                         fileStream.Close();
 
                         atlas.Sources.Add(texture);
@@ -119,7 +119,7 @@ namespace Monocle {
 
                     for (int i = 0; i < folders; i++) {
                         var folderName = reader.ReadNullTerminatedString();
-                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), folderName);
+                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", folderName);
 
                         var subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
@@ -134,7 +134,7 @@ namespace Monocle {
                             var fh = reader.ReadInt16();
 
                             var fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".png"));
-                            var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                            var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                             fileStream.Close();
 
                             atlas.Sources.Add(texture);
@@ -154,9 +154,9 @@ namespace Monocle {
                     var textures = reader.ReadInt16();
                     for (int i = 0; i < textures; i++) {
                         var textureName = reader.ReadString();
-                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), textureName + ".data");
+                        var texturePath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", textureName + ".data");
                         var fileStream = TitleContainer.OpenStream(texturePath);
-                        var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                        var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                         fileStream.Close();
 
                         atlas.Sources.Add(texture);
@@ -191,7 +191,7 @@ namespace Monocle {
                     var folders = reader.ReadInt16();
                     for (int i = 0; i < folders; i++) {
                         var folderName = reader.ReadString();
-                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path), folderName);
+                        var folderPath = Path.Combine(Engine.ContentDirectory, Path.GetDirectoryName(path) ?? "", folderName);
 
                         var subtextures = reader.ReadInt16();
                         for (int j = 0; j < subtextures; j++) {
@@ -206,7 +206,7 @@ namespace Monocle {
                             var fh = reader.ReadInt16();
 
                             var fileStream = TitleContainer.OpenStream(Path.Combine(folderPath, name + ".data"));
-                            var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                            var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                             fileStream.Close();
 
                             atlas.Sources.Add(texture);
@@ -275,7 +275,7 @@ namespace Monocle {
 
                 // get path and load
                 var fileStream = TitleContainer.OpenStream(file.Substring(contentDirectoryLength + 1));
-                var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
+                var texture = Texture2D.FromStream(Engine.Instance!.GraphicsDevice, fileStream);
                 fileStream.Close();
 
                 atlas.Sources.Add(texture);
@@ -302,15 +302,13 @@ namespace Monocle {
         }
 
         public MTexture GetOrDefault(string id, MTexture defaultTexture) {
-            if (String.IsNullOrEmpty(id) || !Has(id))
+            if (string.IsNullOrEmpty(id) || !Has(id))
                 return defaultTexture;
             return textures[id];
         }
 
         public List<MTexture> GetAtlasSubtextures(string key) {
-            List<MTexture> list;
-
-            if (!orderedTexturesCache.TryGetValue(key, out list)) {
+            if (!orderedTexturesCache.TryGetValue(key, out List<MTexture>? list)) {
                 list = new List<MTexture>();
 
                 var index = 0;
@@ -333,15 +331,14 @@ namespace Monocle {
             return orderedTexturesCache[key][index];
         }
 
-        private MTexture GetAtlasSubtextureFromAtlasAt(string key, int index) {
+        private MTexture? GetAtlasSubtextureFromAtlasAt(string key, int index) {
             if (index == 0 && textures.ContainsKey(key))
                 return textures[key];
 
             var indexString = index.ToString();
             var startLength = indexString.Length;
             while (indexString.Length < startLength + 6) {
-                MTexture result;
-                if (textures.TryGetValue(key + indexString, out result))
+                if (textures.TryGetValue(key + indexString, out MTexture? result))
                     return result;
                 indexString = "0" + indexString;
             }
@@ -349,9 +346,8 @@ namespace Monocle {
             return null;
         }
 
-        public MTexture GetAtlasSubtexturesAt(string key, int index) {
-            List<MTexture> list;
-            if (orderedTexturesCache.TryGetValue(key, out list))
+        public MTexture? GetAtlasSubtexturesAt(string key, int index) {
+            if (orderedTexturesCache.TryGetValue(key, out List<MTexture>? list))
                 return list[index];
             else
                 return GetAtlasSubtextureFromAtlasAt(key, index);

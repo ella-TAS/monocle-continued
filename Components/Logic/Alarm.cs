@@ -5,7 +5,7 @@ namespace Monocle {
     public class Alarm : Component {
         public enum AlarmMode { Persist, Oneshot, Looping };
 
-        public Action OnComplete;
+        public Action? OnComplete;
 
         public AlarmMode Mode { get; private set; }
         public float Duration { get; private set; }
@@ -59,8 +59,7 @@ namespace Monocle {
             TimeLeft -= Engine.DeltaTime;
             if (TimeLeft <= 0) {
                 TimeLeft = 0;
-                if (OnComplete != null)
-                    OnComplete();
+                OnComplete?.Invoke();
 
                 if (Mode == AlarmMode.Looping)
                     Start();

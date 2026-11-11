@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Monocle {
-    public class CounterSet<T> : Component {
+    public class CounterSet<T> : Component where T : notnull {
         private Dictionary<T, float> counters;
         private float timer;
 
@@ -13,8 +13,7 @@ namespace Monocle {
 
         public float this[T index] {
             get {
-                float value;
-                if (counters.TryGetValue(index, out value))
+                if (counters.TryGetValue(index, out float value))
                     return Math.Max(value - timer, 0);
                 else
                     return 0;
@@ -26,8 +25,7 @@ namespace Monocle {
         }
 
         public bool Check(T index) {
-            float value;
-            if (counters.TryGetValue(index, out value))
+            if (counters.TryGetValue(index, out float value))
                 return value - timer > 0;
             else
                 return false;

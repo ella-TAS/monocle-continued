@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -7,7 +6,6 @@ namespace Monocle {
     /// <summary>
     /// Static utility class for 2D drawing operations using MonoGame's SpriteBatch.
     /// Provides methods for drawing basic shapes, lines, and textures with modern C# patterns.
-    /// Modernized for .NET 9 with nullable reference types and enhanced documentation.
     /// </summary>
     public static class Draw {
         /// <summary>

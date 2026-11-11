@@ -7,17 +7,17 @@ namespace Monocle {
         public float Interval = .05f;
         public float Timer;
         public bool RemoveOnFinish;
-        public Action<Vector2> OnShake;
+        public Action<Vector2>? OnShake;
 
         private bool on;
 
-        public Shaker(bool on = true, Action<Vector2> onShake = null)
+        public Shaker(bool on = true, Action<Vector2>? onShake = null)
             : base(true, false) {
             this.on = on;
             OnShake = onShake;
         }
 
-        public Shaker(float time, bool removeOnFinish, Action<Vector2> onShake = null)
+        public Shaker(float time, bool removeOnFinish, Action<Vector2>? onShake = null)
             : this(true, onShake) {
             Timer = time;
             RemoveOnFinish = removeOnFinish;
@@ -34,8 +34,7 @@ namespace Monocle {
                     Timer = 0;
                     if (Value != Vector2.Zero) {
                         Value = Vector2.Zero;
-                        if (OnShake != null)
-                            OnShake(Vector2.Zero);
+                        OnShake?.Invoke(Vector2.Zero);
                     }
                 }
             }
@@ -55,18 +54,16 @@ namespace Monocle {
                 if (Timer <= 0) {
                     on = false;
                     Value = Vector2.Zero;
-                    if (OnShake != null)
-                        OnShake(Vector2.Zero);
+                    OnShake?.Invoke(Vector2.Zero);
                     if (RemoveOnFinish)
                         RemoveSelf();
                     return;
                 }
             }
 
-            if (on && Scene.OnInterval(Interval)) {
+            if (on && Scene!.OnInterval(Interval)) {
                 Value = Calc.Random.ShakeVector();
-                if (OnShake != null)
-                    OnShake(Value);
+                OnShake?.Invoke(Value);
             }
         }
     }

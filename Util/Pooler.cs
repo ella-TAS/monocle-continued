@@ -4,38 +4,33 @@ using System.Reflection;
 
 namespace Monocle {
     public class Pooler {
-        internal Dictionary<Type, Queue<Entity>> Pools { get; private set; }
+        internal Dictionary<Type, Stack<Entity>> Pools { get; private set; }
 
         public Pooler() {
-            Pools = new Dictionary<Type, Queue<Entity>>();
+            Pools = new Dictionary<Type, Stack<Entity>>();
 
-            foreach (var type in Assembly.GetEntryAssembly().GetTypes()) {
+            foreach (var type in Assembly.GetEntryAssembly()!.GetTypes()) {
                 if (type.GetCustomAttributes(typeof(Pooled), false).Length > 0) {
                     if (!typeof(Entity).IsAssignableFrom(type))
                         throw new Exception("Type '" + type.Name + "' cannot be Pooled because it doesn't derive from Entity");
                     else if (type.GetConstructor(Type.EmptyTypes) == null)
                         throw new Exception("Type '" + type.Name + "' cannot be Pooled because it doesn't have a parameterless constructor");
                     else
-                        Pools.Add(type, new Queue<Entity>());
+                        Pools.Add(type, new Stack<Entity>());
                 }
             }
         }
 
         public T Create<T>() where T : Entity, new() {
-            if (!Pools.ContainsKey(typeof(T)))
+            if (!Pools.TryGetValue(typeof(T), out var pool) || pool.Count == 0)
                 return new T();
 
-            var queue = Pools[typeof(T)];
-            if (queue.Count == 0)
-                return new T();
-            else
-                return queue.Dequeue() as T;
+            return (T) pool.Pop();
         }
 
         internal void EntityRemoved(Entity entity) {
-            var type = entity.GetType();
-            if (Pools.ContainsKey(type))
-                Pools[type].Enqueue(entity);
+            if (Pools.TryGetValue(entity.GetType(), out var pool))
+                pool.Push(entity);
         }
 
         public void Log() {

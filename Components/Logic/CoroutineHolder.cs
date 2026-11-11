@@ -20,8 +20,8 @@ namespace Monocle {
                 var now = coroutineList[i].Data.Peek();
 
                 if (now.MoveNext()) {
-                    if (now.Current is IEnumerator)
-                        coroutineList[i].Data.Push(now.Current as IEnumerator);
+                    if (now.Current is IEnumerator enumerator)
+                        coroutineList[i].Data.Push(enumerator);
                 } else {
                     coroutineList[i].Data.Pop();
                     if (coroutineList[i].Data.Count == 0)

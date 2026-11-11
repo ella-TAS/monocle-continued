@@ -9,7 +9,7 @@ also check out my [Monocle Game Template](https://github.com/ella-TAS/monocle-ga
 
 ### Updates over original Monocle
 - update to .NET 10
-- add documentation comments and #nullable to a few important classes
+- add documentation comments and add #nullable to the entire project
 - port to FNA
 - clean .csproj file
 - reformat all files

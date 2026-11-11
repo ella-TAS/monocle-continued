@@ -9,8 +9,8 @@ namespace Monocle {
         public readonly Scene FromScene;
         public readonly Scene ToScene;
         public readonly float Duration;
-        public RenderBuffer FromBuffer;
-        public RenderBuffer ToBuffer;
+        public RenderBuffer FromBuffer = null!;
+        public RenderBuffer ToBuffer = null!;
         public float Timer;
 
         public float Progress => Timer / Duration;
@@ -37,7 +37,7 @@ namespace Monocle {
         public virtual void Finish() {
             FromScene.End();
             Engine.ReplaceSceneSilent(ToScene);
-            Engine.Instance.OnSceneTransition(FromScene, ToScene);
+            Engine.Instance!.OnSceneTransition(FromScene, ToScene);
             End();
         }
 
@@ -71,7 +71,7 @@ namespace Monocle {
 
             Engine.DefaultRenderTarget = FromBuffer;
             Engine.ResetRenderTarget();
-            Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
+            Engine.Graphics!.GraphicsDevice.Clear(Color.Transparent);
             FromScene.Render();
 
             Engine.DefaultRenderTarget = ToBuffer;

@@ -9,16 +9,16 @@ namespace Monocle {
         public float Rate = 1f;
         public bool UseRawDeltaTime;
         public Vector2? Justify;
-        public Action<string> OnFinish;
-        public Action<string> OnLoop;
-        public Action<string> OnFrameChange;
-        public Action<string> OnLastFrame;
-        public Action<string, string> OnChange;
+        public Action<string>? OnFinish;
+        public Action<string>? OnLoop;
+        public Action<string>? OnFrameChange;
+        public Action<string>? OnLastFrame;
+        public Action<string, string>? OnChange;
 
         private Atlas atlas;
         public string Path;
         private Dictionary<string, Animation> animations;
-        private Animation currentAnimation;
+        private Animation? currentAnimation;
         private float animationTimer;
         private int width;
         private int height;
@@ -29,6 +29,7 @@ namespace Monocle {
             this.Path = path;
             animations = new Dictionary<string, Animation>(StringComparer.OrdinalIgnoreCase);
             CurrentAnimationID = "";
+            LastAnimationID = "";
         }
 
         public void Reset(Atlas atlas, string path) {
@@ -41,6 +42,7 @@ namespace Monocle {
             OnFinish = null;
             OnLoop = null;
             OnFrameChange = null;
+            OnLastFrame = null;
             OnChange = null;
             Animating = false;
         }
@@ -56,63 +58,60 @@ namespace Monocle {
         }
 
         public override void Update() {
-            if (Animating) {
-                //Timer
-                if (UseRawDeltaTime)
-                    animationTimer += Engine.RawDeltaTime * Rate;
-                else
-                    animationTimer += Engine.DeltaTime * Rate;
+            if (!Animating || currentAnimation == null)
+                return;
 
-                //Next Frame
-                if (Math.Abs(animationTimer) >= currentAnimation.Delay) {
-                    CurrentAnimationFrame += Math.Sign(animationTimer);
-                    animationTimer -= Math.Sign(animationTimer) * currentAnimation.Delay;
+            //Timer
+            if (UseRawDeltaTime)
+                animationTimer += Engine.RawDeltaTime * Rate;
+            else
+                animationTimer += Engine.DeltaTime * Rate;
 
-                    //End of Animation
-                    if (CurrentAnimationFrame < 0 || CurrentAnimationFrame >= currentAnimation.Frames.Length) {
-                        var was = CurrentAnimationID;
-                        if (OnLastFrame != null)
-                            OnLastFrame(CurrentAnimationID);
+            //Next Frame
+            if (Math.Abs(animationTimer) >= currentAnimation.Delay) {
+                CurrentAnimationFrame += Math.Sign(animationTimer);
+                animationTimer -= Math.Sign(animationTimer) * currentAnimation.Delay;
 
-                        // only do stuff if OnLastFrame didn't just change the animation
-                        if (was == CurrentAnimationID) {
-                            //Looped
-                            if (currentAnimation.Goto != null) {
-                                CurrentAnimationID = currentAnimation.Goto.Choose();
+                //End of Animation
+                if (CurrentAnimationFrame < 0 || CurrentAnimationFrame >= currentAnimation.Frames.Length) {
+                    var was = CurrentAnimationID;
+                    OnLastFrame?.Invoke(CurrentAnimationID);
 
-                                if (OnChange != null)
-                                    OnChange(LastAnimationID, CurrentAnimationID);
+                    // only do stuff if OnLastFrame didn't just change the animation
+                    if (was == CurrentAnimationID) {
+                        //Looped
+                        if (currentAnimation.Goto != null && !currentAnimation.Goto.IsEmpty()) {
+                            CurrentAnimationID = currentAnimation.Goto.Choose()!;
 
-                                LastAnimationID = CurrentAnimationID;
-                                currentAnimation = animations[LastAnimationID];
-                                if (CurrentAnimationFrame < 0)
-                                    CurrentAnimationFrame = currentAnimation.Frames.Length - 1;
-                                else
-                                    CurrentAnimationFrame = 0;
+                            OnChange?.Invoke(LastAnimationID, CurrentAnimationID);
 
-                                SetFrame(currentAnimation.Frames[CurrentAnimationFrame]);
-                                if (OnLoop != null)
-                                    OnLoop(CurrentAnimationID);
-                            } else {
-                                //Ended
-                                if (CurrentAnimationFrame < 0)
-                                    CurrentAnimationFrame = 0;
-                                else
-                                    CurrentAnimationFrame = currentAnimation.Frames.Length - 1;
+                            LastAnimationID = CurrentAnimationID;
+                            currentAnimation = animations[LastAnimationID];
+                            if (CurrentAnimationFrame < 0)
+                                CurrentAnimationFrame = currentAnimation.Frames.Length - 1;
+                            else
+                                CurrentAnimationFrame = 0;
 
-                                Animating = false;
-                                var id = CurrentAnimationID;
-                                CurrentAnimationID = "";
-                                currentAnimation = null;
-                                animationTimer = 0;
-                                if (OnFinish != null)
-                                    OnFinish(id);
-                            }
+                            SetFrame(currentAnimation.Frames[CurrentAnimationFrame]);
+                            OnLoop?.Invoke(CurrentAnimationID);
+                        } else {
+                            //Ended
+                            if (CurrentAnimationFrame < 0)
+                                CurrentAnimationFrame = 0;
+                            else
+                                CurrentAnimationFrame = currentAnimation.Frames.Length - 1;
+
+                            Animating = false;
+                            var id = CurrentAnimationID;
+                            CurrentAnimationID = "";
+                            currentAnimation = null;
+                            animationTimer = 0;
+                            OnFinish?.Invoke(id);
                         }
-                    } else {
-                        //Continue Animation
-                        SetFrame(currentAnimation.Frames[CurrentAnimationFrame]);
                     }
+                } else {
+                    //Continue Animation
+                    SetFrame(currentAnimation.Frames[CurrentAnimationFrame]);
                 }
             }
         }
@@ -124,11 +123,13 @@ namespace Monocle {
             Texture = texture;
             if (Justify.HasValue)
                 Origin = new Vector2(Texture.Width * Justify.Value.X, Texture.Height * Justify.Value.Y);
-            if (OnFrameChange != null)
-                OnFrameChange(CurrentAnimationID);
+            OnFrameChange?.Invoke(CurrentAnimationID);
         }
 
         public void SetAnimationFrame(int frame) {
+            if (currentAnimation == null)
+                return;
+
             animationTimer = 0;
             CurrentAnimationFrame = frame % currentAnimation.Frames.Length;
             SetFrame(currentAnimation.Frames[CurrentAnimationFrame]);
@@ -184,7 +185,7 @@ namespace Monocle {
             };
         }
 
-        public void Add(string id, string path, float delay, Chooser<string> into) {
+        public void Add(string id, string path, float delay, Chooser<string>? into) {
             animations[id] = new Animation() {
                 Delay = delay,
                 Frames = GetFrames(path),
@@ -200,7 +201,7 @@ namespace Monocle {
             };
         }
 
-        public void Add(string id, string path, float delay, Chooser<string> into, params int[] frames) {
+        public void Add(string id, string path, float delay, Chooser<string>? into, params int[] frames) {
             animations[id] = new Animation() {
                 Delay = delay,
                 Frames = GetFrames(path, frames),
@@ -208,7 +209,7 @@ namespace Monocle {
             };
         }
 
-        private MTexture[] GetFrames(string path, int[] frames = null) {
+        private MTexture[] GetFrames(string path, int[]? frames = null) {
             MTexture[] ret;
 
             if (frames == null || frames.Length <= 0)
@@ -219,7 +220,6 @@ namespace Monocle {
                 for (int i = 0; i < frames.Length; i++) {
                     var frame = atlas.GetAtlasSubtexturesAt(fullPath, frames[i]);
                     if (frame == null)
-
                         throw new Exception("Can't find sprite " + fullPath + " with index " + frames[i]);
                     finalFrames[i] = frame;
                 }
@@ -251,8 +251,7 @@ namespace Monocle {
                 if (!animations.ContainsKey(id))
                     throw new Exception("No Animation defined for ID: " + id);
 #endif
-                if (OnChange != null)
-                    OnChange(LastAnimationID, id);
+                OnChange?.Invoke(LastAnimationID, id);
 
                 LastAnimationID = CurrentAnimationID = id;
                 currentAnimation = animations[id];
@@ -276,8 +275,7 @@ namespace Monocle {
                 if (!animations.ContainsKey(id))
                     throw new Exception("No Animation defined for ID: " + id);
 #endif
-                if (OnChange != null)
-                    OnChange(LastAnimationID, id);
+                OnChange?.Invoke(LastAnimationID, id);
 
                 LastAnimationID = CurrentAnimationID = id;
                 currentAnimation = animations[id];
@@ -380,9 +378,13 @@ namespace Monocle {
 
         #region Cloning from SpriteBank
 
-        internal Sprite()
+        private Sprite()
             : base(null, true) {
-
+            atlas = null!;
+            Path = null!;
+            animations = null!;
+            CurrentAnimationID = null!;
+            LastAnimationID = null!;
         }
 
         internal Sprite CreateClone() {
@@ -390,6 +392,9 @@ namespace Monocle {
         }
 
         internal Sprite CloneInto(Sprite clone) {
+            clone.atlas = atlas;
+            clone.Path = Path;
+
             clone.Texture = Texture;
             clone.Position = Position;
             clone.Justify = Justify;
@@ -435,9 +440,9 @@ namespace Monocle {
         }
 
         private class Animation {
-            public float Delay;
-            public MTexture[] Frames;
-            public Chooser<string> Goto;
+            public required float Delay;
+            public required MTexture[] Frames;
+            public required Chooser<string>? Goto;
         }
     }
 }

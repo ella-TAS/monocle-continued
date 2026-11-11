@@ -5,7 +5,7 @@ namespace Monocle {
     public class CollidableComponent : Component {
         public bool Collidable;
 
-        private Collider collider;
+        private Collider? collider;
 
         public CollidableComponent(bool active, bool visible, bool collidable)
             : base(active, visible) {
@@ -14,43 +14,36 @@ namespace Monocle {
 
         public override void Added(Entity entity) {
             base.Added(entity);
-            if (collider != null)
-                collider.Entity = entity;
+            collider?.Entity = entity;
         }
 
         public override void Removed(Entity entity) {
-            if (collider != null)
-                collider.Entity = null;
+            collider?.Entity = null;
             base.Removed(entity);
         }
 
-        public Collider Collider {
+        public Collider? Collider {
             get {
-                if (collider == null)
-                    return Entity.Collider;
-                else
-                    return collider;
+                return collider ?? Entity?.Collider;
             }
 
             set {
                 if (value == collider)
                     return;
 #if DEBUG
-                if (value.Entity != null)
+                if (value?.Entity != null)
                     throw new Exception("Setting an Entity's Collider to a Collider already in use by another object");
 #endif
-                if (collider != null)
-                    collider.Removed();
+                collider?.Removed();
                 collider = value;
-                if (collider != null)
-                    collider.Added(this);
+                collider?.Added(this);
             }
         }
 
         public float Width {
             get {
                 if (collider == null)
-                    return Entity.Width;
+                    return Entity!.Width;
                 else
                     return collider.Width;
             }
@@ -59,7 +52,7 @@ namespace Monocle {
         public float Height {
             get {
                 if (collider == null)
-                    return Entity.Height;
+                    return Entity!.Height;
                 else
                     return collider.Height;
             }
@@ -68,96 +61,96 @@ namespace Monocle {
         public float Left {
             get {
                 if (collider == null)
-                    return Entity.Left;
+                    return Entity!.Left;
                 else
-                    return Entity.X + collider.Left;
+                    return Entity!.X + collider.Left;
             }
 
             set {
                 if (collider == null)
-                    Entity.Left = value;
+                    Entity?.Left = value;
                 else
-                    Entity.X = value - collider.Left;
+                    Entity?.X = value - collider.Left;
             }
         }
 
         public float Right {
             get {
                 if (collider == null)
-                    return Entity.Right;
+                    return Entity!.Right;
                 else
-                    return Entity.X + collider.Right;
+                    return Entity!.X + collider.Right;
             }
 
             set {
                 if (collider == null)
-                    Entity.Right = value;
+                    Entity?.Right = value;
                 else
-                    Entity.X = value - collider.Right;
+                    Entity?.X = value - collider.Right;
             }
         }
 
         public float Top {
             get {
                 if (collider == null)
-                    return Entity.Top;
+                    return Entity!.Top;
                 else
-                    return Entity.Y + collider.Top;
+                    return Entity!.Y + collider.Top;
             }
 
             set {
                 if (collider == null)
-                    Entity.Top = value;
+                    Entity?.Top = value;
                 else
-                    Entity.Y = value - collider.Top;
+                    Entity?.Y = value - collider.Top;
             }
         }
 
         public float Bottom {
             get {
                 if (collider == null)
-                    return Entity.Bottom;
+                    return Entity!.Bottom;
                 else
-                    return Entity.Y + collider.Bottom;
+                    return Entity!.Y + collider.Bottom;
             }
 
             set {
                 if (collider == null)
-                    Entity.Bottom = value;
+                    Entity?.Bottom = value;
                 else
-                    Entity.Y = value - collider.Bottom;
+                    Entity?.Y = value - collider.Bottom;
             }
         }
 
         public float CenterX {
             get {
                 if (collider == null)
-                    return Entity.CenterX;
+                    return Entity!.CenterX;
                 else
-                    return Entity.X + collider.CenterX;
+                    return Entity!.X + collider.CenterX;
             }
 
             set {
                 if (collider == null)
-                    Entity.CenterX = value;
+                    Entity?.CenterX = value;
                 else
-                    Entity.X = value - collider.CenterX;
+                    Entity?.X = value - collider.CenterX;
             }
         }
 
         public float CenterY {
             get {
                 if (collider == null)
-                    return Entity.CenterY;
+                    return Entity!.CenterY;
                 else
-                    return Entity.Y + collider.CenterY;
+                    return Entity!.Y + collider.CenterY;
             }
 
             set {
                 if (collider == null)
-                    Entity.CenterY = value;
+                    Entity?.CenterY = value;
                 else
-                    Entity.Y = value - collider.CenterY;
+                    Entity?.Y = value - collider.CenterY;
             }
         }
 

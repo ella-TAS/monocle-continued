@@ -7,7 +7,7 @@ namespace Monocle {
         public Color Color = Color.White;
         public int VisualExtend = 0;
         public VirtualMap<MTexture> Tiles;
-        public Camera ClipCamera;
+        public Camera? ClipCamera;
         public float Alpha = 1f;
 
         public TileGrid(int tileWidth, int tileHeight, int tilesX, int tilesY)
@@ -118,7 +118,7 @@ namespace Monocle {
         }
 
         public Rectangle GetClippedRenderTiles() {
-            var pos = Entity.Position + Position;
+            var pos = (Entity?.Position ?? Vector2.Zero) + Position;
 
             int left, top, right, bottom;
             if (ClipCamera == null) {
@@ -145,7 +145,7 @@ namespace Monocle {
         }
 
         public override void Render() {
-            RenderAt(Entity.Position + Position);
+            RenderAt(Entity!.Position + Position);
         }
 
         public void RenderAt(Vector2 position) {
@@ -154,15 +154,13 @@ namespace Monocle {
 
             var clip = GetClippedRenderTiles();
             var color = Color * Alpha;
-            MTexture tile;
+            MTexture? tile;
 
             for (int tx = clip.Left; tx < clip.Right; tx++)
                 for (int ty = clip.Top; ty < clip.Bottom; ty++) {
                     tile = Tiles[tx, ty];
-                    if (tile != null)
-                        tile.Draw(position + new Vector2(tx * TileWidth, ty * TileHeight), Vector2.Zero, color);
+                    tile?.Draw(position + new Vector2(tx * TileWidth, ty * TileHeight), Vector2.Zero, color);
                 }
         }
-
     }
 }

@@ -58,8 +58,7 @@ namespace Monocle {
                 foreach (var cheat in cheats) {
                     if (CurrentInput.Contains(cheat.Item1)) {
                         CurrentInput = "";
-                        if (cheat.Item2 != null)
-                            cheat.Item2();
+                        cheat.Item2?.Invoke();
                         cheats.Remove(cheat);
 
                         if (Logging)
@@ -77,7 +76,7 @@ namespace Monocle {
         /// </summary>
         /// <param name="code">The input sequence that triggers this cheat.</param>
         /// <param name="onEntered">Optional action to execute when the cheat code is entered.</param>
-        public void AddCheat(string code, Action onEntered = null) {
+        public void AddCheat(string code, Action onEntered) {
             cheats.Add(new Tuple<string, Action>(code, onEntered));
             maxInput = Math.Max(code.Length, maxInput);
         }

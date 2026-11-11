@@ -18,7 +18,7 @@ namespace Monocle {
         private HorizontalAlign horizontalOrigin;
         private VerticalAlign verticalOrigin;
         private string text;
-        private bool dirty;
+        private bool dirty = true;
 
         public PixelFont Font {
             get { return font; }
@@ -63,10 +63,9 @@ namespace Monocle {
 
         public PixelText(PixelFont font, Vector2 offset, string text, Color color, HorizontalAlign horizontalAlign = HorizontalAlign.Center, VerticalAlign verticalAlign = VerticalAlign.Center)
             : base(false) {
-            Font = font;
-            Text = text;
+            this.font = font;
+            this.text = text;
             Color = color;
-            Text = text;
             data = Font.Data;
             Position = offset;
             horizontalOrigin = horizontalAlign;
@@ -92,7 +91,7 @@ namespace Monocle {
                 }
 
                 // add char
-                var fontChar = data.Get(text[i]) ?? data.Get(PixelFontCharacter.FALLBACK);
+                PixelFontCharacter fontChar = data.Get(text[i]) ?? data.Get(PixelFontCharacter.FALLBACK)!;
 
                 characters.Add(new Char() {
                     Offset = offset + new Vector2(fontChar.XOffset, fontChar.YOffset),
