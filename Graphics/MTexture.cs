@@ -353,8 +353,7 @@ namespace Monocle {
             }
 
             if (Texture != null)
-                if (Texture != null)
-                    Monocle.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, -DrawOffset, 1f, SpriteEffects.None, 0);
+                Monocle.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, -DrawOffset, 1f, SpriteEffects.None, 0);
         }
 
         public void Draw(Vector2 position, Vector2 origin) {
@@ -364,8 +363,7 @@ namespace Monocle {
             }
 
             if (Texture != null)
-                if (Texture != null)
-                    Monocle.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, origin - DrawOffset, 1f, SpriteEffects.None, 0);
+                Monocle.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, origin - DrawOffset, 1f, SpriteEffects.None, 0);
         }
 
         public void Draw(Vector2 position, Vector2 origin, Color color) {

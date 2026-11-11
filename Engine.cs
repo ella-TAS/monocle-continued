@@ -290,8 +290,7 @@ namespace Monocle {
         protected override void OnActivated(object? sender, EventArgs args) {
             base.OnActivated(sender, args);
 
-            if (scene != null)
-                scene.GainFocus();
+            scene?.GainFocus();
         }
 
         /// <summary>
@@ -361,12 +360,10 @@ namespace Monocle {
             //Changing scenes
             if (scene != nextScene) {
                 Scene? lastScene = scene;
-                if (scene != null)
-                    scene.End();
+                scene?.End();
                 scene = nextScene;
                 OnSceneTransition(lastScene, nextScene);
-                if (scene != null)
-                    scene.Begin();
+                scene?.Begin();
             }
 
             base.Update(gameTime);
@@ -397,8 +394,7 @@ namespace Monocle {
         /// By default, this simply sets the render target to null, clears the screen, and renders the current Scene
         /// </summary>
         protected virtual void RenderCore() {
-            if (scene != null)
-                scene.BeforeRender();
+            scene?.BeforeRender();
 
             GraphicsDevice.SetRenderTarget(DefaultRenderTarget);
             GraphicsDevice.Viewport = Viewport;
@@ -455,7 +451,7 @@ namespace Monocle {
         /// </summary>
         public static Scene? Scene {
             get => Instance?.scene;
-            set { if (Instance != null) Instance.nextScene = value; }
+            set { Instance?.nextScene = value; }
         }
 
         /// <summary>

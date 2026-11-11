@@ -98,15 +98,13 @@ namespace Monocle {
                 Eased = Percent;
 
             //Update the tween
-            if (OnUpdate != null)
-                OnUpdate(this);
+            OnUpdate?.Invoke(this);
 
             //When finished...
             if (TimeLeft <= 0) {
                 TimeLeft = 0;
 
-                if (OnComplete != null)
-                    OnComplete(this);
+                OnComplete?.Invoke(this);
 
                 switch (Mode) {
                 case TweenMode.Persist:
@@ -160,8 +158,7 @@ namespace Monocle {
 
             Active = true;
 
-            if (OnStart != null)
-                OnStart(this);
+            OnStart?.Invoke(this);
         }
 
         public void Start(float duration, bool reverse = false) {

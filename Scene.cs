@@ -80,7 +80,7 @@ namespace Monocle {
         /// </summary>
         /// <remarks>
         /// Creates and initializes all necessary components including the tracker, entity list,
-        /// tag lists, renderer list, and helper entity. The scene is ready for use immediately
+        /// tag lists, renderer list. The scene is ready for use immediately
         /// after construction.
         /// </remarks>
         public Scene() {
