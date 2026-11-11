@@ -63,17 +63,18 @@ namespace Monocle {
                 if (wordWidth > width) {
                     int i = 1, start = 0;
                     for (; i < word.Length; i++) {
-                        if (i - start > 1 && Measure(word.Substring(start, i - start - 1)).X > width) {
-                            builder.Append(word.AsSpan(start, i - start - 1));
+                        if (Measure(word.Substring(start, i - start + 1)).X > width) {
+                            builder.Append(word.AsSpan(start, i - start));
                             builder.Append('\n');
-                            start = i - 1;
+                            start = i;
                         }
                     }
 
-
-                    var remaining = word[start..];
-                    builder.Append(remaining);
-                    lineWidth += Measure(remaining).X;
+                    if (start < word.Length) {
+                        var remaining = word[start..];
+                        builder.Append(remaining);
+                        lineWidth = Measure(remaining).X;
+                    }
                 }
                 // normal word, add it
                 else {
