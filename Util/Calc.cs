@@ -16,7 +16,7 @@ namespace Monocle {
     /// and various helper functions for game development.
     /// </summary>
     public static class Calc {
-        public const float EPSILON = 0.00000001f;
+        public const float EPSILON = 0.000001f;
 
         #region Enums
 

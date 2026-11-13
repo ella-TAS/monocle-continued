@@ -80,7 +80,7 @@ namespace Monocle {
                     // only do stuff if OnLastFrame didn't just change the animation
                     if (was == CurrentAnimationID) {
                         //Looped
-                        if (currentAnimation.Goto != null && !currentAnimation.Goto.IsEmpty()) {
+                        if (currentAnimation.Goto != null && !currentAnimation.Goto.IsEmpty) {
                             CurrentAnimationID = currentAnimation.Goto.Choose()!;
 
                             OnChange?.Invoke(LastAnimationID, CurrentAnimationID);

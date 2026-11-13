@@ -58,10 +58,6 @@ namespace Monocle {
             return this;
         }
 
-        public bool IsEmpty() {
-            return TotalWeight <= 0;
-        }
-
         public T? Choose() {
             if (TotalWeight <= 0)
                 return default;
@@ -84,11 +80,7 @@ namespace Monocle {
             get; private set;
         }
 
-        public bool CanChoose {
-            get {
-                return TotalWeight > 0;
-            }
-        }
+        public bool IsEmpty => TotalWeight <= 0;
 
         private class Choice {
             public T Value;
