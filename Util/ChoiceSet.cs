@@ -114,7 +114,7 @@ namespace Monocle {
         /// <param name="random"></param>
         /// <returns></returns>
         public T? Get(Random random) {
-            if (TotalWeight > 0)
+            if (IsEmpty)
                 return default;
 
             int at = random.Next(TotalWeight);
@@ -127,7 +127,7 @@ namespace Monocle {
             }
 
             Logger.DebugCrash("ChoiceSet", "Random choice error!");
-            return default!;
+            return default;
         }
 
         /// <summary>
@@ -139,5 +139,15 @@ namespace Monocle {
         }
 
         public bool IsEmpty => TotalWeight <= 0;
+
+        public void Log() {
+            if (IsEmpty) {
+                Logger.Log("empty");
+                return;
+            }
+            foreach (KeyValuePair<T, int> kv in choices) {
+                Logger.Log($"{kv.Key}: {kv.Value}");
+            }
+        }
     }
 }
