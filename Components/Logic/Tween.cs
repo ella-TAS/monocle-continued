@@ -105,6 +105,8 @@ namespace Monocle {
                 TimeLeft = 0;
 
                 OnComplete?.Invoke(this);
+                if (TimeLeft > 0)
+                    return;
 
                 switch (Mode) {
                 case TweenMode.Persist:

@@ -59,12 +59,14 @@ namespace Monocle {
             if (TimeLeft <= 0) {
                 TimeLeft = 0;
                 OnComplete?.Invoke();
+                if (TimeLeft > 0)
+                    return;
 
                 if (Mode == AlarmMode.Looping)
                     Start();
                 else if (Mode == AlarmMode.Oneshot)
                     RemoveSelf();
-                else if (TimeLeft <= 0)
+                else
                     Active = false;
             }
         }
