@@ -15,7 +15,7 @@ namespace Monocle {
 
         private static Stack<Alarm> cached = new Stack<Alarm>();
 
-        public static Alarm Create(AlarmMode mode, Action onComplete, float duration = 1f, bool start = false) {
+        public static Alarm Create(AlarmMode mode, Action? onComplete, float duration = 1f, bool start = false) {
             Alarm alarm;
             if (cached.Count == 0)
                 alarm = new Alarm();
@@ -26,7 +26,7 @@ namespace Monocle {
             return alarm;
         }
 
-        public static Alarm Set(Entity entity, float duration, Action onComplete, AlarmMode alarmMode = AlarmMode.Oneshot) {
+        public static Alarm Set(Entity entity, float duration, Action? onComplete, AlarmMode alarmMode = AlarmMode.Oneshot) {
             Alarm alarm = Alarm.Create(alarmMode, onComplete, duration, true);
             entity.Add(alarm);
             return alarm;
@@ -39,7 +39,7 @@ namespace Monocle {
 
         }
 
-        private void Init(AlarmMode mode, Action onComplete, float duration = 1f, bool start = false) {
+        private void Init(AlarmMode mode, Action? onComplete, float duration = 1f, bool start = false) {
             if (duration <= 0)
                 Logger.DebugCrash("Alarm", "Alarm duration cannot be less than zero");
 
