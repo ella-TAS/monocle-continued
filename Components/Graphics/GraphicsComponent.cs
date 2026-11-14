@@ -56,11 +56,11 @@ namespace Monocle {
             }
         }
 
-        public void DrawOutline(int offset = 1, bool eightWay = false) {
+        public void DrawOutline(int offset = 1, bool eightWay = true) {
             DrawOutline(Color.Black, offset, eightWay);
         }
 
-        public void DrawOutline(Color color, int offset = 1, bool eightWay = false) {
+        public void DrawOutline(Color color, int offset = 1, bool eightWay = true) {
             Vector2 pos = Position;
             Color was = Color;
             Color = color;
@@ -68,7 +68,7 @@ namespace Monocle {
             for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
                     if ((i != 0 || j != 0) && (eightWay || Math.Abs(i) + Math.Abs(j) < 2)) {
-                        Position = pos + new Vector2(i * offset, j * offset);
+                        Position = pos + new Vector2(i * offset, j * offset) * Scale;
                         Render();
                     }
                 }

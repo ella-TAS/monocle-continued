@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Monocle {
     /// <summary>
     /// Utility class for making weighted random choices from a set.
     /// </summary>
     public class Chooser<T> {
-        private List<Choice> choices;
+        private readonly List<Choice> choices;
 
         public Chooser() {
             choices = new List<Choice>();
@@ -52,15 +53,18 @@ namespace Monocle {
         }
 
         public Chooser<T> Add(T choice, float weight) {
-            weight = Math.Max(weight, 0);
+            if (weight <= 0f)
+                return this;
+
             choices.Add(new Choice(choice, weight));
             TotalWeight += weight;
             return this;
         }
 
         public T? Choose() {
-            if (TotalWeight <= 0)
+            if (IsEmpty)
                 return default;
+
             else if (choices.Count == 1)
                 return choices[0].Value;
 
@@ -73,14 +77,19 @@ namespace Monocle {
                     return choices[i].Value;
             }
 
-            return choices[choices.Count - 1].Value;
+            return choices[^1].Value;
         }
 
-        public float TotalWeight {
-            get; private set;
-        }
+        public float TotalWeight { get; private set; }
 
-        public bool IsEmpty => TotalWeight <= 0;
+        public bool IsEmpty => TotalWeight <= Calc.EPSILON;
+
+        public void Recalculate() {
+            TotalWeight = choices.Sum(ch => ch.Weight);
+            if (TotalWeight <= Calc.EPSILON) {
+                TotalWeight = 0f;
+            }
+        }
 
         private class Choice {
             public T Value;
